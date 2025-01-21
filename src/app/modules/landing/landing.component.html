@@ -1,53 +1,88 @@
-<nav class="navbar navbar-expand-sm navbar-light bg-light fixed-top">
-  <div class="container-fluid">
-    <a class="navbar-brand ms-5" href="#">
-      <span class="fs-3 fw-bolder">
-        <span style="color: #0F62FE;">PADI</span><span style="color: #EB1077;">CARE</span>
-      </span>
-    </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <div class="d-flex ms-auto me-5">
-        <ul class="navbar-nav mb-2 mb-lg-0">
-          <li class="nav-item ms-2 me-2">
-            <a class="nav-link fw-bold active" aria-current="page" href="#">Home</a>
-          </li>
-          <li class="nav-item ms-2 me-2">
-            <a class="nav-link fw-bold" href="#">About Us</a>
-          </li>
-          <li class="nav-item ms-2 me-2">
-            <a class="nav-link fw-bold" href="#">Our Services</a>
-          </li>
-          <li class="nav-item ms-2 me-2">
-            <a class="nav-link fw-bold" href="#">Our Product</a>
-          </li>
-          <li class="nav-item dropdown ms-2 me-2">
-            <a class="btn btn-outline-primary dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Login
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <li><a class="dropdown-item" href="#">User</a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" href="#">Caregiver</a></li>
-            </ul>
-          </li>
-          <li class="nav-item lm-4 ms-3 me-2">
-            <button type="button" class="btn btn-primary p-auto fw-bold">
-              <span class="pe-2">Join Now</span>
-              <i class="bi bi-arrow-right"></i>
-            </button>
-          </li>
-        </ul>
+<app-headers [headerType]="HeaderType.LANDING"></app-headers>
+
+<div class="section1 pt-5">
+  <h1 style="font-weight: 900; margin-left: 11%; margin-top: 8%">
+    Padicare: Where<br/>Compassion Meets<br>Convenience
+  </h1>
+
+  <div class="row mt-5 mb-5 ms-5">
+    <div class="col-lg-4 col-md-4 col-sm-12" style="margin-left: 7%;">
+      <div class="card shadow rounded-5">
+        <div class="card-body p-4 text-center" [formGroup]="form">
+          <mat-tab-group>
+            <mat-tab label="Find Care">
+             <div class="mt-3">
+              <div class="input-group input-group-lg mb-3 border rounded-5 bg-light">
+                <button class="btn btn-light rounded-circle" type="button" id="button-addon1">
+                  <i class="fa fa-location-dot"></i>
+                </button>
+                <input (keyup)="search()"
+                  formControlName="zipcode"
+                  type="text"
+                  class="form-control bg-light border-0"
+                  placeholder="Zip code"
+                  aria-label="Zip code"
+                  aria-describedby="button-addon2">
+                <button class="btn btn-primary rounded-circle" type="button" id="button-addon2" (click)="search()">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+              </div>
+              <div class="text-secondary d-flex" *ngIf="form?.valid && (form?.touched || form?.dirty)">
+                {{ !!zipCodeInfo ? zipCodeInfo.city + ', ' + zipCodeInfo.state : '' }}
+              </div>
+              <div class="text-black fw-6 d-flex" *ngIf="form?.invalid && zipcode?.invalid && (form?.touched || form?.dirty)">
+                Enter your zipcode to get started
+              </div>
+              <div class="text-danger text-sm d-flex" *ngIf="isSubmitted && form?.invalid">
+                <small> {{ errorMessage }} </small>
+              </div>
+              <button type="button" class="btn btn-primary p-auto fw-bold" (click)="getStarted()">
+                <i class="fa-solid fa-user-group me-2"></i>
+                <span class="pe-2">Get Started Now</span>
+              </button>
+             </div>
+            </mat-tab>
+            <mat-tab label="Offer Care">
+              <div class="mt-3">
+                <div class="input-group input-group-lg mb-3 border rounded-5 bg-light">
+                  <button class="btn btn-light rounded-circle" type="button" id="button-addon1">
+                    <i class="fa fa-location-dot"></i>
+                  </button>
+                  <input (change)="search()"
+                    formControlName="zipcode"
+                    type="text"
+                    class="form-control bg-light border-0"
+                    placeholder="Zip code"
+                    aria-label="Zip code"
+                    aria-describedby="button-addon2">
+                  <button class="btn btn-primary rounded-circle" type="button" id="button-addon2" (click)="search()">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                  </button>
+                </div>
+                <div class="text-secondary d-flex" *ngIf="form?.valid && (form?.touched || form?.dirty)">
+                  {{ !!zipCodeInfo ? zipCodeInfo.city + ', ' + zipCodeInfo.state : '' }}
+                </div>
+                <div class="text-black fw-6 d-flex" *ngIf="form?.invalid && zipcode?.invalid && (form?.touched || form?.dirty)">
+                  Enter your zipcode to get started
+                </div>
+                <div class="text-danger text-sm d-flex" *ngIf="isSubmitted && form?.invalid">
+                  <small> {{ errorMessage }} </small>
+                </div>
+                <button type="button" class="btn btn-primary p-auto fw-bold" (click)="getStarted()">
+                  <i class="fa-solid fa-user-group me-2"></i>
+                  <span class="pe-2">Get Started Now</span>
+                </button>
+               </div>
+            </mat-tab>
+          </mat-tab-group>
+        </div>
       </div>
     </div>
   </div>
-</nav>
 
-<div class="mt-5"></div>
+</div>
 
-<div class="container-fluid section">
+<div class="container-fluid section section2">
   <div class="row mt-5 mb-5 text-center">
     <h2 class="fs-3 fw-bold">
       Join millions of families who trust Padicare for compassionate
@@ -58,12 +93,13 @@
   <div class="row ms-4 me-4 mt-4 mb-4">
 
     <div class="col-lg-6 col-md-6 col-sm-12">
-      <div class="card text-center align-items-center bg-grey border-0">
-        <div class="card-body p-4"> <img src="assets/img/category/icon1.png" width="75" alt="Service" />
+      <div class="card text-center align-items-center section2 border-0">
+        <div class="card-body p-4">
+          <i class="fa-solid fa-baby-carriage fa-4x mb-3 section2-icon"></i>
           <h6 class="mb-3 fw-bold">Child Care</h6>
           <p class="mb-0 fw-medium">
-            Our child care services connect families with experienced and compassionate caregivers who prioritize your 
-            child's safety, growth, and happiness. Whether you need full-time, part-time, or occasional babysitting, 
+            Our child care services connect families with experienced and compassionate caregivers who prioritize your
+            child's safety, growth, and happiness. Whether you need full-time, part-time, or occasional babysitting,
             Padicare is here to provide reliable support tailored to your family's needs.
           </p>
         </div>
@@ -71,24 +107,26 @@
     </div>
 
     <div class="col-lg-6 col-md-6 col-sm-12">
-      <div class="card text-center align-items-center bg-grey border-0">
-        <div class="card-body p-4"> <img src="assets/img/category/icon2.png" width="75" alt="Service" />
+      <div class="card text-center align-items-center section2 border-0">
+        <div class="card-body p-4">
+          <i class="fa-solid fa-child-reaching fa-4x mb-3 section2-icon"></i>
           <h6 class="mb-3 fw-bold">Senior Care</h6>
           <p class="mb-0 fw-medium">
-            Padicare offers professional senior care services to help your loved ones enjoy their golden years in comfort. 
-            From assistance with daily activities to companionship and specialized care, our caregivers are dedicated to 
+            Padicare offers professional senior care services to help your loved ones enjoy their golden years in comfort.
+            From assistance with daily activities to companionship and specialized care, our caregivers are dedicated to
             making life easier for seniors and their families.</p>
         </div>
       </div>
     </div>
 
     <div class="col-lg-6 col-md-6 col-sm-12 mt-4">
-      <div class="card text-center align-items-center bg-grey border-0">
-        <div class="card-body p-4"> <img src="assets/img/category/icon2.png" width="75" alt="Service" />
+      <div class="card text-center align-items-center section2 border-0">
+        <div class="card-body p-4">
+          <i class="fa-solid fa-paw fa-4x mb-3 section2-icon"></i>
           <h6 class="mb-3 fw-bold">Pet Care</h6>
           <p class="mb-0 fw-medium">
-            We understand how much you care for your pets. Padicare links you with trusted caregivers to provide 
-            walking, feeding, grooming, and companionship for your pets, ensuring they feel loved and well-cared for, 
+            We understand how much you care for your pets. Padicare links you with trusted caregivers to provide
+            walking, feeding, grooming, and companionship for your pets, ensuring they feel loved and well-cared for,
             even in your absence.
           </p>
         </div>
@@ -96,12 +134,13 @@
     </div>
 
     <div class="col-lg-6 col-md-6 col-sm-12 mt-4">
-      <div class="card text-center align-items-center bg-grey border-0">
-        <div class="card-body p-4"> <img src="assets/img/category/icon2.png" width="75" alt="Service" />
+      <div class="card text-center align-items-center section2 border-0">
+        <div class="card-body p-4">
+          <i class="fa-solid fa-house-chimney-crack fa-4x mb-3 section2-icon"></i>
           <h6 class="mb-3 fw-bold">House Keeping</h6>
           <p class="mb-0 fw-medium">
-            Padicare takes the stress out of maintaining a tidy living space. Whether it's regular cleaning, organizing, 
-            or specialized housekeeping tasks, our skilled professionals deliver dependable services to keep your home 
+            Padicare takes the stress out of maintaining a tidy living space. Whether it's regular cleaning, organizing,
+            or specialized housekeeping tasks, our skilled professionals deliver dependable services to keep your home
             spotless and welcoming.
           </p>
         </div>
@@ -115,8 +154,16 @@
 </div>
 
 <div class="container">
-  <div class="row mt-5 mb-5 text-center">
-    <h2 class="fs-3 fw-bold">
+  <div class="row mt-5 mb-5 text-center d-flex">
+    <h2 class="fs-3 fw-bold flex">
+      <span class="me-5">
+        <svg width="120" height="115" viewBox="0 0 177 131" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M121.577 44.4235C120.104 40.0496 116.435 37.079 112.218 36.2157L102.689 7.91975C102.143 6.30015 99.4012 2.42988 94.7701 3.98952C93.4522 4.43335 92.2919 5.3146 91.5094 6.53438L80.0113 24.427C74.2339 33.4086 65.4815 40.2328 55.364 43.64L19.8253 55.6085C13.2821 57.8121 9.76492 64.9011 11.9685 71.4443L17.9527 89.2137C20.1563 95.7569 27.2453 99.274 33.7885 97.0705L40.0263 94.9697C40.4223 96.9962 40.9406 99.0186 41.6175 101.029C44.0966 108.39 48.1532 114.769 53.2642 119.97C54.8912 121.625 57.3855 122.098 59.5844 121.358L73.3335 116.727C78.1553 115.103 79.1901 108.605 74.9758 105.754C70.5987 102.793 67.1209 98.433 65.3082 93.0504C64.6157 90.9939 64.2498 88.9161 64.1297 86.8523L69.3273 85.102C79.4447 81.6947 90.5422 81.8339 100.574 85.4914L120.554 92.7832C121.886 93.2697 123.345 93.2887 124.689 92.8371C129.302 91.2837 129.193 86.6258 128.618 84.9192L119.089 56.6233C121.925 53.3825 123.05 48.7974 121.577 44.4235ZM112.623 76.5843L104.857 73.7505C92.1693 69.1204 78.1318 68.947 65.3378 73.2557L59.3535 55.4863C72.1475 51.1776 83.2203 42.5478 90.5227 31.1854L94.992 24.2312L112.623 76.5843Z" fill="#4A00E0"/>
+          <rect x="140.731" y="38.4082" width="36" height="4" fill="#352380"/>
+          <rect x="140.93" y="57.9702" width="36" height="4" transform="rotate(28.8535 140.93 57.9702)" fill="#352380"/>
+          <rect x="141.986" y="19.309" width="36" height="4" transform="rotate(-28.738 141.986 19.309)" fill="#352380"/>
+        </svg>
+      </span>
       Voices of Care: Stories from our Community
     </h2>
   </div>
@@ -124,38 +171,45 @@
   <div class="row ms-4 me-4 mt-4 mb-4">
 
     <div class="col-lg-6 col-md-6 col-sm-12">
-      <div class="card text-center align-items-center border border-primary">
-        <div class="card-body p-4"> <img src="assets/img/category/icon1.png" width="75" alt="Service" />
+      <div class="card text-center align-items-center border border-violet">
+        <div class="card-body p-4">
+          <div class="mb-3">
+            <app-profile-image src="assets/img/sandra-michaels.png" alt="Testifiers" badgeColor="#7A5AF8">
+            </app-profile-image>
+          </div>
           <h6 class="mb-3 fw-bold">Sandra Michaels</h6>
           <span class="fs-6">Child & Senior Caregiver</span>
           <p class="mb-0 fw-medium">
-            "Working with Padicare has been a truly rewarding experience. The platform makes it easy to connect with 
-            families in need of my skills, and I feel valued for the work I do. 
-            It's fulfilling to know I'm making a difference in someone's life, whether it's helping a senior enjoy 
-            their day or caring for a child with boundless energy. Padicare's support and resources ensure I can 
+            "Working with Padicare has been a truly rewarding experience. The platform makes it easy to connect with
+            families in need of my skills, and I feel valued for the work I do.
+            It's fulfilling to know I'm making a difference in someone's life, whether it's helping a senior enjoy
+            their day or caring for a child with boundless energy. Padicare's support and resources ensure I can
             provide the best care possible."
+          </p>
+          <p class="mb-2">
+            <app-star-ratings [score]="5"></app-star-ratings>
           </p>
         </div>
       </div>
     </div>
 
     <div class="col-lg-6 col-md-6 col-sm-12">
-      <div class="card text-center align-items-center border border-primary">
-        <div class="card-body p-4"> <img src="assets/img/category/icon2.png" width="75" alt="Service" />
+      <div class="card text-center align-items-center border border-violet">
+        <div class="card-body p-4">
+          <div class="mb-3">
+            <app-profile-image src="assets/img/john-morrison.png" alt="Testifiers" badgeColor="#E54545">
+            </app-profile-image>
+          </div>
           <h6 class="mb-3 fw-bold">John Morrison</h6>
           <span class="fs-6">Care Recipient</span>
           <p class="mb-0 fw-medium">
-            "Padicare has been a lifesaver for our family. We were struggling to balance our busy schedules and needed 
-            someone trustworthy to help with our two young children. The caregiver we found through Padicare has been 
-            amazing—so kind, professional, and dependable. Knowing my kids are in good hands has given me peace of mind. 
+            "Padicare has been a lifesaver for our family. We were struggling to balance our busy schedules and needed
+            someone trustworthy to help with our two young children. The caregiver we found through Padicare has been
+            amazing—so kind, professional, and dependable. Knowing my kids are in good hands has given me peace of mind.
             We've even used their pet care service, and our dog has never been happier"
           </p>
-          <p>
-            <span class="fa fa-star checked"></span>
-            <span class="fa fa-star checked"></span>
-            <span class="fa fa-star checked"></span>
-            <span class="fa fa-star"></span>
-            <span class="fa fa-star"></span>
+          <p class="mb-2">
+            <app-star-ratings [score]="5"></app-star-ratings>
           </p>
         </div>
       </div>
@@ -165,14 +219,58 @@
 
 <div class="mt-2 mb-2">&nbsp;</div>
 
-<div class="container-fluid section">
+<div class="container-fluid section section2">
   <div class="row mt-2 mb-2 text-center">
     <h2 class="fs-3 fw-bold">
       Why Choose Us?
     </h2>
   </div>
-  
-  
+
+  <div class="row mt-4 mb-4 section2">
+
+    <div class="col-lg-6 col-md-6 col-sm-12">
+      <img src="assets/img/customer.png" alt="" class="">
+    </div>
+
+    <div class="col-lg-3 col-md-3 col-sm-12">
+      <div class="card border-0 text-start section2">
+        <div class="card-body p-4">
+          <i class="fa-solid fa-shield-halved fa-2x mb-3 section4-icon"></i>
+          <p class="mb-0 fw-medium">
+            All caregivers are background-checked before hiring.
+          </p>
+        </div>
+      </div>
+      <div class="card border-0 text-start section2">
+        <div class="card-body p-4">
+          <i class="fa-solid fa-chess-queen fa-2x mb-3 section4-icon"></i>
+          <p class="mb-0 fw-medium">
+            Dedicated safety and support teams provide peace of mind.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-3 col-md-3 col-sm-12">
+      <div class="card border-0 text-start section2">
+        <div class="card-body p-4">
+          <i class="fa-brands fa-connectdevelop fa-2x mb-3 section4-icon"></i>
+          <p class="mb-0 fw-medium">
+            Transparent profiles with ratings and reviews ensure you find the right match.
+          </p>
+        </div>
+      </div>
+      <div class="card border-0 text-start section2">
+        <div class="card-body p-4">
+          <i class="fa-solid fa-funnel-dollar fa-2x mb-3 section4-icon"></i>
+          <p class="mb-0 fw-medium">
+            Find care that fits your budget and schedule—from full-time to occasional needs.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <div class="mt-5 mb-5">&nbsp;</div>
@@ -198,8 +296,4 @@
   </div>
 </ng-template>
 
-
-<footer class="fixed-bottom text-center p-4">
-  
-  <p>PADICARE &copy; 2025. All rights reserved.</p>
-</footer>
+<app-footers></app-footers>

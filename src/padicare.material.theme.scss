@@ -1,48 +1,60 @@
-// Custom Theming for Angular Material
-// For more information: https://material.angular.io/guide/theming
-@import '~@angular/material/theming';
+@use "@angular/material" as mat;
 
-// Include the common styles for Angular Material. We include this here so that you only
-// have to load a single css file for Angular Material in your app.
-// Be sure that you only ever include this mixin once!
-@include mat-core();
+@include mat.core();
 
-// Define the palettes for your theme using the Material Design palettes available in palette.scss
-// (imported above). For each palette, you can optionally specify a default, lighter, and darker
-// hue. Available color palettes: https://material.io/design/color/
-$padicare-primary: mat-palette($mat-indigo);
-// $mat-blue, A200, A100, A400
-$padicare-accent: mat-palette($mat-blue);
-// The warn palette is optional (defaults to red).
-$padicare-warn: mat-palette($mat-red);
-$padicare-success: mat-palette($mat-green);
-// Create the theme object (a Sass map containing all of the palettes).
-// $candy-app-theme: mat-light-theme($candy-app-primary, $candy-app-accent, $candy-app-warn);
-$padicare-app-theme: mat-light-theme(
+$theme-primary: mat.$blue-palette;
+$theme-accent: mat.$violet-palette;
+$theme-warn: mat.$orange-palette;
+$theme-danger: mat.$red-palette;
+$theme-success: mat.$green-palette;
+
+$padicare-theme: mat.define-theme(
   (
     color: (
-      primary: $padicare-primary,
-      accent: $padicare-accent,
-      warn: $padicare-warn,
-      success: $padicare-success,
+      primary: $theme-accent,
+      tertiary: $theme-danger,
+      theme-type: light,
+    ),
+    typography: (
+      plain-family: Roboto,
+      brand-family: Open Sans,
+      bold-weight: 900,
+      medium-weight: 500,
+      regular-weight: 300,
     ),
   )
 );
 
-// Include theme styles for core and each component used in your app.
-// Alternatively, you can import and @include the theme mixins for each component
-// that you are using.
-@include angular-material-theme($padicare-app-theme);
+html {
+  color-scheme: light dark;
+  @include mat.theme(
+    (
+      color: (
+        primary: $theme-primary,
+        tertiary: $theme-warn,
+        theme-type: light,
+      ),
+      typography: (
+        plain-family: Roboto,
+        brand-family: Open Sans,
+        bold-weight: 900,
+        medium-weight: 500,
+        regular-weight: 300,
+      ),
+      density: 0,
+    )
+  );
 
+  .padicare {
+    color-scheme: light dark;
+    @include mat.button-theme($padicare-theme);
+  }
+}
 
-// Material v19
+body.light-mode {
+  color-scheme: light;
+}
 
-// @use '@angular/material' as mat;
-// html {
-//   color-scheme: light dark;
-//   @include mat.theme((
-//     color: mat.$violet-palette,
-//     typography: Roboto,
-//     density: 0
-//   ));
-// }
+body.dark-mode {
+  color-scheme: dark;
+}

@@ -1,0 +1,66 @@
+<header *ngIf="headerType == HeaderType.LANDING">
+  <nav class="navbar navbar-expand-sm navbar-light bg-light fixed-top">
+    <div class="container-fluid">
+      <a class="navbar-brand ms-5" href="/">
+        <span class="fs-3" style="font-weight: 900;">
+          <span style="color: #0F62FE;">PADI</span><span style="color: #F47CB4;">CARE</span>
+        </span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="d-flex ms-auto me-5">
+          <ul class="navbar-nav mb-2 mb-lg-0">
+            <li class="nav-item ms-2 me-2">
+              <a class="nav-link fw-bold active" aria-current="page" href="#">Home</a>
+            </li>
+            <li class="nav-item ms-2 me-2">
+              <a class="nav-link fw-bold" href="#">About Us</a>
+            </li>
+            <li class="nav-item ms-2 me-2">
+              <a class="nav-link fw-bold" href="#">Our Services</a>
+            </li>
+            <li class="nav-item ms-2 me-2">
+              <a class="nav-link fw-bold" href="#">Our Product</a>
+            </li>
+            <li class="nav-item dropdown ms-2 me-2">
+              <a class="btn btn-outline-primary dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Login
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="#">User</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="#">Caregiver</a></li>
+              </ul>
+            </li>
+            <li class="nav-item lm-4 ms-3 me-2">
+              <!-- <button mat-flat-button color="accent" class="fw-bold">
+                Join Now
+                <mat-icon iconPositionEnd>arrow_forward</mat-icon>
+              </button> -->
+              <button type="button" class="btn btn-primary p-auto fw-bold">
+                <span class="pe-2">Join Now</span>
+                <i class="fa-solid fa-arrow-right fa-1x ms-2"></i>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <div class="clearfix mt-5 mb-3"></div>
+</header>
+
+<header *ngIf="headerType == HeaderType.ONBOARDING">
+  <nav class="navbar navbar-expand-sm navbar-light bg-light fixed-top">
+    <div class="container-fluid">
+      <a class="navbar-brand ms-5" href="#">
+        <span class="fs-3" style="font-weight: 900;">
+          <span style="color: #0F62FE;">PADI</span><span style="color: #F47CB4;">CARE</span>
+        </span>
+      </a>
+    </div>
+  </nav>
+  <div class="clearfix mt-5 mb-3"></div>
+</header>

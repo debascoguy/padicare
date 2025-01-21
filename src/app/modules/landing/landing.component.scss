@@ -1,14 +1,30 @@
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #f4f4f4;
+.section1 {
+  background-image: url('/assets/img/landing2.png');
+  background-color: #FFFFFF;
+  height: 850px;
+  width: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
-.logo {
-  display: flex;
-  text-shadow: #333;
-  font-weight: 800;
+.section {
+  background-color: #e2e2e2;
+  padding: 2rem;
+  text-align: center;
+}
+
+.section2 {
+  background-color: #e2ecff !important;
+  color: #21272A !important;
+}
+
+.section2-icon {
+  color: #4A4949;
+}
+
+.section4-icon {
+  color: #352380;
 }
 
 nav {
@@ -18,23 +34,6 @@ nav {
   border-radius: 5px;
 }
 
-.bg-grey {
-  background-color: #e2e2e2;
-}
-
-.section {
-  background-color: #e2e2e2;
-  padding: 2rem;
-  text-align: center;
-}
-
-footer {
-  background-color: #352380;
-  color: #ffffff;
-  width: 100%;
-  bottom: 0;
-}
-
-.checked {
-  color: orange;
+.border-violet {
+  border-color: #4A00E0 !important;
 }
