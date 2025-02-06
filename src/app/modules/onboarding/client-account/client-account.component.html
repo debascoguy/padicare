@@ -1,0 +1,153 @@
+<div class="border border-secondary text-center">
+
+  <div class="mt-2 mb-2 border-bottom">&nbsp;</div>
+
+  <mat-stepper class="bg-white" [linear]="true" #stepper>
+
+    <mat-step [stepControl]="step1Form">
+      <form [formGroup]="step1Form">
+        <h4 class="fw-bold">When do you need care?</h4>
+        <div class="mt-4 mb-1">
+          <div class="mb-4">
+            <mat-form-field class="col-md-12">
+              <mat-label>Estimated start date</mat-label>
+              <input matInput [matDatepicker]="careStartDatePicker" formControlName="careStartDate">
+              <mat-hint>MM/DD/YYYY</mat-hint>
+              <mat-datepicker-toggle matIconSuffix [for]="careStartDatePicker"></mat-datepicker-toggle>
+              <mat-datepicker #careStartDatePicker></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="mb-4">
+            <mat-form-field class="col-md-12">
+              <mat-label>Estimated end date (Optional)</mat-label>
+              <input matInput [matDatepicker]="careEndDatePicker" formControlName="careEndDate">
+              <mat-hint>MM/DD/YYYY</mat-hint>
+              <mat-datepicker-toggle matIconSuffix [for]="careEndDatePicker"></mat-datepicker-toggle>
+              <mat-datepicker #careEndDatePicker></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="text-start">
+            <mat-checkbox class="col-md-12" formControlName="isFlexibleStartDate" value="true">My start date is flexible</mat-checkbox>
+          </div>
+        </div>
+        <div class="d-grid gap-2">
+          <button class="btn btn-primary" matStepperNext>Next</button>
+        </div>
+      </form>
+    </mat-step>
+
+    <mat-step [stepControl]="step2Form">
+      <form [formGroup]="step2Form">
+        <h4 class="fw-bold">Which days?</h4>
+        <div class="mt-4 mb-2">
+          <div class="mt-2 mb-2">
+            <div class="d-inline-flex gap-2">
+              <div class="" *ngFor="let control of dayOfWeek; let i = index">
+                <input type="checkbox" name="dayOfWeek{{i}}"
+                  class="btn-check"
+                  [value]="dayOfWeekShortEnum[i]"
+                  [formControl]="control"
+                  id="dayOfWeek{{i}}" autocomplete="off">
+                <label class="btn btn-outline-secondary" for="dayOfWeek{{i}}">
+                  {{ dayOfWeekShortEnum[i] }}
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="mt-2 mb-2">
+            <div class="d-inline-flex gap-2">
+              <div class="" *ngFor="let control of timeOfDay; let i = index">
+                <input type="checkbox" name="timeOfDay{{i}}"
+                  class="btn-check"
+                  [value]="timeOfDayEnum[i]"
+                  [formControl]="control"
+                  id="timeOfDay{{i}}" autocomplete="off">
+                <label class="btn btn-outline-secondary" for="timeOfDay{{i}}">
+                  {{ timeOfDayEnum[i] }}
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="block mt-1 mb-2">
+            <a mat-button (click)="showSpecificTimePicker = !showSpecificTimePicker">
+              <mat-icon color="primary">add_circle</mat-icon>
+              <span class="fw-bold">Add specific times instead</span>
+            </a>
+          </div>
+          <mat-form-field class="mt-2 mb-2" *ngIf="showSpecificTimePicker">
+            <mat-label>Specific Time</mat-label>
+            <input matInput [matTimepicker]="specificTimePicker" formControlName="specificTimeOfDay">
+            <mat-timepicker-toggle matIconSuffix [for]="specificTimePicker"/>
+            <mat-timepicker #specificTimePicker/>
+          </mat-form-field>
+          <div class="text-start">
+            <mat-checkbox class="col-md-12" formControlName="isFlexibleSchedule" value="true">My schedule may vary</mat-checkbox>
+          </div>
+        </div>
+        <div class="d-grid gap-2">
+          <button class="btn btn-primary" matStepperNext>Next</button>
+        </div>
+      </form>
+    </mat-step>
+
+    <mat-step [stepControl]="step3Form">
+      <form [formGroup]="step3Form">
+        <h4 class="fw-bold">What would you like to pay?</h4>
+        <span class="fs-6">The average range in your area is $27 - $42</span>
+        <div class="mt-4 mb-2 col-md-12">
+          <mat-slider min="0" max="1000"step="1" [displayWith]="formatLabel" discrete>
+            <input formControlName="payRangeFrom" matSliderStartThumb>
+            <input formControlName="payRangeTo" matSliderEndThumb>
+          </mat-slider>
+          Per hour
+        </div>
+        <div class="d-grid gap-2">
+          <button class="btn btn-primary" matStepperNext>Next</button>
+        </div>
+      </form>
+    </mat-step>
+
+    <mat-step [stepControl]="step4Form">
+      <form [formGroup]="step4Form">
+        <h4 class="fw-bold">Your ideal caregiver qualities?</h4>
+        <div class="mt-4 mb-2 col-md-12">
+          <div class="d-grid gap-2 mb-4 border" *ngFor="let control of caregiverQualities; let i = index">
+            <mat-checkbox class="text-start" [formControl]="control" [value]="CaregiverQualitiesEnum[i]">
+              {{ CaregiverQualitiesEnum[i] }}
+            </mat-checkbox>
+          </div>
+        </div>
+        <div class="d-grid gap-2">
+          <button class="btn btn-primary" matStepperNext>Next</button>
+        </div>
+      </form>
+    </mat-step>
+
+    <mat-step [stepControl]="step5Form">
+      <form [formGroup]="step5Form">
+        <h4 class="fw-bold">Tell us more...</h4>
+        <span class="fs-6">Provide job details, and we'll match you with the right caregiver.</span>
+        <div class="mt-4 mb-2 col-md-12">
+          <h5 class="fw-bold">Examples:</h5>
+          <ul>
+            <li>Is there specific care your child requires?</li>
+            <li>What does their ideal day look like?</li>
+            <li>What are their hobbies/interests?</li>
+          </ul>
+          <div class="d-grid gap-2">
+            <mat-form-field>
+              <textarea matInput
+                rows="4"
+                placeholder="Your additional question and/or comment"
+                formControlName="additionalComments"></textarea>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="d-grid gap-2">
+          <button class="btn btn-primary" (click)="submit()" matStepperNext>Submit</button>
+        </div>
+      </form>
+    </mat-step>
+
+  </mat-stepper>
+</div>

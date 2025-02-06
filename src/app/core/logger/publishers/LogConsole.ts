@@ -6,7 +6,11 @@ export class LogConsole extends LogPublisher {
 
   log (entry: LogEntry): Observable<boolean> {
       // Log to console
-      console.log(entry.toString());
+      if (typeof entry.message == 'string') {
+        console.log(entry.toString());
+      } else {
+        console.log(entry.toString(false), entry.message);
+      }
       return of(true);
   }
 

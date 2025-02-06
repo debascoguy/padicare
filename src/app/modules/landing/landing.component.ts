@@ -12,6 +12,7 @@ import { StarRatingsComponent } from '../../components/star-ratings/star-ratings
 import { LayoutModule } from '../layouts/layout.module';
 import { NgIf } from '@angular/common';
 import * as zipcodes from 'zipcodes';
+import { Router } from '@angular/router';
 
 //Landing Pages Layout Component
 @Component({
@@ -41,8 +42,14 @@ export class LandingComponent implements OnInit {
 
   errorMessage: string = "City not found. Please check zipcode and try again";
 
-  constructor(protected _snackBar: MatSnackBar, private modalService: NgbModal) {
+  constructor(
+    protected _snackBar: MatSnackBar, 
+    private modalService: NgbModal,
+    private router: Router
+  ) {
     this.form = new FormGroup({
+      longitude: new FormControl(0, [Validators.required, Validators.nullValidator]),
+      latitude: new FormControl(0, [Validators.required, Validators.nullValidator]),
       zipcode: new FormControl('', [Validators.required]),
       city: new FormControl('', [Validators.required]),
       state: new FormControl('', [Validators.required]),
@@ -71,18 +78,19 @@ export class LandingComponent implements OnInit {
     this.form.get('city')?.setValue('');
     this.form.get('state')?.setValue('');
     this.form.get('country')?.setValue('');
+    this.form.get('longitude')?.setValue(null);
+    this.form.get('latitude')?.setValue(null);
     if (this.zipCodeInfo) {
-      this.form.get('city')?.setValue(this.zipCodeInfo.city);
-      this.form.get('state')?.setValue(this.zipCodeInfo.state);
-      this.form.get('country')?.setValue(this.zipCodeInfo.country);
+      this.form.patchValue(this.zipCodeInfo);
+      this.form.updateValueAndValidity();
     }
   }
 
   getStarted() {
     this.isSubmitted = true;
     if (this.form.valid) {
-      console.log("Submitted", this.form.value);
-      // Start the Onboarding Stepper
+      sessionStorage.setItem('getStarted', JSON.stringify(this.form.value));
+      this.router.navigate(['/onboarding']);
     } else {
       this._snackBar.open(this.errorMessage, 'close', {duration: 3000})
       .afterDismissed().subscribe((_) => {

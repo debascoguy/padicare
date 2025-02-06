@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { ChildActivationEnd, Router, RouterOutlet } from '@angular/router';
-import { LogService } from './core/logger/LogService';
 import { CommonModule } from '@angular/common';
 import { Title } from '@angular/platform-browser';
 import { RoutingStateService } from './core/services/RoutingState.service';
@@ -22,10 +21,8 @@ export class AppComponent {
   constructor(
     private titleService: Title,
     public router: Router,
-    public routingState: RoutingStateService,
-    public log: LogService
+    public routingState: RoutingStateService
   ) {
-    this.log.info(this.title + ' Says Hello!');
     this.router.events
       .pipe(filter((event: any) => event instanceof ChildActivationEnd))
       .subscribe(event => {

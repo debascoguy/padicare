@@ -1,0 +1,6 @@
+export enum ProductsNameEnum {
+  CHILD_CARE = "CHILD_CARE",
+  SENIOR_CARE = "SENIOR_CARE",
+  PET_CARE = "PET_CARE",
+  HOUSE_KEEPING = "HOUSE_KEEPING",
+}

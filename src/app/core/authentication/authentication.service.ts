@@ -3,7 +3,8 @@ import { Observable, of } from 'rxjs';
 import { catchError, finalize, map } from 'rxjs/operators';
 import { CredentialsService } from './credentials.service';
 import { NumberToWord } from '../services/NumberToWord';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpStatusCode } from '@angular/common/http';
+import { environment } from '../../../environments/environments';
 
 @Injectable({
   providedIn: 'root',
@@ -12,9 +13,8 @@ export class AuthenticationService {
 
   constructor(
     private credentialsService: CredentialsService,
-    private httpClient: HttpClient) {
-
-  }
+    private httpClient: HttpClient
+  ) {}
 
   getCredentialsService(): CredentialsService {
     return this.credentialsService;
@@ -44,8 +44,21 @@ export class AuthenticationService {
   login(context: any, remember: boolean): Observable<any> {
     return this.httpClient.post("/auth/login", context).pipe(
       map((response: any) => {
-        sessionStorage.setItem('token', response.token);
-        this.credentialsService.setCredentials(response, remember);
+        this.credentialsService.setCredentials(response.data, remember);
+        return response;
+      }),
+      catchError(error => {
+        return of(error);
+      })
+    );
+  }
+
+  renewToken() {
+    return this.httpClient.get(environment.renewTokenUrl).pipe(
+      map((response: any) => {
+        if (response.status) {
+          this.credentialsService.setCredentials(response.data, true);
+        }
         return response;
       }),
       catchError(error => {
@@ -58,8 +71,22 @@ export class AuthenticationService {
     return this.httpClient.post("/auth/create-user", context).pipe(
       map((response: any) => {
         if (!!response.status && response.code == 200) {
-          sessionStorage.setItem('token', response.token);
-          this.credentialsService.setCredentials(response, false);
+          console.log(response.data);
+          this.credentialsService.setCredentials(response.data, false);
+        }
+        return response;
+      }),
+      catchError(error => {
+        return of(error);
+      })
+    );
+  }
+
+  registerClient(context: any) {
+    return this.httpClient.post('/auth/register/client', context).pipe(
+      map((response: any) => {
+        if (!!response.status) {
+          this.credentialsService.setCredentials(response.data, true);
         }
         return response;
       }),
@@ -76,18 +103,15 @@ export class AuthenticationService {
   logout(): Observable<boolean> {
     if (this.isLoggedIn()) {
       this.httpClient.get("/auth/logout").pipe(finalize(() => {
-        this.credentialsService.setCredentials();
-        this.credentialsService.clearStorage();
+        this.credentialsService.clearCredentials();
         return of(true);
       })).subscribe((response: any) => {
-        this.credentialsService.setCredentials();
-        this.credentialsService.clearStorage();
+        this.credentialsService.clearCredentials();
       });
       return of(true);
     }
     else {
-      this.credentialsService.setCredentials();
-      this.credentialsService.clearStorage();
+      this.credentialsService.clearCredentials();
       return of(true);
     }
   }
@@ -103,7 +127,7 @@ export class AuthenticationService {
         return '/admin/user-management';
       }
       else {
-        return '/fx/dashboard'
+        return '/client/dashboard';
       }
     }
     else {

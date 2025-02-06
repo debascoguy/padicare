@@ -3,9 +3,10 @@ import { LogPublisher } from './publishers/LogPublisher';
 import { LogConsole } from './publishers/LogConsole';
 import { LogLocalStorage } from './publishers/LogLocalStorage';
 import { HttpClient } from '@angular/common/http';
-import { map, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { LogPublisherConfig } from './publishers/LogPublisherConfig';
 import { LogWebApi } from './publishers/LogWebApi';
+import { environment } from '../../../environments/environments';
 
 @Injectable({
   providedIn: 'root'
@@ -51,9 +52,15 @@ export class LogPublishersService {
 
   // Build publishers array
   buildPublishers(): void {
-    this.publishers.push(new LogConsole());
-    this.publishers.push(new LogLocalStorage());
-    this.publishers.push(new LogWebApi(this.http));
+    if (environment.logger.console) {
+      this.publishers.push(new LogConsole());
+    }
+    if (environment.logger.localStorage) {
+      this.publishers.push(new LogLocalStorage());
+    }
+    if (environment.logger.webApi) {
+      this.publishers.push(new LogWebApi(this.http));
+    }
   }
 
 }

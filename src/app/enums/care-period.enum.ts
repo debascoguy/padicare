@@ -1,0 +1,6 @@
+export enum CarePeriodEnum {
+  RIGHT_NOW = "RIGHT_NOW",
+  WITHIN_A_WEEK = "WITHIN_A_WEEK",
+  IN_1_2_MONTH = "IN_1_2_MONTH",
+  JUST_BROWSING = "JUST_BROWSING",
+}

@@ -3,7 +3,7 @@ import { LogLevel } from './LogLevel';
 export class LogEntry {
   entryDate: Date = new Date();
 
-  message: string = '';
+  message: string | object = '';
 
   level: LogLevel = LogLevel.Debug;
 
@@ -11,7 +11,7 @@ export class LogEntry {
 
   logWithDate: boolean = true;
 
-  toString(): string {
+  toString(appendMessage: boolean = true): string {
     let ret: string = '';
 
     if (this.logWithDate) {
@@ -19,7 +19,9 @@ export class LogEntry {
     }
 
     ret += 'Type: ' + LogLevel[this.level];
-    ret += ' - Message: ' + this.message;
+    if (appendMessage) {
+      ret += ' - Message: ' + this.message;
+    }
     if (this.extraInfo.length) {
       ret += ' - Extra Info: ' + this.formatParams(this.extraInfo);
     }

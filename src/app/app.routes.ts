@@ -4,6 +4,8 @@ import { AdminComponent } from './modules/admin/admin.component';
 import { adminRoutes } from './modules/admin/admin.routes';
 import { LandingComponent } from './modules/landing/landing.component';
 import { RouteData } from './core/models/navigation.model';
+import { OnboardingComponent } from './modules/onboarding/onboarding.component';
+import { onboardingRoutes } from './modules/onboarding/onboarding.routes';
 
 export const routes: Routes = [
   {
@@ -29,6 +31,11 @@ export const routes: Routes = [
         } as RouteData,
       }
     ]
+  },
+  {
+    path: 'onboarding',
+    component: OnboardingComponent,
+    loadChildren: () => onboardingRoutes
   },
   {
     path: 'admin',
