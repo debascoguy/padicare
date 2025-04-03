@@ -1,0 +1,35 @@
+:host {
+  --padicare-pin-input-width: calc(var(--spacing) * 14);
+  --padicare-pin-gap: calc(var(--spacing) * 4);
+
+  display: block;
+  width: max-content;
+
+  .inputs {
+    display: flex;
+    align-items: center;
+    gap: var(--padicare-pin-gap);
+  }
+
+  .input {
+    flex: none;
+  }
+
+  ::ng-deep {
+    .mat-mdc-form-field {
+      width: var(--padicare-pin-input-width) !important;
+    }
+
+    .mdc-text-field {
+      padding: 0;
+    }
+
+    .mat-mdc-input-element {
+      text-align: center;
+    }
+
+    .mat-mdc-form-field-subscript-wrapper {
+      display: none;
+    }
+  }
+}

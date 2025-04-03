@@ -1,0 +1,12 @@
+<div class="mb-6">
+  <button padicare-color-picker-thumbnail
+          [color]="color"
+          [padicareColorPickerTriggerFor]="colorPicker"
+          class="cursor-pointer"></button>
+  <ng-template #colorPicker>
+    <padicare-color-picker [(color)]="color"/>
+  </ng-template>
+</div>
+<p>
+  Selected color: <strong>{{ color }}</strong>
+</p>

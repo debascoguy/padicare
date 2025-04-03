@@ -1,14 +1,12 @@
 import { HttpHeadersHelpers } from './HttpHeadersHelpers';
-import { HttpEvent, HttpEventType, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse, HttpStatusCode } from '@angular/common/http';
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse, HttpStatusCode } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { lastValueFrom, Observable, of, throwError } from 'rxjs';
-import { catchError, map, share, switchMap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { catchError, share, switchMap } from 'rxjs/operators';
 import { CredentialsService } from '../authentication/credentials.service';
-import { environment } from '../../../environments/environments';
 import { AuthenticationService } from '../authentication/authentication.service';
-import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { LoginContext } from '../models/login-context.model';
+import { EnvironmentService } from '../services/environment.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,8 +18,8 @@ export class HttpInterceptorService implements HttpInterceptor {
   constructor(
     private credentialService: CredentialsService,
     private authService: AuthenticationService,
-    private router: Router,
-    protected snackBar: MatSnackBar
+    protected snackBar: MatSnackBar,
+    private envService: EnvironmentService
   ) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -29,8 +27,11 @@ export class HttpInterceptorService implements HttpInterceptor {
     const isCentralApi = !/^(http|https):/i.test(request.url);
     const isJson = /\.json$/i.test(request.url);
     const url = request.url;
+    const serverUrl = this.envService.getValue('serverUrl');
+    const renewTokenUrl = this.envService.getValue('renewTokenUrl');
+
     if (isCentralApi && !isJson) {
-      request = request.clone({ url: environment.serverUrl + url });
+      request = request.clone({ url: serverUrl + url });
     }
 
     if (isCentralApi) {
@@ -39,7 +40,7 @@ export class HttpInterceptorService implements HttpInterceptor {
 
                     //AuthenticationInterceptor: Test if Authenticated, Append Authorization Header
                     (
-                      (url == environment.renewTokenUrl) ?
+                      (url == this.envService.getValue('renewTokenUrl')) ?
                       HttpHeadersHelpers.getJsonContentTypeHeadersWithToken(this.credentialService.refreshToken+'') :
                       HttpHeadersHelpers.getJsonContentTypeHeadersWithToken(this.credentialService.token+'')
                     ) :
@@ -56,7 +57,7 @@ export class HttpInterceptorService implements HttpInterceptor {
       if (isLoggedIn && (httpErrorCode === HttpStatusCode.Unauthorized || httpErrorCode === HttpStatusCode.Forbidden)) {
         //Renew Token
         const renewTokenRequest = request.clone({
-          url: environment.serverUrl + environment.renewTokenUrl,
+          url: serverUrl + renewTokenUrl,
           setHeaders: HttpHeadersHelpers.getJsonContentTypeHeadersWithToken(this.credentialService.refreshToken+''),
           method: 'GET'
         });

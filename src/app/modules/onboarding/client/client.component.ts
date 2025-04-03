@@ -1,8 +1,6 @@
-import { CredentialsService } from './../../../core/authentication/credentials.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { ZipCode } from './../../../../../node_modules/@types/zipcodes/index.d';
 import { MatInputModule } from '@angular/material/input';
 import { MatStepper, MatStepperModule } from '@angular/material/stepper';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -35,6 +33,7 @@ import { SecondaryCareTypeEnums } from '../../../enums/secondary.care.type.enum'
   templateUrl: './client.component.html',
   styleUrls: ['./client.component.scss'],
   imports: [
+    CommonModule,
     MatButtonModule,
     MatStepperModule,
     FormsModule,
@@ -45,7 +44,6 @@ import { SecondaryCareTypeEnums } from '../../../enums/secondary.care.type.enum'
     MatIconModule,
     MatCheckboxModule,
     MatProgressSpinnerModule,
-    CommonModule,
     ReplaceStringPipe
   ],
   providers: [
@@ -76,7 +74,7 @@ export class ClientComponent implements OnInit, AfterViewInit {
   step6Form: FormGroup;
 
   showStep0Form: boolean = false;
-  zipCodeInfo: ZipCode | null = null;
+  zipCodeInfo: zipcodes.ZipCode | null = null;
   errorMessage: string = "City not found. Please check zipcode and try again";
 
   careReceiverOptions: Record<string, any> = {

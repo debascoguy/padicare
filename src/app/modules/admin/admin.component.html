@@ -1,5 +1,51 @@
-<app-headers [headerType]="HeaderType.ADMIN"></app-headers>
+<div class="position-absolute top-40 start-50 translate-middle text-center">
 
-<router-outlet />
+  <div class="row">
+    <div class="col-md-4">
+      <mat-card appearance="outlined" class="mat-clickable" matRipple>
+        <mat-card-header>
+          <mat-card-title> Self Service</mat-card-title>
+          <mat-card-subtitle>Manage Account</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-icon class="mat-icon-2x">people</mat-icon>
+          <p>Manage your dependents and their information.</p>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-button>Learn More</button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
 
-<app-footers></app-footers>
+    <div class="col-md-4">
+      <mat-card appearance="outlined" class="mat-clickable" matRipple>
+        <mat-card-header>
+          <mat-card-title> Dependents</mat-card-title>
+          <mat-card-subtitle>Manage Dependents</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-icon class="mat-icon-2x">people</mat-icon>
+          <p>Manage your dependents and their information.</p>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-button>Learn More</button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+    <div class="col-md-4">
+      <mat-card appearance="outlined" class="mat-clickable" matRipple>
+        <mat-card-header>
+          <mat-card-title> Payments</mat-card-title>
+          <mat-card-subtitle>Pay/Add Payment Method</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-icon class="mat-icon-2x">people</mat-icon>
+          <p>Manage your dependents and their information.</p>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-button>Learn More</button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
+</div>

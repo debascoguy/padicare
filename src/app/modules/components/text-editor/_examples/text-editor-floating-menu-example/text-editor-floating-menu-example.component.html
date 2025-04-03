@@ -1,0 +1,80 @@
+<padicare-text-editor #editor [imageUploadFn]="uploadFn"
+                 class="rounded-2xl border border-default bg-surface-container-lowest min-h-[300px]">
+  <padicare-text-editor-floating-menu>
+    <button mat-icon-button matTooltip="Heading 2"
+            padicareTextEditorCommand padicareTextEditorCommandHeading level="2">
+      <mat-icon>format_h2</mat-icon>
+    </button>
+    <button mat-icon-button matTooltip="Heading 3"
+            padicareTextEditorCommand padicareTextEditorCommandHeading level="3">
+      <mat-icon>format_h3</mat-icon>
+    </button>
+    <padicare-text-editor-divider/>
+    <button mat-icon-button matTooltip="Bold"
+            padicareTextEditorCommand padicareTextEditorCommandBold>
+      <mat-icon>format_bold</mat-icon>
+    </button>
+    <button mat-icon-button matTooltip="Italic"
+            padicareTextEditorCommand padicareTextEditorCommandItalic>
+      <mat-icon>format_italic</mat-icon>
+    </button>
+    <button mat-icon-button matTooltip="Strike"
+            padicareTextEditorCommand padicareTextEditorCommandStrike>
+      <mat-icon>strikethrough_s</mat-icon>
+    </button>
+    <padicare-text-editor-divider/>
+    <button mat-icon-button matTooltip="Bullet List"
+            padicareTextEditorCommand padicareTextEditorCommandBulletList>
+      <mat-icon>format_list_bulleted</mat-icon>
+    </button>
+    <button mat-icon-button matTooltip="Ordered List"
+            padicareTextEditorCommand padicareTextEditorCommandOrderedList>
+      <mat-icon>format_list_numbered</mat-icon>
+    </button>
+    <button mat-icon-button matTooltip="Blockquote"
+            padicareTextEditorCommand padicareTextEditorCommandBlockquote>
+      <mat-icon>format_quote</mat-icon>
+    </button>
+    <button mat-icon-button matTooltip="Code Block"
+            padicareTextEditorCommand padicareTextEditorCommandCodeBlock>
+      <mat-icon>code_blocks</mat-icon>
+    </button>
+    <button mat-icon-button matTooltip="Horizontal Rule"
+            padicareTextEditorCommand padicareTextEditorCommandHorizontalRule>
+      <mat-icon>remove</mat-icon>
+    </button>
+    <padicare-text-editor-divider/>
+    <button mat-icon-button matTooltip="Upload Image"
+            padicareTextEditorCommand padicareTextEditorCommandImage>
+      <mat-icon>image</mat-icon>
+    </button>
+    <button mat-icon-button matTooltip="Add Youtube"
+            padicareTextEditorCommand padicareTextEditorCommandYoutube>
+      <mat-icon>videocam</mat-icon>
+    </button>
+  </padicare-text-editor-floating-menu>
+  <padicare-text-editor-bubble-menu>
+    <button padicareTextEditorCommandEditLink>
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button padicareTextEditorCommandUnsetLink>
+      <mat-icon>link_off</mat-icon>
+    </button>
+    <button padicareTextEditorCommand padicareTextEditorCommandLink>
+      <mat-icon>link</mat-icon>
+    </button>
+    <button padicareTextEditorCommand padicareTextEditorCommandBold>
+      <mat-icon>format_bold</mat-icon>
+    </button>
+    <button padicareTextEditorCommand padicareTextEditorCommandItalic>
+      <mat-icon>format_italic</mat-icon>
+    </button>
+    <button padicareTextEditorCommand padicareTextEditorCommandStrike>
+      <mat-icon>strikethrough_s</mat-icon>
+    </button>
+    <button padicareTextEditorCommand padicareTextEditorCommandCode>
+      <mat-icon>code</mat-icon>
+    </button>
+  </padicare-text-editor-bubble-menu>
+</padicare-text-editor>
+

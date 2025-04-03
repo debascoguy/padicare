@@ -1,0 +1,23 @@
+@if (hasIncidents()) {
+  <padicare-incidents>
+    <padicare-incidents-bar>
+      <padicare-incidents-title>{{ title() }}</padicare-incidents-title>
+      @if (description()) {
+        <padicare-incidents-description>{{ description() }}</padicare-incidents-description>
+      }
+      <mat-icon padicareIncidentsToggleIcon>expand_more</mat-icon>
+    </padicare-incidents-bar>
+    <padicare-incidents-list fixed>
+      @for (incident of incidents(); track incident) {
+        <padicare-incident>
+          <mat-icon padicareIncidentIcon>info</mat-icon>
+          <mat-icon padicareIncidentClose>close</mat-icon>
+          <padicare-incident-title>{{ incident.title }}</padicare-incident-title>
+          @if (incident.details) {
+            <padicare-incident-details>{{ incident.details }}</padicare-incident-details>
+          }
+        </padicare-incident>
+      }
+    </padicare-incidents-list>
+  </padicare-incidents>
+}

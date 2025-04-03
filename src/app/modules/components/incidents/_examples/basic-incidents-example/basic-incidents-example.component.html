@@ -1,0 +1,19 @@
+<div class="h-[400px] overflow-hidden">
+  <padicare-incidents>
+    <padicare-incidents-bar>
+      <padicare-incidents-title>Maintenance work on the DNS</padicare-incidents-title>
+      <padicare-incidents-description>Description</padicare-incidents-description>
+      <mat-icon padicareIncidentsToggleIcon>expand_more</mat-icon>
+    </padicare-incidents-bar>
+    <padicare-incidents-list>
+      @for (incident of incidents; track incident) {
+        <padicare-incident>
+          <mat-icon padicareIncidentIcon>info</mat-icon>
+          <mat-icon padicareIncidentClose>close</mat-icon>
+          <padicare-incident-title>{{ incident.title }}</padicare-incident-title>
+          <padicare-incident-details>{{ incident.details }}</padicare-incident-details>
+        </padicare-incident>
+      }
+    </padicare-incidents-list>
+  </padicare-incidents>
+</div>

@@ -1,0 +1,88 @@
+<padicare-navigation #navigation [activeKey]="activeKey()" class="h-full">
+  @for (navItem of navItems(); track navItem) {
+    @switch (navItem.type) {
+      @case ('heading') {
+        <padicare-navigation-heading>{{ navItem.name }}</padicare-navigation-heading>
+      }
+      @case ('divider') {
+        <padicare-navigation-divider/>
+      }
+      @case ('group') {
+        <padicare-navigation-group>
+          <padicare-navigation-group-toggle [for]="navItem.key">
+            @if (navItem.icon) {
+              <ng-container padicareNavigationItemIcon>
+                @if (_itemIconRef()) {
+                  <ng-container *ngTemplateOutlet="iconTemplateRef; context: { $implicit: navItem.icon }"/>
+                } @else {
+                  <mat-icon>{{ navItem.icon }}</mat-icon>
+                }
+              </ng-container>
+            }
+            {{ navItem.name }}
+            @if (navItem.badge) {
+              <span padicareNavigationItemBadge>{{ navItem.badge }}</span>
+            }
+            <mat-icon padicareNavigationGroupToggleIcon>arrow_drop_down</mat-icon>
+          </padicare-navigation-group-toggle>
+          <padicare-navigation-group-menu [key]="navItem.key">
+            @for (childItem of navItem.children | orderBy:'name'; track childItem) {
+              @if (childItem.type === 'link') {
+                <a padicare-navigation-item [routerLink]="childItem.link" [key]="childItem.key">
+                  {{ childItem.name }}
+                  @if (childItem.badge) {
+                    <div padicareNavigationItemBadge>
+                      <span matBadge>{{ childItem.badge }}</span>
+                    </div>
+                  }
+                </a>
+              } @else {
+                <padicare-navigation-item [key]="childItem.key">
+                  {{ childItem.name }}
+                  @if (childItem.badge) {
+                    <span padicareNavigationItemBadge>{{ childItem.badge }}</span>
+                  }
+                </padicare-navigation-item>
+              }
+            }
+          </padicare-navigation-group-menu>
+        </padicare-navigation-group>
+      }
+      @default {
+        @if (navItem.type === 'link') {
+          <a padicare-navigation-item [routerLink]="navItem.link" [key]="navItem.key">
+            @if (navItem.icon) {
+              <ng-container padicareNavigationItemIcon>
+                @if (_itemIconRef()) {
+                  <ng-container *ngTemplateOutlet="iconTemplateRef; context: { $implicit: navItem.icon }"/>
+                } @else {
+                  <mat-icon>{{ navItem.icon }}</mat-icon>
+                }
+              </ng-container>
+            }
+            {{ navItem.name }}
+            @if (navItem.badge) {
+              <span padicareNavigationItemBadge>{{ navItem.badge }}</span>
+            }
+          </a>
+        } @else {
+          <padicare-navigation-item [key]="navItem.key">
+            @if (navItem.icon) {
+              <ng-container padicareNavigationItemIcon>
+                @if (_itemIconRef()) {
+                  <ng-container *ngTemplateOutlet="iconTemplateRef; context: { $implicit: navItem.icon }"/>
+                } @else {
+                  <mat-icon>{{ navItem.icon }}</mat-icon>
+                }
+              </ng-container>
+            }
+            {{ navItem.name }}
+            @if (navItem.badge) {
+              <span padicareNavigationItemBadge>{{ navItem.badge }}</span>
+            }
+          </padicare-navigation-item>
+        }
+      }
+    }
+  }
+</padicare-navigation>

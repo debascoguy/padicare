@@ -1,228 +1,233 @@
-<div class="border border-secondary text-center">
+<div class="position-absolute top-50 start-50 translate-middle text-center">
 
-  <ng-template #notificationTemplate>
-    <div class="alert alert-success" role="alert">
-      <div class="d-flex align-item-center">
-        <mat-icon class="m-2 text-success">check_circle</mat-icon>
-        <span class="p-2"> {{ notificationMessage }} </span>
+  <div class="border border-secondary text-center">
+
+    <ng-template #notificationTemplate>
+      <div class="alert alert-success" role="alert">
+        <div class="d-flex align-item-center">
+          <mat-icon class="m-2 text-success">check_circle</mat-icon>
+          <span class="p-2"> {{ notificationMessage }} </span>
+        </div>
       </div>
-    </div>
-  </ng-template>
+    </ng-template>
 
-  <div class="mt-2 mb-2 border-bottom" *ngIf="!showSuccessMessage">&nbsp;</div>
+    <div class="mt-2 mb-2 border-bottom" *ngIf="!showSuccessMessage">&nbsp;</div>
 
-  <ng-template [ngTemplateOutlet]="notificationTemplate" *ngIf="showSuccessMessage"></ng-template>
+    <ng-template [ngTemplateOutlet]="notificationTemplate" *ngIf="showSuccessMessage"></ng-template>
 
 
-  <mat-stepper class="bg-white" [linear]="isLinear" #stepper>
+    <mat-stepper class="bg-white" [linear]="isLinear" #stepper>
 
-    @if (showStep0Form) {
-    <mat-step [stepControl]="step0Form" [optional]="!showStep0Form">
-      <form [formGroup]="step0Form">
-        <h4 class="fw-bold">Where do you need care?</h4>
-        <span class="fs-6">Join Padicare to get access to trusted & verified caregivers.</span>
-        <div class="mt-4 mb-3">
-          <mat-form-field class="col-md-12">
-            <mat-label>Zip Code</mat-label>
-            <input matInput type="text" formControlName="zipcode" (keyup)="search()">
-            <button matSuffix mat-icon-button aria-label="Clear" *ngIf="zipcode?.valid"
-              (click)="step0Form.reset(); zipCodeInfo = null">
-              <mat-icon>close</mat-icon>
-            </button>
-            <mat-hint>{{ !!zipCodeInfo ? zipCodeInfo.city + ', ' + zipCodeInfo.state : '' }}</mat-hint>
-          </mat-form-field>
-        </div>
-        <div class="d-grid gap-2">
-          <button class="btn btn-primary" matStepperNext (click)="getStarted()">Next</button>
-        </div>
-      </form>
-    </mat-step>
-    }
-
-    <mat-step [stepControl]="step1Form">
-      <form [formGroup]="step1Form">
-        <h4 class="fw-bold">What type of care are you looking for?</h4>
-        <span class="fs-6">Join Padicare to get access to trusted & verified caregivers</span>
-        <div class="mt-4 mb-3">
-          <div class="d-grid gap-2 mb-4" *ngFor="let careReceiver of careReceiverValues">
-            <input type="radio" formControlName="primaryCareType" value="{{careReceiver}}" class="btn-check"
-              id="{{careReceiver | lowercase}}">
-            <label class="btn btn-outline-dark" for="{{careReceiver | lowercase}}">
-              {{careReceiver | replaceString:'_':' ' | titlecase }}
-              <i class="{{careReceiverOptions[careReceiver].icon}} ms-2"></i>
-            </label>
+      @if (showStep0Form) {
+      <mat-step [stepControl]="step0Form" [optional]="!showStep0Form">
+        <form [formGroup]="step0Form">
+          <h4 class="fw-bold">Where do you need care?</h4>
+          <span class="fs-6">Join Padicare to get access to trusted & verified caregivers.</span>
+          <div class="mt-4 mb-3">
+            <mat-form-field class="col-md-12">
+              <mat-label>Zip Code</mat-label>
+              <input matInput type="text" formControlName="zipcode" (keyup)="search()">
+              <button matSuffix mat-icon-button aria-label="Clear" *ngIf="zipcode?.valid"
+                (click)="step0Form.reset(); zipCodeInfo = null">
+                <mat-icon>close</mat-icon>
+              </button>
+              <mat-hint>{{ !!zipCodeInfo ? zipCodeInfo.city + ', ' + zipCodeInfo.state : '' }}</mat-hint>
+            </mat-form-field>
           </div>
-        </div>
-        <div class="d-grid gap-2">
-          <button class="btn btn-primary" matStepperNext>Next</button>
-        </div>
-      </form>
-    </mat-step>
+          <div class="d-grid gap-2">
+            <button class="btn btn-primary" matStepperNext (click)="getStarted()">Next</button>
+          </div>
+        </form>
+      </mat-step>
+      }
 
-    <mat-step [stepControl]="step2Form">
-      <form [formGroup]="step2Form">
-        <h4 class="fw-bold">When do you need care?</h4>
-        <span class="fs-6">Join Padicare to get access to trusted & verified caregivers.</span>
-        <div class="mt-4 mb-3">
-          <div class="d-grid gap-2 mb-4">
-            <input type="radio" name="carePeriod" formControlName="carePeriod" value="RIGHT_NOW" class="btn-check"
-              id="right-now">
-            <label class="btn btn-outline-dark" for="right-now">Right Now</label>
-          </div>
-          <div class="d-grid gap-2 mb-4">
-            <input type="radio" name="carePeriod" formControlName="carePeriod" value="WITHIN_A_WEEK" class="btn-check"
-              id="within-a-week">
-            <label class="btn btn-outline-dark" for="within-a-week">Within a week</label>
-          </div>
-          <div class="d-grid gap-2 mb-4">
-            <input type="radio" name="carePeriod" formControlName="carePeriod" value="IN_1_2_MONTH" class="btn-check"
-              id="in-1-2-months">
-            <label class="btn btn-outline-dark" for="in-1-2-months">In 1-2 Months</label>
-          </div>
-          <div class="d-grid gap-2 mb-4">
-            <input type="radio" name="carePeriod" formControlName="carePeriod" value="JUST_BROWSING" class="btn-check"
-              id="just-browsing">
-            <label class="btn btn-outline-dark" for="just-browsing">Just Browsing</label>
-          </div>
-        </div>
-        <div class="d-grid gap-2">
-          <button class="btn btn-primary" matStepperNext>Next</button>
-        </div>
-      </form>
-    </mat-step>
-
-    <mat-step [stepControl]="step3Form">
-      <form [formGroup]="step3Form">
-        <h4 class="fw-bold">What kind of care?</h4>
-        <span class="fs-6">Join Padicare to get access to trusted & verified caregivers.</span>
-        <div class="mt-4 mb-3">
-          <div class="d-grid gap-2 mb-4" *ngFor="let value of secondaryCareTypeOptionsKeys; let i=index">
-            <input type="radio" name="secondaryCareType" formControlName="secondaryCareType" [value]="value"
-              class="btn-check" [id]="value">
-            <label class="btn btn-outline-dark" [for]="value">
-              <span class="fs-6 fw-bold d-flex ms-2">{{value | replaceString: '_OR_' : ' / ' | replaceString: '_': ' ' | titlecase }}</span>
-              <span class="d-flex ms-2">{{ secondaryCareTypeOptions[value] }}</span>
-            </label>
-          </div>
-        </div>
-        <div class="d-grid gap-2">
-          <button class="btn btn-primary" matStepperNext>Next</button>
-        </div>
-      </form>
-    </mat-step>
-
-    <mat-step [stepControl]="step4Form">
-      <form [formGroup]="step4Form">
-        <h4 class="fw-bold">Who needs care?</h4>
-        <div class="mt-4 mb-3">
-          <div class="mb-2" *ngFor="let control of careReceivers; let i = index">
-            <div class="fs-6 text-start">{{ careReceiverTitle }} {{i + 1}}</div>
-            <div class="row">
-              <mat-form-field class="col-md-10">
-                <mat-label>Birth Month and Year (MM/YYYY)</mat-label>
-                <input matInput [matDatepicker]="picker" [formControl]="control">
-                <mat-hint>MM/DD/YYYY</mat-hint>
-                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                <mat-datepicker #picker multiple></mat-datepicker>
-              </mat-form-field>
-              <div class="col-md-2 text-center">
-                <button mat-icon-button [attr.aria-label]="'Remove ' + careReceiverTitle"
-                  (click)="removeCareReceiver(i)">
-                  <mat-icon>delete</mat-icon>
-                </button>
-              </div>
+      <mat-step [stepControl]="step1Form">
+        <form [formGroup]="step1Form">
+          <h4 class="fw-bold">What type of care are you looking for?</h4>
+          <span class="fs-6">Join Padicare to get access to trusted & verified caregivers</span>
+          <div class="mt-4 mb-3">
+            <div class="d-grid gap-2 mb-4" *ngFor="let careReceiver of careReceiverValues">
+              <input type="radio" formControlName="primaryCareType" value="{{careReceiver}}" class="btn-check"
+                id="{{careReceiver | lowercase}}">
+              <label class="btn btn-outline-dark" for="{{careReceiver | lowercase}}">
+                {{careReceiver | replaceString:'_':' ' | titlecase }}
+                <i class="{{careReceiverOptions[careReceiver].icon}} ms-2"></i>
+              </label>
             </div>
           </div>
-          <button type="button" mat-stroked-button (click)="addCareReceivers()">
-            <mat-icon>person_add</mat-icon>
-            Add another child
-          </button>
-        </div>
-        <div class="d-grid gap-2">
-          <button class="btn btn-primary" matStepperNext>Next</button>
-        </div>
-      </form>
-    </mat-step>
-
-    <mat-step [stepControl]="step5Form" label="OtherCareTypes">
-      <form [formGroup]="step5Form">
-        <h4 class="fw-bold">Do you need any other types of care?</h4>
-        <div class="mt-4 mb-3">
-          <div class="d-grid gap-2 mb-4 border" *ngFor="let control of otherCareTypes; let i = index">
-            <mat-checkbox class="text-start" [formControl]="control" [value]="otherCareReceiverValues[i]">
-              {{otherCareReceiverValues[i] | replaceString:'_':' ' | titlecase }}
-              <i class="{{careReceiverOptions[otherCareReceiverValues[i]].icon}} ms-2 text-end"></i>
-            </mat-checkbox>
+          <div class="d-grid gap-2">
+            <button class="btn btn-primary" matStepperNext>Next</button>
           </div>
-        </div>
-        <div class="d-grid gap-2">
-          <button class="btn btn-primary" matStepperNext>Next</button>
-        </div>
-      </form>
-    </mat-step>
+        </form>
+      </mat-step>
 
-    <mat-step [stepControl]="step6Form">
-      <form [formGroup]="step6Form" (ngSubmit)="submit()">
-        <h4 class="fw-bold">Finish setting up your account!</h4>
-        <span class="fs-5">See caregivers who match your needs. It only takes a few seconds.</span>
-        <div class="mt-4 mb-3">
+      <mat-step [stepControl]="step2Form">
+        <form [formGroup]="step2Form">
+          <h4 class="fw-bold">When do you need care?</h4>
+          <span class="fs-6">Join Padicare to get access to trusted & verified caregivers.</span>
+          <div class="mt-4 mb-3">
+            <div class="d-grid gap-2 mb-4">
+              <input type="radio" name="carePeriod" formControlName="carePeriod" value="RIGHT_NOW" class="btn-check"
+                id="right-now">
+              <label class="btn btn-outline-dark" for="right-now">Right Now</label>
+            </div>
+            <div class="d-grid gap-2 mb-4">
+              <input type="radio" name="carePeriod" formControlName="carePeriod" value="WITHIN_A_WEEK" class="btn-check"
+                id="within-a-week">
+              <label class="btn btn-outline-dark" for="within-a-week">Within a week</label>
+            </div>
+            <div class="d-grid gap-2 mb-4">
+              <input type="radio" name="carePeriod" formControlName="carePeriod" value="IN_1_2_MONTH" class="btn-check"
+                id="in-1-2-months">
+              <label class="btn btn-outline-dark" for="in-1-2-months">In 1-2 Months</label>
+            </div>
+            <div class="d-grid gap-2 mb-4">
+              <input type="radio" name="carePeriod" formControlName="carePeriod" value="JUST_BROWSING" class="btn-check"
+                id="just-browsing">
+              <label class="btn btn-outline-dark" for="just-browsing">Just Browsing</label>
+            </div>
+          </div>
+          <div class="d-grid gap-2">
+            <button class="btn btn-primary" matStepperNext>Next</button>
+          </div>
+        </form>
+      </mat-step>
 
-          <mat-form-field class="col-md-6 pe-1">
-            <mat-label>First Name</mat-label>
-            <input matInput type="text" formControlName="firstName">
-            <button matSuffix mat-icon-button aria-label="Clear" *ngIf="step6Form.get('firstName')?.valid"
-              (click)="step6Form.get('firstName')?.setValue('')">
-              <mat-icon>close</mat-icon>
+      <mat-step [stepControl]="step3Form">
+        <form [formGroup]="step3Form">
+          <h4 class="fw-bold">What kind of care?</h4>
+          <span class="fs-6">Join Padicare to get access to trusted & verified caregivers.</span>
+          <div class="mt-4 mb-3">
+            <div class="d-grid gap-2 mb-4" *ngFor="let value of secondaryCareTypeOptionsKeys; let i=index">
+              <input type="radio" name="secondaryCareType" formControlName="secondaryCareType" [value]="value"
+                class="btn-check" [id]="value">
+              <label class="btn btn-outline-dark" [for]="value">
+                <span class="fs-6 fw-bold d-flex ms-2">{{value | replaceString: '_OR_' : ' / ' | replaceString: '_': ' '
+                  | titlecase }}</span>
+                <span class="d-flex ms-2">{{ secondaryCareTypeOptions[value] }}</span>
+              </label>
+            </div>
+          </div>
+          <div class="d-grid gap-2">
+            <button class="btn btn-primary" matStepperNext>Next</button>
+          </div>
+        </form>
+      </mat-step>
+
+      <mat-step [stepControl]="step4Form">
+        <form [formGroup]="step4Form">
+          <h4 class="fw-bold">Who needs care?</h4>
+          <div class="mt-4 mb-3">
+            <div class="mb-2" *ngFor="let control of careReceivers; let i = index">
+              <div class="fs-6 text-start">{{ careReceiverTitle }} {{i + 1}}</div>
+              <div class="row">
+                <mat-form-field class="col-md-10">
+                  <mat-label>Birth Month and Year (MM/YYYY)</mat-label>
+                  <input matInput [matDatepicker]="picker" [formControl]="control">
+                  <mat-hint>MM/DD/YYYY</mat-hint>
+                  <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-datepicker #picker multiple></mat-datepicker>
+                </mat-form-field>
+                <div class="col-md-2 text-center">
+                  <button mat-icon-button [attr.aria-label]="'Remove ' + careReceiverTitle"
+                    (click)="removeCareReceiver(i)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <button type="button" mat-stroked-button (click)="addCareReceivers()">
+              <mat-icon>person_add</mat-icon>
+              Add another child
             </button>
-          </mat-form-field>
+          </div>
+          <div class="d-grid gap-2">
+            <button class="btn btn-primary" matStepperNext>Next</button>
+          </div>
+        </form>
+      </mat-step>
 
-          <mat-form-field class="col-md-6 ps-1">
-            <mat-label>Last Name</mat-label>
-            <input matInput type="text" formControlName="lastName">
-            <button matSuffix mat-icon-button aria-label="Clear" *ngIf="step6Form.get('lastName')?.valid"
-              (click)="step6Form.get('lastName')?.setValue('')">
-              <mat-icon>close</mat-icon>
-            </button>
-          </mat-form-field>
+      <mat-step [stepControl]="step5Form" label="OtherCareTypes">
+        <form [formGroup]="step5Form">
+          <h4 class="fw-bold">Do you need any other types of care?</h4>
+          <div class="mt-4 mb-3">
+            <div class="d-grid gap-2 mb-4 border" *ngFor="let control of otherCareTypes; let i = index">
+              <mat-checkbox class="text-start" [formControl]="control" [value]="otherCareReceiverValues[i]">
+                {{otherCareReceiverValues[i] | replaceString:'_':' ' | titlecase }}
+                <i class="{{careReceiverOptions[otherCareReceiverValues[i]].icon}} ms-2 text-end"></i>
+              </mat-checkbox>
+            </div>
+          </div>
+          <div class="d-grid gap-2">
+            <button class="btn btn-primary" matStepperNext>Next</button>
+          </div>
+        </form>
+      </mat-step>
 
-          <mat-form-field class="col-md-12">
-            <mat-label>Email</mat-label>
-            <input matInput type="text" formControlName="email">
-            <button matSuffix mat-icon-button aria-label="Clear" *ngIf="step6Form.get('email')?.valid"
-              (click)="step6Form.get('email')?.setValue('')">
-              <mat-icon>close</mat-icon>
-            </button>
-          </mat-form-field>
+      <mat-step [stepControl]="step6Form">
+        <form [formGroup]="step6Form" (ngSubmit)="submit()">
+          <h4 class="fw-bold">Finish setting up your account!</h4>
+          <span class="fs-5">See caregivers who match your needs. It only takes a few seconds.</span>
+          <div class="mt-4 mb-3">
 
-          <mat-form-field class="col-md-12">
-            <mat-label>Password</mat-label>
-            <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password">
-            <button type="button" *ngIf="step6Form.get('password')?.invalid" matSuffix mat-icon-button
-              (click)="hidePassword = !hidePassword" [attr.aria-label]="'Hide password'"
-              [attr.aria-pressed]="hidePassword">
-              <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
-            </button>
-            <button type="button" *ngIf="step6Form.get('password')?.valid" matSuffix mat-icon-button
-              (click)="hidePassword = !hidePassword" aria-label="Password is Good">
-              <mat-icon class="text-success">check_circle</mat-icon>
-            </button>
-            <mat-hint>It must be a combination of minimum 8 letters, numbers, and symbols.</mat-hint>
-          </mat-form-field>
+            <mat-form-field class="col-md-6 pe-1">
+              <mat-label>First Name</mat-label>
+              <input matInput type="text" formControlName="firstName">
+              <button matSuffix mat-icon-button aria-label="Clear" *ngIf="step6Form.get('firstName')?.valid"
+                (click)="step6Form.get('firstName')?.setValue('')">
+                <mat-icon>close</mat-icon>
+              </button>
+            </mat-form-field>
 
-        </div>
-        <div class="d-grid gap-2">
-          <button class="btn btn-primary" matStepperNext [disabled]="isSubmitted">
-            <span class="d-inline-flex">
-              <mat-spinner *ngIf="isSubmitted" [diameter]="20"></mat-spinner>
-            </span>
-            Join Now
-          </button>
-        </div>
-        <p class="mt-2">
-          By clicking "Join now", you agree to our <a href="#" class="link-underline-primary">Terms of Use</a>
-          and <a href="#" class="link-underline-primary">Privacy Policy</a>
-        </p>
-      </form>
-    </mat-step>
-  </mat-stepper>
+            <mat-form-field class="col-md-6 ps-1">
+              <mat-label>Last Name</mat-label>
+              <input matInput type="text" formControlName="lastName">
+              <button matSuffix mat-icon-button aria-label="Clear" *ngIf="step6Form.get('lastName')?.valid"
+                (click)="step6Form.get('lastName')?.setValue('')">
+                <mat-icon>close</mat-icon>
+              </button>
+            </mat-form-field>
+
+            <mat-form-field class="col-md-12">
+              <mat-label>Email</mat-label>
+              <input matInput type="text" formControlName="email">
+              <button matSuffix mat-icon-button aria-label="Clear" *ngIf="step6Form.get('email')?.valid"
+                (click)="step6Form.get('email')?.setValue('')">
+                <mat-icon>close</mat-icon>
+              </button>
+            </mat-form-field>
+
+            <mat-form-field class="col-md-12">
+              <mat-label>Password</mat-label>
+              <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password">
+              <button type="button" *ngIf="step6Form.get('password')?.invalid" matSuffix mat-icon-button
+                (click)="hidePassword = !hidePassword" [attr.aria-label]="'Hide password'"
+                [attr.aria-pressed]="hidePassword">
+                <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+              </button>
+              <button type="button" *ngIf="step6Form.get('password')?.valid" matSuffix mat-icon-button
+                (click)="hidePassword = !hidePassword" aria-label="Password is Good">
+                <mat-icon class="text-success">check_circle</mat-icon>
+              </button>
+              <mat-hint>It must be a combination of minimum 8 letters, numbers, and symbols.</mat-hint>
+            </mat-form-field>
+
+          </div>
+          <div class="d-grid gap-2">
+            <button class="btn btn-primary" matStepperNext [disabled]="isSubmitted">
+              <span class="d-inline-flex">
+                <mat-spinner *ngIf="isSubmitted" [diameter]="20"></mat-spinner>
+              </span>
+              Join Now
+            </button>
+          </div>
+          <p class="mt-2">
+            By clicking "Join now", you agree to our <a href="#" class="link-underline-primary">Terms of Use</a>
+            and <a href="#" class="link-underline-primary">Privacy Policy</a>
+          </p>
+        </form>
+      </mat-step>
+    </mat-stepper>
+  </div>
+
 </div>

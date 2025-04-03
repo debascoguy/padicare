@@ -1,15 +1,12 @@
+import { MatIcon } from '@angular/material/icon';
 import { Component } from '@angular/core';
 import { LogService } from '../../core/logger/LogService';
-import { RouterOutlet } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { LayoutModule } from '../layouts/layout.module';
-import { HeaderType } from '../layouts/headers/header.type.enum';
+import { MatCardModule } from '@angular/material/card';
 
-//Admin Pages Layout Component
+
 @Component({
   selector: 'app-admin',
-  imports: [LayoutModule, RouterOutlet],
+  imports: [MatCardModule, MatIcon],
   providers: [],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.scss'],
@@ -20,7 +17,4 @@ export class AdminComponent {
     this.logger.info('Admin Page Layouts!');
   }
 
-  get HeaderType() {
-    return HeaderType;
-  }
 }

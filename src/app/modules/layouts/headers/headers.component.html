@@ -1,7 +1,7 @@
 <header *ngIf="headerType == HeaderType.LANDING">
-  <nav class="navbar navbar-expand-sm navbar-light bg-light fixed-top">
+  <nav class="navbar navbar-expand-sm navbar-light bg-light lh-lg" [class.fixed-top]="isFixed">
     <div class="container-fluid">
-      <a class="navbar-brand ms-5" href="/">
+      <a class="navbar-brand ms-5" href="javascript:void(0)" (click)="pageReload()">
         <span class="fs-3" style="font-weight: 900;">
           <span style="color: #0F62FE;">PADI</span><span style="color: #F47CB4;">CARE</span>
         </span>
@@ -49,18 +49,154 @@
       </div>
     </div>
   </nav>
-  <div class="clearfix mt-5 mb-3"></div>
 </header>
 
 <header *ngIf="headerType == HeaderType.ONBOARDING">
-  <nav class="navbar navbar-expand-sm navbar-light bg-light fixed-top">
+  <nav class="navbar navbar-expand-sm navbar-light bg-light lh-lg" [class.fixed-top]="isFixed">
     <div class="container-fluid">
-      <a class="navbar-brand ms-5" href="#">
+      <a class="navbar-brand ms-5" href="javascript:void(0)" (click)="pageReload()">
         <span class="fs-3" style="font-weight: 900;">
           <span style="color: #0F62FE;">PADI</span><span style="color: #F47CB4;">CARE</span>
         </span>
       </a>
     </div>
   </nav>
-  <div class="clearfix mt-5 mb-3"></div>
 </header>
+
+
+<header *ngIf="headerType == HeaderType.ADMIN || headerType == HeaderType.CAREGIVER || headerType == HeaderType.CLIENT">
+  <nav class="navbar navbar-expand-sm navbar-light lh-lg w-full px-10 header2" [class.fixed-top]="isFixed">
+
+    <div class="container-fluid">
+
+      <div class="ms-3">
+        <!-- <button mat-icon-button (click)="layoutApi.toggleSidebar('root')">
+          <mat-icon>menu</mat-icon>
+        </button> -->
+        <a class="navbar-brand ms-5" href="javascript:void(0)" (click)="pageReload()">
+          <span class="fs-3" style="font-weight: 900;">
+            <span style="color: #0F62FE;">PADI</span><span style="color: #F47CB4;">CARE</span>
+          </span>
+        </a>
+      </div>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="flex justify-content-end collapse navbar-collapse" id="navbarNavDropdown">
+        <ul class="navbar-nav link-light">
+          <li class="nav-item">
+            <a class="nav-link link-light" href="#">Accounts</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link link-light" href="#">Dependents</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link link-light" href="#">Payments</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link link-light" href="#">Settings</a>
+          </li>
+          <li class="nav-item">
+            <button type="button" mat-icon-button [matMenuTriggerFor]="appsMenu" matTooltip="Applications" class="btn btn-outline-light ms-1 me-1">
+              <mat-icon>apps</mat-icon>
+            </button>
+          </li>
+          <li class="nav-item">
+            <button mat-icon-button matTooltip="Notifications" class="btn  btn-outline-light ms-1 me-1"
+                matBadge="1" matBadgeHidden="false" matBadgeOverlap="false" matBadgeSize="small" matBadgePos="above after"
+                position="below-end">
+              <mat-icon>notifications</mat-icon>
+            </button>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </nav>
+</header>
+
+
+<mat-menu xPosition="before" #appsMenu="matMenu" class="max-h-[400px]">
+  <div class="w-80">
+    <a routerLink="/" mat-menu-item>
+      <div class="flex align-items-center gap-3 my-3">
+        <div class="w-14 h-14 border border-default border-neutral-400  rounded-xl flex-none flex align-items-center justify-center">
+          <img src="assets/applications/file-storage.svg" alt="File Storage" class="size-8 dark:hidden">
+          <img src="assets/applications/file-storage-dark.svg" alt="File Storage" class="size-8 hidden dark:block">
+        </div>
+        <div class="-mt-0.5">
+          <div>File Storage</div>
+          <div class="text-xs text-neutral-500 dark:text-neutral-400">
+            Store, share, and access files across devices
+          </div>
+        </div>
+      </div>
+    </a>
+    <a routerLink="/" mat-menu-item>
+      <div class="flex align-items-center gap-3 my-3">
+        <div class="w-14 h-14 border border-default border-neutral-400  rounded-xl flex-none flex align-items-center justify-center">
+          <img src="assets/applications/sign.svg" alt="Sign" class="size-8 dark:hidden">
+          <img src="assets/applications/sign-dark.svg" alt="Sign" class="size-8 hidden dark:block">
+        </div>
+        <div class="-mt-0.5">
+          <div>Sign</div>
+          <div class="text-xs text-neutral-500 dark:text-neutral-400">
+            Securely send any documents for electronic signature
+          </div>
+        </div>
+      </div>
+    </a>
+    <a routerLink="/" mat-menu-item>
+      <div class="flex align-items-center gap-3 my-3">
+        <div class="w-14 h-14 border border-default border-neutral-400  rounded-xl flex-none flex align-items-center justify-center">
+          <img src="assets/applications/backup.svg" alt="Backup" class="size-8 dark:hidden">
+          <img src="assets/applications/backup-dark.svg" alt="Backup" class="size-8 hidden dark:block">
+        </div>
+        <div class="-mt-0.5">
+          <div>Backup</div>
+          <div class="text-xs text-neutral-500 dark:text-neutral-400">
+            Automatically back up all your devices
+          </div>
+        </div>
+      </div>
+    </a>
+    <div class="my-3">
+      <mat-divider/>
+    </div>
+    <div class="text-base py-3 px-4">
+      See what other options there are
+    </div>
+    <a routerLink="/" mat-menu-item>
+      <div class="flex align-items-center gap-3 my-3">
+        <div class="w-14 h-14 border border-default border-neutral-400  rounded-xl flex-none flex align-items-center justify-center">
+          <img src="assets/applications/passwords.svg" alt="Passwords" class="size-8 dark:hidden">
+          <img src="assets/applications/passwords-dark.svg" alt="Passwords" class="size-8 hidden dark:block">
+        </div>
+        <div class="-mt-0.5">
+          <div>Passwords</div>
+          <div class="text-xs text-neutral-500 dark:text-neutral-400">
+            Sync and save passwords across all your devices
+          </div>
+        </div>
+      </div>
+    </a>
+    <div class="my-3">
+      <mat-divider/>
+    </div>
+    <a routerLink="/" mat-menu-item>
+      <div class="flex align-items-center gap-3 my-3">
+        <div class="w-14 h-14 border border-default border-neutral-400  rounded-xl flex-none flex align-items-center justify-center">
+          <mat-icon class="font-icon !text-2xl !w-5 !h-8 relative -right-1">arrow_forward</mat-icon>
+        </div>
+        <div class="-mt-0.5">
+          <div>App Center</div>
+          <div class="text-xs text-neutral-500 dark:text-neutral-400">
+            Find apps in Elementar and connect them
+          </div>
+        </div>
+      </div>
+    </a>
+  </div>
+</mat-menu>

@@ -1,4 +1,4 @@
-<app-headers [headerType]="HeaderType.LANDING"></app-headers>
+<padicare-basic-headers [headerType]="HeaderType.LANDING"></padicare-basic-headers>
 
 <div class="section1 pt-5">
   <h1 style="font-weight: 900; margin-left: 11%; margin-top: 8%">
@@ -36,7 +36,7 @@
               <div class="text-danger text-sm d-flex" *ngIf="isSubmitted && form?.invalid">
                 <small> {{ errorMessage }} </small>
               </div>
-              <button type="button" class="btn btn-primary p-auto fw-bold" (click)="getStarted()">
+              <button type="button" class="btn btn-primary p-auto fw-bold" (click)="getStarted('client')">
                 <i class="fa-solid fa-user-group me-2"></i>
                 <span class="pe-2">Get Started Now</span>
               </button>
@@ -68,7 +68,7 @@
                 <div class="text-danger text-sm d-flex" *ngIf="isSubmitted && form?.invalid">
                   <small> {{ errorMessage }} </small>
                 </div>
-                <button type="button" class="btn btn-primary p-auto fw-bold" (click)="getStarted()">
+                <button type="button" class="btn btn-primary p-auto fw-bold" (click)="getStarted('caregiver')">
                   <i class="fa-solid fa-user-group me-2"></i>
                   <span class="pe-2">Get Started Now</span>
                 </button>
@@ -296,4 +296,4 @@
   </div>
 </ng-template>
 
-<app-footers></app-footers>
+<padicare-basic-footers></padicare-basic-footers>

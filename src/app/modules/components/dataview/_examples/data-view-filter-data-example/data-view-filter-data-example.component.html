@@ -1,0 +1,23 @@
+<div class="mb-6">
+  <div class="mb-3">Variant:</div>
+  <mat-radio-group [(ngModel)]="variant" aria-label="Select an option" class="flex gap-5">
+    <mat-radio-button value="list">List</mat-radio-button>
+    <mat-radio-button value="table">Table</mat-radio-button>
+  </mat-radio-group>
+</div>
+<mat-form-field class="w-full">
+  <input matInput type="text" [(ngModel)]="search" placeholder="Search">
+</mat-form-field>
+<padicare-data-view [columnDefs]="columnDefs"
+               [data]="data"
+               [search]="search"
+               [variant]="variant()">
+  <ng-template padicareDataViewEmptyFilterResults>
+    <padicare-block-state>
+      <padicare-block-state-icon>
+        <mat-icon>search_off</mat-icon>
+      </padicare-block-state-icon>
+      <padicare-block-state-content>No data matching the filter "{{ search }}"</padicare-block-state-content>
+    </padicare-block-state>
+  </ng-template>
+</padicare-data-view>

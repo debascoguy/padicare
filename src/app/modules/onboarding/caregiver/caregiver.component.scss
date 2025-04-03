@@ -1,0 +1,18 @@
+
+:host ::ng-deep .mat-horizontal-stepper-header-container {
+  display: none !important;
+}
+
+:host ::ng-deep {
+  .mdc-snackbar__label {
+    padding: 0% !important;
+  }
+
+  .mat-mdc-snackbar-surface {
+    padding-right: 0% !important;
+    display: block !important;
+  }
+  .mat-mdc-snack-bar-container {
+    display: block !important;
+  }
+}

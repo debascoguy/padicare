@@ -1,0 +1,33 @@
+<padicare-layout layoutId="root" windowMode>
+
+  <padicare-layout-topbar>
+    @if (announcement()) {
+      <padicare-announcement [iconName]="announcement()?.iconName || ''"
+                        [variant]="announcement()?.variant || ''"
+                        closable
+                        (closed)="onClose()">
+        {{ announcement()?.message }}
+      </padicare-announcement>
+    }
+    <padicare-incidents-container/>
+  </padicare-layout-topbar>
+
+  <padicare-layout-sidebar>
+    <padicare-sidebar/>
+  </padicare-layout-sidebar>
+
+  <padicare-layout-header>
+    <padicare-basic-headers [headerType]="HeaderType.ADMIN"/>
+  </padicare-layout-header>
+
+  <padicare-layout-body>
+    <router-outlet />
+  </padicare-layout-body>
+
+  <padicare-layout-footer>
+    <padicare-basic-footers [isFixed]="true" [footerType]="FooterType.BASIC"/>
+  </padicare-layout-footer>
+
+</padicare-layout>
+
+

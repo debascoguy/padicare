@@ -1,0 +1,13 @@
+<div class="icon">
+  <ng-content select="[padicareIncidentIcon]"/>
+</div>
+<div class="content">
+  <div class="data">
+    <ng-content select="padicare-incident-title"/>
+    <ng-content select="padicare-incident-details"/>
+  </div>
+  <ng-content select="[padicareIncidentButton]"/>
+</div>
+<button mat-icon-button class="close -ms-2" (click)="close()">
+  <ng-content select="[padicareIncidentClose]"/>
+</button>

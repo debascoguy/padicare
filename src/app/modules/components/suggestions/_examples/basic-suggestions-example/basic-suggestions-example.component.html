@@ -1,0 +1,46 @@
+<padicare-suggestions class="rounded-b border border-default w-[600px] p-4 flex flex-col gap-4">
+  <padicare-suggestion-block heading="Recently Viewed">
+    <padicare-suggestion>
+      <mat-icon padicareSuggestionIcon>tune</mat-icon>
+      <span>Settings</span> &ndash; <span class="text-neutral-400">My Profile</span>
+    </padicare-suggestion>
+    <padicare-suggestion>
+      <mat-icon padicareSuggestionIcon>timeline</mat-icon>
+      <span>Application statistics</span> &ndash; <span class="text-neutral-400">Admin Panel</span>
+    </padicare-suggestion>
+  </padicare-suggestion-block>
+  <padicare-suggestion-block heading="Users">
+    <padicare-suggestion>
+      <padicare-avatar text="PS" padicareSuggestionThumb></padicare-avatar>
+      Pavel Salauyou
+    </padicare-suggestion>
+    <padicare-suggestion>
+      <padicare-avatar src="assets/avatars/8.svg" text="JJ" padicareSuggestionThumb></padicare-avatar>
+      Jessica Jones
+    </padicare-suggestion>
+  </padicare-suggestion-block>
+  <padicare-suggestion-block heading="Files">
+    <padicare-suggestion>
+      <div class="size-8 rounded bg-surface-container text-on-surface shadow-sm
+                    flex items-center justify-center" padicareSuggestionThumb>
+        <mat-icon>image</mat-icon>
+      </div>
+      <span>Application flow.png</span> &ndash; <span class="text-neutral-400">30KB</span>
+    </padicare-suggestion>
+    <padicare-suggestion>
+      <div class="size-8 rounded bg-surface-container text-on-surface shadow-sm
+                    flex items-center justify-center" padicareSuggestionThumb>
+        <mat-icon>description</mat-icon>
+      </div>
+      <span>Monthly Report.pdf</span> &ndash; <span class="text-neutral-400">502KB</span>
+    </padicare-suggestion>
+  </padicare-suggestion-block>
+  <padicare-suggestion-block heading="Create Team" showDivider inline>
+    <button mat-stroked-button>
+      <mat-icon>add</mat-icon>Create new team
+    </button>
+    <button mat-stroked-button>
+      <mat-icon>add</mat-icon>Add new member
+    </button>
+  </padicare-suggestion-block>
+</padicare-suggestions>

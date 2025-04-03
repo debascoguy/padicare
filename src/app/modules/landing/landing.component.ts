@@ -43,7 +43,7 @@ export class LandingComponent implements OnInit {
   errorMessage: string = "City not found. Please check zipcode and try again";
 
   constructor(
-    protected _snackBar: MatSnackBar, 
+    protected _snackBar: MatSnackBar,
     private modalService: NgbModal,
     private router: Router
   ) {
@@ -86,11 +86,11 @@ export class LandingComponent implements OnInit {
     }
   }
 
-  getStarted() {
+  getStarted(getStartedBy: 'caregiver' | 'client') {
     this.isSubmitted = true;
     if (this.form.valid) {
       sessionStorage.setItem('getStarted', JSON.stringify(this.form.value));
-      this.router.navigate(['/onboarding']);
+      this.router.navigate(['/onboarding/' + getStartedBy]);
     } else {
       this._snackBar.open(this.errorMessage, 'close', {duration: 3000})
       .afterDismissed().subscribe((_) => {

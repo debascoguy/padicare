@@ -1,5 +1,34 @@
-<span class="position-relative border-0 rounded-circle">
+
+<span class="position-relative border-0 rounded-circle" *ngIf="size=='XSMALL'">
+  <img [src]="src" [alt]="alt" width="20" height="20">
+</span>
+
+<span class="position-relative border-0 rounded-circle" *ngIf="size=='SMALL'">
+  <img [src]="src" [alt]="alt" width="40" height="40">
+  <span class="position-absolute translate-middle"
+        style="left: 88% !important; top: 165% !important;">
+    <i class="fa-solid fa-circle-chevron-down fa-border bg-white" [style]="badgeStyle"></i>
+  </span>
+</span>
+
+<span class="position-relative border-0 rounded-circle" *ngIf="size=='NORMAL'">
+  <img [src]="src" [alt]="alt" width="60" height="60">
+  <span class="position-absolute translate-middle"
+        style="left: 88% !important; top: 185% !important;">
+    <i class="fa-solid fa-circle-chevron-down fa-border bg-white" [style]="badgeStyle"></i>
+  </span>
+</span>
+
+<span class="position-relative border-0 rounded-circle" *ngIf="size=='LARGE'">
   <img [src]="src" [alt]="alt" width="80" height="80">
+  <span class="position-absolute translate-middle"
+        style="left: 88% !important; top: 240% !important;">
+    <i class="fa-solid fa-circle-chevron-down fa-border bg-white" [style]="badgeStyle"></i>
+  </span>
+</span>
+
+<span class="position-relative border-0 rounded-circle" *ngIf="size=='XLARGE'">
+  <img [src]="src" [alt]="alt" width="100" height="100">
   <span class="position-absolute translate-middle"
         style="left: 88% !important; top: 240% !important;">
     <i class="fa-solid fa-circle-chevron-down fa-border bg-white" [style]="badgeStyle"></i>

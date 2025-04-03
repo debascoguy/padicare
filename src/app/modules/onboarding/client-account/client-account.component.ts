@@ -15,38 +15,35 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatSliderModule } from '@angular/material/slider';
-import { AuthenticationService } from '../../../core/authentication/authentication.service';
 import { DayOfWeekShortEnum, SeasonOfDay } from '../../../enums/schedules.enum';
 import { CaregiverQualities } from '../../../enums/caregiver.qualities.enum';
-import { CareCategoryEnum } from '../../../enums/care.category.enum';
 import { SecondaryCareTypeEnums } from '../../../enums/secondary.care.type.enum';
 import { Router } from '@angular/router';
-import { SecuredSessionStorage } from '../../../core/services/SecuredSessionStorage';
 
 @Component({
   selector: 'app-client-account',
   templateUrl: './client-account.component.html',
   styleUrls: ['./client-account.component.scss'],
   imports: [
-      MatButtonModule,
-      MatStepperModule,
-      FormsModule,
-      ReactiveFormsModule,
-      MatFormFieldModule,
-      MatInputModule,
-      MatDatepickerModule,
-      MatTimepickerModule,
-      MatIconModule,
-      MatCheckboxModule,
-      MatSliderModule,
-      CommonModule
-    ],
-    providers: [
-      MatSnackBar,
-      provideNativeDateAdapter(),
-      DatePipe
-    ],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    CommonModule,
+    MatButtonModule,
+    MatStepperModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatDatepickerModule,
+    MatTimepickerModule,
+    MatIconModule,
+    MatCheckboxModule,
+    MatSliderModule
+  ],
+  providers: [
+    MatSnackBar,
+    provideNativeDateAdapter(),
+    DatePipe
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ClientAccountComponent {
   step1Form: FormGroup;
@@ -149,7 +146,7 @@ export class ClientAccountComponent {
       ...this.step1Form.value,
       ...this.getCheckboxValues("dayOfWeek", this.step2Form.value["dayOfWeek"], this.dayOfWeekShortEnum),
       ...this.getCheckboxValues("timeOfDay", this.step2Form.value["timeOfDay"], this.timeOfDayEnum),
-      specificTimeOfDay:  this.datePipe.transform(this.step2Form.value['specificTimeOfDay'], 'HH:mm:ss'),
+      specificTimeOfDay: this.datePipe.transform(this.step2Form.value['specificTimeOfDay'], 'HH:mm:ss'),
       isFlexibleSchedule: this.step2Form.value['isFlexibleSchedule'],
       ...this.step3Form.value,
       ...this.getCheckboxValues("caregiverQualities", this.step4Form.value["caregiverQualities"], Object.keys(CaregiverQualities)),

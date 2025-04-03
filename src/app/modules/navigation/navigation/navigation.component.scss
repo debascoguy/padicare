@@ -1,0 +1,122 @@
+:host {
+  --padicare-navigation-bg: inherit;
+  --padicare-navigation-items-gap: calc(var(--spacing) * 0.5);
+  --padicare-navigation-item-width: 100%;
+  --padicare-navigation-item-bg: transparent;
+  --padicare-navigation-item-height: calc(var(--spacing) * 12);
+  --padicare-navigation-item-padding: 0 calc(var(--spacing) * 4);
+  --padicare-navigation-item-font-size: var(--text-sm);
+  --padicare-navigation-item-border-radius: calc(infinity * 1px);
+  --padicare-navigation-item-border-width: 1px;
+  --padicare-navigation-item-border-color: transparent;
+  --padicare-navigation-item-font-weight: 500;
+  --padicare-navigation-item-color: var(--color-secondary);
+  --padicare-navigation-item-hover-bg: var(--color-neutral-200);
+  --padicare-navigation-item-active-bg: var(--color-secondary-fixed);
+  --padicare-navigation-item-hover-color: var(--color-secondary-800);
+  --padicare-navigation-item-active-color: var(--color-secondary-950);
+  --padicare-navigation-item-icon-font-size: var(--text-2xl);
+  --padicare-navigation-item-icon-color: var(--color-secondary-700);
+  --padicare-navigation-item-icon-width: 27px;
+  --padicare-navigation-item-hover-icon-color: var(--color-secondary-800);
+  --padicare-navigation-item-active-icon-color: var(--color-secondary-950);
+  --padicare-navigation-item-icon-size: calc(var(--spacing) * 6);
+  --padicare-navigation-item-gap: calc(var(--spacing) * 2.5);
+  --padicare-navigation-item-has-icon-padding-start: calc(var(--spacing) * 2.5);
+  --padicare-navigation-heading-color: var(--color-neutral-900);
+  --padicare-navigation-heading-font-size: var(--text-2xs);
+  --padicare-navigation-heading-font-weight: 700;
+  --padicare-navigation-heading-padding: 0 calc(var(--spacing) * 4);
+  --padicare-navigation-heading-margin-bottom: calc(var(--spacing) * 2);
+  --padicare-navigation-heading-after-margin: calc(var(--spacing) * 8);
+  --padicare-navigation-heading-text-transform: uppercase;
+  --padicare-navigation-divider-height: 1px;
+  --padicare-navigation-divider-bg: var(--color-border);
+  --padicare-navigation-divider-margin: calc(var(--spacing) * 6) 0;
+  --padicare-navigation-group-toggle-has-icon-padding-end: calc(var(--spacing) * 2);
+  --padicare-navigation-group-toggle-icon-color: var(--color-neutral-400);
+  --padicare-navigation-group-toggle-icon-position-end: calc(var(--spacing) * 3);
+  --padicare-navigation-group-toggle-icon-size: calc(var(--spacing) * 4);
+  --padicare-navigation-group-menu-padding-start: 0;
+  --padicare-navigation-group-toggle-bg: transparent;
+  --padicare-navigation-group-toggle-active-bg: var(--color-neutral-200);
+  --padicare-navigation-group-toggle-active-color: var(--padicare-navigation-item-active-color);
+  --padicare-navigation-nested-item-bg: transparent;
+  --padicare-navigation-nested-item-height: calc(var(--spacing) * 10);
+  --padicare-navigation-nested-item-padding: 0 calc(var(--spacing) * 4);
+  --padicare-navigation-nested-item-margin: 0 0 0 52px;
+  --padicare-navigation-nested-item-border-radius: 0;
+  --padicare-navigation-nested-item-color: var(--color-secondary-600);
+  --padicare-navigation-nested-item-hover-bg: var(--color-neutral-200);
+  --padicare-navigation-nested-item-active-bg: var(--color-secondary-fixed);
+  --padicare-navigation-nested-item-hover-color: var(--color-secondary-800);
+  --padicare-navigation-nested-item-active-color: var(--color-secondary-950);
+  --padicare-navigation-nested-item-indicator-width: calc(var(--spacing) * 3.5);
+  --padicare-navigation-nested-item-indicator-height: calc(var(--spacing) * 0.5);
+  --padicare-navigation-nested-item-indicator-bg: var(--color-neutral-500);
+  --padicare-navigation-nested-item-indicator-position-start: calc(calc(var(--spacing) * 2.5) * -1);
+  --padicare-navigation-group-active-bg: transparent;
+  --padicare-navigation-group-border-radius: 0;
+  --padicare-navigation-group-tree-lines-color: var(--color-border);
+  --padicare-navigation-heading-text-align: start;
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--padicare-navigation-items-gap);
+  background: var(--padicare-navigation-bg);
+
+  ::ng-deep {
+    .padicare-navigation-group-toggle-icon {
+      transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+      transition-duration: 150ms;
+    }
+
+    & > * + .padicare-navigation-heading {
+      margin-top: var(--padicare-navigation-heading-after-margin);
+    }
+  }
+
+  &[data-theme="secondary"] {
+    ::ng-deep {
+      .padicare-navigation-item {
+        --padicare-navigation-item-border-radius: calc(infinity * 1px);
+        --padicare-navigation-item-height: calc(var(--spacing) * 11);
+        --padicare-navigation-item-active-bg: var(--color-background);
+
+        &.is-active {
+          --padicare-navigation-item-border-color: var(--color-neutral-900);
+        }
+      }
+    }
+  }
+}
+
+:host-context(html.dark) {
+  --padicare-navigation-item-color: var(--color-neutral-300);
+  --padicare-navigation-item-icon-color: var(--color-neutral-400);
+  --padicare-navigation-item-hover-bg: var(--color-neutral-700);
+  --padicare-navigation-item-active-bg: var(--color-primary-300);
+  --padicare-navigation-item-hover-color: var(--color-neutral-100);
+  --padicare-navigation-item-hover-icon-color: var(--color-neutral-100);
+  --padicare-navigation-item-active-color: var(--color-neutral-950);
+  --padicare-navigation-item-active-icon-color: var(--color-neutral-950);
+  --padicare-navigation-heading-color: var(--color-neutral-200);
+  --padicare-navigation-nested-item-color: var(--color-neutral-300);
+  --padicare-navigation-nested-item-hover-bg: var(--color-neutral-700);
+  --padicare-navigation-nested-item-hover-color: var(--color-neutral-100);
+  --padicare-navigation-group-toggle-active-bg: var(--color-neutral-800);
+  --padicare-navigation-group-toggle-active-color: var(--color-neutral-100);
+  --padicare-navigation-group-toggle-hover-bg: var(--color-neutral-800);
+
+  &[data-theme="secondary"] {
+    ::ng-deep {
+      .padicare-navigation-item {
+        &.is-active {
+          --padicare-navigation-item-border-color: var(--color-neutral-400);
+          --padicare-navigation-item-active-color: var(--color-neutral-300);
+        }
+      }
+    }
+  }
+}

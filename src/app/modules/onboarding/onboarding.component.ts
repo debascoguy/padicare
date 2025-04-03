@@ -6,13 +6,16 @@ import { HeaderType } from '../layouts/headers/header.type.enum';
 @Component({
   selector: 'app-onboarding',
   templateUrl: './onboarding.component.html',
-  imports: [LayoutModule, RouterOutlet],
+  imports: [
+    LayoutModule,
+    RouterOutlet
+  ],
   styleUrls: ['./onboarding.component.scss'],
 })
 export class OnboardingComponent implements OnInit {
-  constructor() {}
+  constructor() { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   get HeaderType() {
     return HeaderType;

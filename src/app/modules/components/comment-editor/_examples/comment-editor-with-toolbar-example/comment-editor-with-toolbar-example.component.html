@@ -1,0 +1,74 @@
+<padicare-comment-editor toolbarAlwaysVisible [imageUploadFn]="uploadFn" (sent)="onSent($event)"
+                    class="rounded-2xl border border-default ">
+  <padicare-comment-editor-toolbar>
+    <button mat-icon-button matTooltip="Bold"
+            padicareCommentEditorCommand padicareCommentEditorCommandBold>
+      <mat-icon>format_bold</mat-icon>
+    </button>
+    <button mat-icon-button matTooltip="Italic"
+            padicareCommentEditorCommand padicareCommentEditorCommandItalic>
+      <mat-icon>format_italic</mat-icon>
+    </button>
+    <button mat-icon-button matTooltip="Strike"
+            padicareCommentEditorCommand padicareCommentEditorCommandStrike>
+      <mat-icon>strikethrough_s</mat-icon>
+    </button>
+    <padicare-comment-editor-divider></padicare-comment-editor-divider>
+    <button mat-icon-button matTooltip="Bullet List"
+            padicareCommentEditorCommand padicareCommentEditorCommandBulletList>
+      <mat-icon>format_list_bulleted</mat-icon>
+    </button>
+    <button mat-icon-button matTooltip="Ordered List"
+            padicareCommentEditorCommand padicareCommentEditorCommandOrderedList>
+      <mat-icon>format_list_numbered</mat-icon>
+    </button>
+    <button mat-icon-button matTooltip="Blockquote"
+            padicareCommentEditorCommand padicareCommentEditorCommandBlockquote>
+      <mat-icon>format_quote</mat-icon>
+    </button>
+    <button mat-icon-button matTooltip="Code Block"
+            padicareCommentEditorCommand padicareCommentEditorCommandCodeBlock>
+      <mat-icon>code_blocks</mat-icon>
+    </button>
+    <padicare-comment-editor-divider></padicare-comment-editor-divider>
+    <button mat-icon-button matTooltip="Upload Image"
+            padicareCommentEditorCommand padicareCommentEditorCommandImage>
+      <mat-icon>image</mat-icon>
+    </button>
+    <button mat-icon-button matTooltip="Add Youtube"
+            padicareCommentEditorCommand padicareCommentEditorCommandYoutube>
+      <mat-icon>videocam</mat-icon>
+    </button>
+  </padicare-comment-editor-toolbar>
+  <padicare-comment-editor-bubble-menu>
+    <button padicareCommentEditorCommandEditLink>
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button padicareCommentEditorCommandUnsetLink>
+      <mat-icon>link_off</mat-icon>
+    </button>
+    <button padicareCommentEditorCommand padicareCommentEditorCommandLink>
+      <mat-icon>link</mat-icon>
+    </button>
+    <button padicareCommentEditorCommand padicareCommentEditorCommandBold>
+      <mat-icon>format_bold</mat-icon>
+    </button>
+    <button padicareCommentEditorCommand padicareCommentEditorCommandItalic>
+      <mat-icon>format_italic</mat-icon>
+    </button>
+    <button padicareCommentEditorCommand padicareCommentEditorCommandStrike>
+      <mat-icon>strikethrough_s</mat-icon>
+    </button>
+    <button padicareCommentEditorCommand padicareCommentEditorCommandCode>
+      <mat-icon>code</mat-icon>
+    </button>
+  </padicare-comment-editor-bubble-menu>
+</padicare-comment-editor>
+
+@if (comments.length > 0) {
+  <div class="mt-10 flex flex-col gap-7">
+    @for (comment of comments; track comment) {
+      <div class="border border-default rounded-xl p-5 " [innerHTML]="comment | safeHtml"></div>
+    }
+  </div>
+}

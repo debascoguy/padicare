@@ -1,13 +1,15 @@
-import { NgFor } from '@angular/common';
+import { NgClass, NgFor } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-star-ratings',
   templateUrl: './star-ratings.component.html',
   styleUrls: ['./star-ratings.component.scss'],
-  imports: [NgFor]
+  imports: [NgFor, NgClass]
 })
 export class StarRatingsComponent implements OnInit {
+
+  @Input() faSize: 'fa-2xs' | 'fa-xs' | 'fa-sm' | '' | 'fa-lg' | 'fa-xl' | 'fa-2xl' = '';
 
   @Input() score = 5; //Level 1 to 5 --> Lowest = 1 and Highest = 5
 
@@ -16,6 +18,9 @@ export class StarRatingsComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+    if (this.score > this.MAX_SCORE) {
+      throw new Error("Invalid Rating Score. Ratings must be within 1 to 5. Lowest = 1, Highest = 5");
+    }
   }
 
   get ratingScored() {

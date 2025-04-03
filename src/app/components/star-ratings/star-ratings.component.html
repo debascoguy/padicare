@@ -1,3 +1,3 @@
 
-<span class="fa fa-star checked" *ngFor="let item of ratingScored"></span>
-<span class="fa fa-star" *ngFor="let item of ratingNotScored"></span>
+<span class="fa fa-star checked" [ngClass]="faSize" *ngFor="let item of ratingScored"></span>
+<span class="fa fa-star" [ngClass]="faSize" *ngFor="let item of ratingNotScored"></span>

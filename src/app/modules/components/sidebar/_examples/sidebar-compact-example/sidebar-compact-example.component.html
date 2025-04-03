@@ -1,0 +1,26 @@
+<div>
+  <mat-slide-toggle [(ngModel)]="compact">Compact</mat-slide-toggle>
+</div>
+<div class="h-[600px] relative mt-10">
+  <padicare-sidebar [compact]="compact" class="border border-default">
+    <padicare-sidebar-header class="border-b border-b-default font-bold">
+      <div class="h-20 flex items-center px-7 text-primary">
+        <div padicareSidebarCompactViewMode>El</div>
+        <div padicareSidebarFullViewMode>Elementar</div>
+      </div>
+    </padicare-sidebar-header>
+    <padicare-sidebar-body>
+      <padicare-sidebar-nav activeKey="home" [navItems]="navItems"/>
+    </padicare-sidebar-body>
+    <padicare-sidebar-footer class="border-t border-t-default">
+      <div class="h-20 flex items-center whitespace-nowrap justify-center text-sm">
+        <div padicareSidebarFullViewMode>
+          Copyright &copy; 2024
+        </div>
+        <div padicareSidebarCompactViewMode>
+          2024
+        </div>
+      </div>
+    </padicare-sidebar-footer>
+  </padicare-sidebar>
+</div>

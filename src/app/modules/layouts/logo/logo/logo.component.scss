@@ -1,0 +1,21 @@
+:host {
+  --padicare-logo-text-font-size: var(--text-xl);
+  --padicare-logo-text-font-weight: 800;
+  --padicare-logo-text-color: var(--color-primary);
+  --padicare-logo-text-hover-color: var(--color-tertiary);
+
+  display: inline-block;
+  width: max-content;
+  height: max-content;
+
+  &.is-text {
+    color: var(--padicare-logo-text-color);
+    font-size: var(--padicare-logo-text-font-size);
+    font-weight: var(--padicare-logo-text-font-weight);
+    text-transform: uppercase;
+
+    &:hover {
+      color: var(--padicare-logo-text-hover-color);
+    }
+  }
+}

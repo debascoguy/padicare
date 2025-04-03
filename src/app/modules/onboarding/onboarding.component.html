@@ -1,11 +1,7 @@
-<app-headers [headerType]="HeaderType.ONBOARDING"></app-headers>
+<padicare-basic-headers [headerType]="HeaderType.ONBOARDING"></padicare-basic-headers>
 
-<div class="container-fluid text-center">
-  <div class="position-absolute top-50 start-50 translate-middle">
-
+  <div class="container">
     <router-outlet />
-
   </div>
-</div>
 
-<app-footers [isFixed]="true"></app-footers>
+  <padicare-basic-footers [isFixed]="true"></padicare-basic-footers>

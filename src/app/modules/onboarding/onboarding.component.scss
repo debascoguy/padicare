@@ -1,0 +1,19 @@
+.wrapper {
+  margin:0 auto;
+  position:relative;
+}
+
+.static {
+  width:1000px;
+  z-index:2;
+  height:100px;
+  position: fixed;
+}
+.header {
+  height:100px;
+}
+.content {
+  float: left;
+  position:relative;
+  top: 100px;
+}

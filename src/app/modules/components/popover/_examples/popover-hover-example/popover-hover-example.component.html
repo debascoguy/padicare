@@ -1,0 +1,6 @@
+<button mat-stroked-button [padicarePopoverTriggerFor]="triggerHoverPopover" trigger="hover">Hover Me!</button>
+<ng-template #triggerHoverPopover>
+  <padicare-popover>
+    <div class="text-sm p-4">Some text content</div>
+  </padicare-popover>
+</ng-template>

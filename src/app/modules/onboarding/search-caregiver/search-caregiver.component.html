@@ -1,0 +1,9 @@
+<div class="position-absolute top-80 start-50 translate-middle text-center">
+  <!-- For Each User  -->
+  <div *ngFor="let user of allUsers">
+    <app-user-summary [user]="user" (isLiked)="handleFavorites($event, user)" (isReadMore)="readMoreCallBack($event, user)">
+    </app-user-summary>
+    <div class="clearfix mt-1 mb-1">&nbsp;</div>
+  </div>
+
+</div>

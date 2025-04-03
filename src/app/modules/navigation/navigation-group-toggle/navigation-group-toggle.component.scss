@@ -1,0 +1,97 @@
+:host {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  white-space: nowrap;
+  position: relative;
+  flex: none;
+  cursor: pointer;
+  user-select: none;
+  background-color: var(--padicare-navigation-group-toggle-bg);
+  min-height: var(--padicare-navigation-item-height);
+  padding: var(--padicare-navigation-item-padding);
+  font-size: var(--padicare-navigation-item-font-size);
+  border-radius: var(--padicare-navigation-item-border-radius);
+  font-weight: var(--padicare-navigation-item-font-weight);
+  color: var(--padicare-navigation-item-color);
+  gap: var(--padicare-navigation-item-gap);
+  width: var(--padicare-navigation-item-width);
+
+  .text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .badge {
+    &:empty {
+      display: none;
+    }
+
+    display: inline-flex;
+    flex: none;
+    border-radius: calc(infinity * 1px);
+    height: calc(var(--spacing) * 5);
+    align-items: center;
+    justify-content: center;
+    min-width: calc(var(--spacing) * 5);
+    font-size: var(--text-2xs);
+    padding: 0 calc(var(--spacing) * 1.5);
+    background: var(--color-surface-tint);
+    color: var(--color-on-primary);
+  }
+
+  .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--padicare-navigation-item-icon-width);
+    color: var(--padicare-navigation-item-icon-color);
+    flex: none;
+
+    &:empty {
+      display: none;
+    }
+  }
+
+  .toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--padicare-transition-transform);
+    margin-inline-end: 2px;
+
+    &:empty {
+      display: none;
+    }
+  }
+
+  &:hover {
+    background-color: var(--padicare-navigation-item-hover-bg);
+    color: var(--padicare-navigation-item-hover-color);
+    transition: background-color .2s;
+  }
+
+  &.is-active,
+  &.is-active:hover {
+    background-color: var(--padicare-navigation-group-toggle-active-bg);
+    color: var(--padicare-navigation-group-toggle-active-color);
+  }
+
+  &:not(.is-active):hover .icon {
+    color: var(--padicare-navigation-item-hover-icon-color);
+  }
+
+  &.is-active {
+    .icon {
+      color: var(--padicare-navigation-group-toggle-active-color);
+    }
+
+    .toggle {
+      transform: rotate(-180deg);
+    }
+  }
+
+  &:has(.toggle:not(:empty)) {
+    padding-inline-end: var(--padicare-navigation-group-toggle-has-icon-padding-end);
+  }
+}

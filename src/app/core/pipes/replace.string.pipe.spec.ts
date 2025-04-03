@@ -1,4 +1,4 @@
-import { ReplaceStringPipe } from './replace.string.pipe';
+mport { ReplaceStringPipe } from './replace.string.pipe';
 
 describe('Pipe: Replace.stringe', () => {
   it('create an instance', () => {

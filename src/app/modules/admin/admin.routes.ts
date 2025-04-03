@@ -5,18 +5,15 @@ import { RouteData } from '../../core/models/navigation.model';
 export const adminRoutes: Routes = [
   {
     path: '',
-    component: AdminComponent,
+    pathMatch: 'full',
+    redirectTo: 'access'
   },
   {
     path: 'access',
     component: AdminComponent,
     data: {
-      title: 'Admin',
+      title: 'Admin Access',
       breadcrumbs: [
-        {
-          text: 'Admin',
-          link: 'admin'
-        },
         {
           text: 'Access',
           active: true,
