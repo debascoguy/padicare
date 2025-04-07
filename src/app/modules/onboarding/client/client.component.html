@@ -168,13 +168,12 @@
         <form [formGroup]="step6Form" (ngSubmit)="submit()">
           <h4 class="fw-bold">Finish setting up your account!</h4>
           <span class="fs-5">See caregivers who match your needs. It only takes a few seconds.</span>
-          <div class="mt-4 mb-3">
-
+          <div class="mt-2 mb-1">
             <mat-form-field class="col-md-6 pe-1">
               <mat-label>First Name</mat-label>
               <input matInput type="text" formControlName="firstName">
-              <button matSuffix mat-icon-button aria-label="Clear" *ngIf="step6Form.get('firstName')?.valid"
-                (click)="step6Form.get('firstName')?.setValue('')">
+              <button matSuffix mat-icon-button aria-label="Clear" *ngIf="step4Form.get('firstName')?.valid"
+                (click)="step4Form.get('firstName')?.setValue('')">
                 <mat-icon>close</mat-icon>
               </button>
             </mat-form-field>
@@ -182,35 +181,123 @@
             <mat-form-field class="col-md-6 ps-1">
               <mat-label>Last Name</mat-label>
               <input matInput type="text" formControlName="lastName">
-              <button matSuffix mat-icon-button aria-label="Clear" *ngIf="step6Form.get('lastName')?.valid"
-                (click)="step6Form.get('lastName')?.setValue('')">
+              <button matSuffix mat-icon-button aria-label="Clear" *ngIf="step4Form.get('lastName')?.valid"
+                (click)="step4Form.get('lastName')?.setValue('')">
                 <mat-icon>close</mat-icon>
               </button>
             </mat-form-field>
 
-            <mat-form-field class="col-md-12">
+            <mat-form-field class="col-md-6 pe-1">
               <mat-label>Email</mat-label>
               <input matInput type="text" formControlName="email">
-              <button matSuffix mat-icon-button aria-label="Clear" *ngIf="step6Form.get('email')?.valid"
-                (click)="step6Form.get('email')?.setValue('')">
+              <button matSuffix mat-icon-button aria-label="Clear" *ngIf="step4Form.get('email')?.valid"
+                (click)="step4Form.get('email')?.setValue('')">
                 <mat-icon>close</mat-icon>
               </button>
             </mat-form-field>
 
-            <mat-form-field class="col-md-12">
+            <mat-form-field class="col-md-6 ps-1">
+              <mat-label>Phone Number</mat-label>
+              <input matInput type="text" formControlName="cellPhone">
+              <button matSuffix mat-icon-button aria-label="Clear" *ngIf="step4Form.get('cellPhone')?.valid"
+                (click)="step4Form.get('cellPhone')?.setValue('')">
+                <mat-icon>close</mat-icon>
+              </button>
+            </mat-form-field>
+
+            <mat-form-field class="col-md-6 pe-1">
               <mat-label>Password</mat-label>
               <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password">
-              <button type="button" *ngIf="step6Form.get('password')?.invalid" matSuffix mat-icon-button
+              <button type="button" *ngIf="step4Form.get('password')?.invalid" matSuffix mat-icon-button
                 (click)="hidePassword = !hidePassword" [attr.aria-label]="'Hide password'"
                 [attr.aria-pressed]="hidePassword">
                 <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
               </button>
-              <button type="button" *ngIf="step6Form.get('password')?.valid" matSuffix mat-icon-button
+              <button type="button" *ngIf="step4Form.get('password')?.valid" matSuffix mat-icon-button
                 (click)="hidePassword = !hidePassword" aria-label="Password is Good">
                 <mat-icon class="text-success">check_circle</mat-icon>
               </button>
               <mat-hint>It must be a combination of minimum 8 letters, numbers, and symbols.</mat-hint>
             </mat-form-field>
+
+            <mat-form-field class="col-md-6 ps-1">
+              <mat-label>Confirm Password</mat-label>
+              <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="confirmPassword">
+              <button type="button" *ngIf="step4Form.get('confirmPassword')?.invalid" matSuffix mat-icon-button
+                (click)="hidePassword = !hidePassword" [attr.aria-label]="'Hide password'"
+                [attr.aria-pressed]="hidePassword">
+                <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+              </button>
+              <button type="button" *ngIf="step4Form.get('confirmPassword')?.valid" matSuffix mat-icon-button
+                (click)="hidePassword = !hidePassword" aria-label="Password is Good">
+                <mat-icon class="text-success">check_circle</mat-icon>
+              </button>
+              <mat-hint>It must be a combination of minimum 8 letters, numbers, and symbols.</mat-hint>
+            </mat-form-field>
+
+          </div>
+          <div class="d-grid gap-2">
+            <button class="btn btn-primary" matStepperNext>Join Now</button>
+          </div>
+        </form>
+      </mat-step>
+
+      
+      <mat-step [stepControl]="step7Form">
+        <form [formGroup]="step7Form">
+          <h4 class="fw-bold">Authorization and Preference Settings!</h4>
+          <span class="fs-5">Terms and condition and background check authorization.</span>
+          <div class="mt-4 mb-3 text-start">
+
+            <div class="col-md-12 mt-2 mb-1">
+              <mat-checkbox formControlName="acceptNotifications" class="text-start">
+                I agree to receive notifications via email and/or SMS about my account activity,
+                including but not limited to new job opportunities, messages from clients, and other important updates.
+              </mat-checkbox>
+            </div>
+
+            <div class="col-md-12 mt-2 mb-1">
+              <mat-checkbox formControlName="acceptLocation" class="text-start">
+                I agree to share my location with Padicare to help me find clients in my area.
+              </mat-checkbox>
+            </div>
+
+            <div class="col-md-12 mt-2 mb-1">
+              <mat-checkbox formControlName="acceptEmail" class="text-start">
+                I agree to receive marketing emails from Padicare about new features, promotions,
+                client communications and other relevant information.
+              </mat-checkbox>
+            </div>
+
+            <div class="col-md-12 mt-2 mb-1">
+              <mat-checkbox formControlName="acceptSMS" class="text-start">
+                I agree to receive SMS notifications from Padicare about my account activity,
+                including but not limited to new job opportunities, messages from clients, and other important updates.
+              </mat-checkbox>
+            </div>
+
+            <div class="col-md-12 mt-2 mb-1">
+              <mat-checkbox formControlName="acceptPhone" class="text-start">
+                I agree to receive Phone voice calls from Padicare about my account activity,
+                including but not limited to new job opportunities, voice-calls from clients, and other important updates.
+              </mat-checkbox>
+            </div>
+
+            <div class="col-md-12 mt-2 mb-1">
+              <mat-checkbox formControlName="acceptTermsAndConditions" class="text-start">
+                I agree to the <a href="/terms-and-conditions" target="_blank">Terms and Conditions</a> and
+                <a href="/privacy-policy" target="_blank">Privacy Policy</a>
+              </mat-checkbox>
+            </div>
+
+            <div class="col-md-12">
+              <small>
+                Upload a clear and legible copy of your identity document (e.g., driver's license, passport, etc.) to verify your identity.
+              </small>
+
+              <app-document-uploader (documentUploaded)="onFileUpload($event)"></app-document-uploader>
+
+            </div>
 
           </div>
           <div class="d-grid gap-2">
@@ -221,12 +308,13 @@
               Join Now
             </button>
           </div>
-          <p class="mt-2">
+          <!-- <p class="mt-2">
             By clicking "Join now", you agree to our <a href="#" class="link-underline-primary">Terms of Use</a>
             and <a href="#" class="link-underline-primary">Privacy Policy</a>
-          </p>
+          </p> -->
         </form>
       </mat-step>
+
     </mat-stepper>
   </div>
 

@@ -1,0 +1,30 @@
+
+<mat-card appearance="outlined" dragAndDrop (onFileDropped)="onFileDropped($event)">
+  <mat-card-content>
+
+    <input type="file" class="file-input d-none" [accept]="supportedFileType" (change)="onFileSelected($event)" #fileUpload>
+
+    <div class="mb-1 text-center">
+      <p *ngIf="!fileError">{{ fileName || "Please click to upload Identity document." }}</p>
+      <p class="text-danger" *ngIf="fileError"> {{ fileError }} </p>
+       <button mat-mini-fab matRipple color="primary" class="btn ms-2 me-2" matTooltip="Upload Valid Identity File" (click)="fileUpload.click()"
+          matTooltipPosition="above" matTooltipClass="tooltip" [disabled]="uploadInProgress">
+          <mat-icon class="text-primary" *ngIf="!fileName && !fileError">attach_file</mat-icon>
+          <mat-icon class="text-primary" *ngIf="fileName && !fileError">check_circle</mat-icon>
+          <mat-icon class="text-danger" *ngIf="fileError">error</mat-icon>
+       </button>
+       {{ fileInfo?.size ? ((fileInfo?.size || 0) | formatFileSize) : '' }}
+    </div>
+
+    <div class="col-md-12 d-flex t-2">
+      <div class="col-md-10">
+        <mat-progress-bar mode="indeterminate" [value]="uploadInProgress" *ngIf="uploadInProgress" />
+      </div>
+      <div class="col-md-2">
+        <button type="button" mat-icon-button matTooltip="Cancel Upload" class="btn btn-outline-light ms-1 me-1">
+          <mat-icon class="cancel-upload" color="red" (click)="cancelUpload()"  *ngIf="uploadInProgress">delete_forever</mat-icon>
+        </button>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

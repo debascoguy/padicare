@@ -48,7 +48,7 @@
             </mat-form-field>
           </div>
           <div class="d-grid gap-2">
-            <button class="btn btn-primary" matStepperNext (click)="getStarted()">Next</button>
+            <button class="btn btn-primary" matStepperNext>Next</button>
           </div>
         </form>
       </mat-step>
@@ -80,22 +80,22 @@
           <span class="fs-6">Join Padicare to get access to verified clients in need of care</span>
           <div class="mt-2 mb-1">
             <div class="d-grid gap-2 mb-4">
-              <input type="radio" name="careAvailability" formControlName="careAvailability" value="RIGHT_NOW"
+              <input type="radio" name="carePeriod" formControlName="carePeriod" value="RIGHT_NOW"
                 class="btn-check" id="right-now">
               <label class="btn btn-outline-dark" for="right-now">Right Now</label>
             </div>
             <div class="d-grid gap-2 mb-4">
-              <input type="radio" name="careAvailability" formControlName="careAvailability" value="WITHIN_A_WEEK"
+              <input type="radio" name="carePeriod" formControlName="carePeriod" value="WITHIN_A_WEEK"
                 class="btn-check" id="within-a-week">
               <label class="btn btn-outline-dark" for="within-a-week">Within a week</label>
             </div>
             <div class="d-grid gap-2 mb-4">
-              <input type="radio" name="careAvailability" formControlName="careAvailability" value="IN_1_2_MONTH"
+              <input type="radio" name="carePeriod" formControlName="carePeriod" value="IN_1_2_MONTH"
                 class="btn-check" id="in-1-2-months">
               <label class="btn btn-outline-dark" for="in-1-2-months">In 1-2 Months</label>
             </div>
             <div class="d-grid gap-2 mb-4">
-              <input type="radio" name="careAvailability" formControlName="careAvailability" value="JUST_BROWSING"
+              <input type="radio" name="carePeriod" formControlName="carePeriod" value="JUST_BROWSING"
                 class="btn-check" id="just-browsing">
               <label class="btn btn-outline-dark" for="just-browsing">Just Browsing</label>
             </div>
@@ -157,9 +157,9 @@
 
             <mat-form-field class="col-md-6 ps-1">
               <mat-label>Phone Number</mat-label>
-              <input matInput type="text" formControlName="phoneNumber">
-              <button matSuffix mat-icon-button aria-label="Clear" *ngIf="step4Form.get('phoneNumber')?.valid"
-                (click)="step4Form.get('phoneNumber')?.setValue('')">
+              <input matInput type="text" formControlName="cellPhone">
+              <button matSuffix mat-icon-button aria-label="Clear" *ngIf="step4Form.get('cellPhone')?.valid"
+                (click)="step4Form.get('cellPhone')?.setValue('')">
                 <mat-icon>close</mat-icon>
               </button>
             </mat-form-field>
@@ -253,35 +253,8 @@
                 Upload a clear and legible copy of your identity document (e.g., driver's license, passport, etc.) to verify your identity.
               </small>
 
-              <mat-card appearance="outlined" dragAndDrop (onFileDropped)="onFileDropped($event)">
-                <mat-card-content>
+              <app-document-uploader (documentUploaded)="onFileUpload($event)"></app-document-uploader>
 
-                  <input type="file" class="file-input d-none" [accept]="requiredFileType" (change)="onFileSelected($event)" #fileUpload>
-
-                  <div class="mb-1 text-center">
-                    <p *ngIf="!fileError">{{ fileName || "Please click to upload Identity document." }}</p>
-                    <p class="text-danger" *ngIf="fileError"> {{ fileError }} </p>
-                     <button mat-mini-fab matRipple color="primary" class="ms-2 me-2" matTooltip="Upload Valid Identity File" (click)="fileUpload.click()"
-                        matTooltipPosition="above" matTooltipClass="tooltip" [disabled]="uploadInProgress">
-                        <mat-icon class="text-primary" *ngIf="!fileName && !fileError">attach_file</mat-icon>
-                        <mat-icon class="text-primary" *ngIf="fileName && !fileError">check_circle</mat-icon>
-                        <mat-icon class="text-danger" *ngIf="fileError">error</mat-icon>
-                     </button>
-                     {{ fileInfo.size ? ((fileInfo?.size || 0) | formatFileSize) : '' }}
-                  </div>
-
-                  <div class="col-md-12 d-flex t-2">
-                    <div class="col-md-10">
-                      <mat-progress-bar mode="indeterminate" [value]="uploadInProgress" *ngIf="uploadInProgress" />
-                    </div>
-                    <div class="col-md-2">
-                      <button type="button" mat-icon-button matTooltip="Cancel Upload" class="btn btn-outline-light ms-1 me-1">
-                        <mat-icon class="cancel-upload" color="red" (click)="cancelUpload()"  *ngIf="uploadInProgress">delete_forever</mat-icon>
-                      </button>
-                    </div>
-                  </div>
-                </mat-card-content>
-              </mat-card>
             </div>
 
           </div>
@@ -292,10 +265,40 @@
       </mat-step>
 
       <mat-step [stepControl]="step6Form">
-        <form [formGroup]="step6Form">
+        <form [formGroup]="step6Form"  (ngSubmit)="submit()">
+          <h4 class="fw-bold">Authorization and Preference Settings!</h4>
+          <span class="fs-5">Background check authorization.</span>
+          <div class="mt-4 mb-3 text-start">
 
+            <div class="col-md-12 mt-2 mb-1">
+              <ul>
+                <li class="mt-1 mb-1">I agree to background check authorization and</li>
+                <li class="mt-1 mb-1">I authorize Padicare to conduct a background check on me.</li>
+                <li class="mt-1 mb-1">
+                  I understand that this background check may include a review of my criminal history, credit history,
+                  and other relevant information.
+                </li>
+                <li class="mt-1 mb-1">I understand that I have the right to dispute any inaccuracies in my background check report.</li>
+                <li class="mt-1 mb-1">I understand that Padicare may use the information obtained from this background check to determine my eligibility for employment or other opportunities with Padicare.</li>
+                <li class="mt-1 mb-1">
+                  I understand that I have the right to request a copy of my background check report and to dispute any inaccuracies in the report.
+                </li>
+                <li class="mt-1 mb-1 fw-bold">
+                  An email will be sent to the email address provided - <u>{{ step4Form.get('email')?.value }}</u> - with a link to the background check authorization form.
+                </li>
+              </ul>
+              <mat-checkbox formControlName="backgroundCheck" class="text-start">
+                I have read and understood the above statement and I agree to the background check authorization.
+              </mat-checkbox>
+            </div>
+          </div>
           <div class="d-grid gap-2">
-            <button class="btn btn-primary" matStepperNext>Next</button>
+            <button class="btn btn-primary" matStepperNext [disabled]="isSubmitted">
+              <span class="d-inline-flex">
+                <mat-spinner *ngIf="isSubmitted" [diameter]="20"></mat-spinner>
+              </span>
+              Join Now
+            </button>
           </div>
         </form>
       </mat-step>

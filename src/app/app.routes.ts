@@ -1,9 +1,7 @@
 import { Routes } from '@angular/router';
 import { AppComponent } from './app.component';
-import { adminRoutes } from './modules/admin/admin.routes';
 import { LandingComponent } from './modules/landing/landing.component';
 import { RouteData } from './core/models/navigation.model';
-import { onboardingRoutes } from './modules/onboarding/onboarding.routes';
 
 export const routes: Routes = [
   {
@@ -31,13 +29,18 @@ export const routes: Routes = [
     ]
   },
   {
+    path: 'auth',
+    // loadComponent: () => import('./modules/auth/auth-routing.module').then(m => m),
+    loadChildren: () => import('./modules/auth/auth-routing.module').then(m => m.authRoutes)
+  },
+  {
     path: 'onboarding',
     loadComponent: () => import('./modules/onboarding/onboarding.component').then(m => m.OnboardingComponent),
-    loadChildren: () => onboardingRoutes
+    loadChildren: () => import('./modules/onboarding/onboarding.routes').then(m => m.onboardingRoutes)
   },
   {
     path: 'admin',
     loadComponent: () => import('./modules/common/common.component').then(m => m.CommonComponent),
-    loadChildren: () => adminRoutes,
+    loadChildren: () => import('./modules/admin/admin.routes').then(m => m.adminRoutes)
   },
 ];

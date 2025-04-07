@@ -5,7 +5,7 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { MatButton } from '@angular/material/button';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { LogoComponent, PasswordStrengthComponent } from '@elementar-ui/components';
+import { LogoComponent } from '@app/modules/layouts/logo';
 
 @Component({
   selector: 'app-set-new-password',
@@ -18,7 +18,6 @@ import { LogoComponent, PasswordStrengthComponent } from '@elementar-ui/componen
     MatInput,
     MatLabel,
     ReactiveFormsModule,
-    PasswordStrengthComponent,
     LogoComponent
   ],
   templateUrl: './set-new-password.component.html',

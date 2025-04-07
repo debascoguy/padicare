@@ -96,6 +96,20 @@ export class AuthenticationService {
     );
   }
 
+  registerCaregiver(context: any) {
+    return this.httpClient.post('/auth/register/caregiver', context).pipe(
+      map((response: any) => {
+        if (!!response.status) {
+          this.credentialsService.setCredentials(response.data, true);
+        }
+        return response;
+      }),
+      catchError(error => {
+        return of(error);
+      })
+    );
+  }
+
   /**
    * Logs out the user and clear credentials.
    * @return True if the user was logged out successfully.

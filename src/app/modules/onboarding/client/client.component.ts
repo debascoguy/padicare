@@ -27,6 +27,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../../../core/authentication/authentication.service';
 import { SecondaryCareTypeEnums } from '../../../enums/secondary.care.type.enum';
+import { DocumentUploaderComponent } from '@app/components/document-uploader/document-uploader.component';
 
 @Component({
   selector: 'app-client',
@@ -44,7 +45,8 @@ import { SecondaryCareTypeEnums } from '../../../enums/secondary.care.type.enum'
     MatIconModule,
     MatCheckboxModule,
     MatProgressSpinnerModule,
-    ReplaceStringPipe
+    ReplaceStringPipe,
+    DocumentUploaderComponent,
   ],
   providers: [
     MatSnackBar,
@@ -72,6 +74,7 @@ export class ClientComponent implements OnInit, AfterViewInit {
   step4Form: FormGroup;
   step5Form: FormGroup;
   step6Form: FormGroup;
+  step7Form: FormGroup;
 
   showStep0Form: boolean = false;
   zipCodeInfo: zipcodes.ZipCode | null = null;
@@ -121,8 +124,21 @@ export class ClientComponent implements OnInit, AfterViewInit {
     this.step6Form = new FormGroup({
       firstName: new FormControl('', [Validators.required]),
       lastName: new FormControl('', [Validators.required]),
-      email: new FormControl('', [Validators.required, Validators.email]),
-      password: new FormControl('', Validation.validatePassword(8)),
+      email: new FormControl('', Validation.validateEmailField),
+      cellPhone: new FormControl('', [Validators.required]),
+      password: new FormControl('', Validation.validatePassword(8, /[!@#$%^&*(),.?":{}|<>]/)),
+      confirmPassword: new FormControl('', Validation.validatePassword(8, /[!@#$%^&*(),.?":{}|<>]/)),
+    }, Validation.matchingPasswords('password', 'confirmPassword'));
+
+    this.step7Form = new FormGroup({
+      identityDocument: new FormControl('', [Validators.required]),
+      filename: new FormControl('', [Validators.required]),
+      acceptTermsAndConditions: new FormControl(false, [Validators.requiredTrue]),
+      acceptNotifications: new FormControl(false, [Validators.requiredTrue]),
+      acceptLocation: new FormControl(false, [Validators.requiredTrue]),
+      acceptEmail: new FormControl(false, [Validators.requiredTrue]),
+      acceptSMS: new FormControl(false, [Validators.requiredTrue]),
+      acceptPhone: new FormControl(false, [Validators.requiredTrue]),
     });
   }
 
@@ -235,6 +251,16 @@ export class ClientComponent implements OnInit, AfterViewInit {
     return { otherCareTypes: step5FormValues };
   }
 
+  onFileUpload({ fileBase64, fileInfo }: { fileBase64: string | null; fileInfo: File | null }) {
+    if (fileBase64) {
+      this.step7Form.patchValue({ identityDocument: fileBase64, filename: fileInfo?.name });
+      this.step7Form.updateValueAndValidity();
+    } else {
+      this.step7Form.patchValue({ identityDocument: '', filename: '' });
+      this.step7Form.updateValueAndValidity();
+    }
+  }
+
   submit() {
     if (this.step6Form.invalid) {
       return;
@@ -249,7 +275,10 @@ export class ClientComponent implements OnInit, AfterViewInit {
       ...this.step4Form.value,
       ...this.getOtherCareTypeValues(),
       ...this.step6Form.value,
+      ...this.step7Form.value,
     };
+
+    delete allData['confirmPassword'];
 
     this.authenticationService.registerClient(allData)
     .subscribe((response: any) => {
@@ -263,7 +292,14 @@ export class ClientComponent implements OnInit, AfterViewInit {
           this.isSubmitted = false;
           this.router.navigate(['/onboarding/client/account']);
         });
+      } else {
+        this.isSubmitted = false;
+        this.snackBar.open(response.message, 'close', { duration: 3000 });
       }
+    }, (error: any) => {
+      this.isSubmitted = false;
+      this.snackBar.open(error.message, 'close', { duration: 3000 });
+      this.logger.error(error);
     });
   }
 

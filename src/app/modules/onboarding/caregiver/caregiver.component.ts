@@ -22,9 +22,8 @@ import { Validation } from '@app/core/services/Validation';
 import { EnvironmentService } from '@app/core/services/environment.service';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { FormatFileSizePipe } from '@app/core/pipes/format-file-size.pipe';
 import { MatCardModule } from '@angular/material/card';
-import { DragAndDropDirective } from '@app/components/file-uploader/DragAndDropDirective';
+import { DocumentUploaderComponent } from '@app/components/document-uploader/document-uploader.component';
 
 @Component({
   selector: 'app-caregiver',
@@ -44,9 +43,8 @@ import { DragAndDropDirective } from '@app/components/file-uploader/DragAndDropD
     MatCheckboxModule,
     MatProgressSpinnerModule,
     MatProgressBarModule,
+    DocumentUploaderComponent,
     ReplaceStringPipe,
-    FormatFileSizePipe,
-    DragAndDropDirective
   ],
   providers: [
     MatSnackBar,
@@ -117,7 +115,7 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
     });
 
     this.step2Form = new FormGroup({
-      careAvailability: new FormControl('', [Validators.required]),
+      carePeriod: new FormControl('', [Validators.required]),
     });
 
     this.step3Form = new FormGroup({
@@ -128,14 +126,14 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
       firstName: new FormControl('', [Validators.required]),
       lastName: new FormControl('', [Validators.required]),
       email: new FormControl('', Validation.validateEmailField),
-      phoneNumber: new FormControl('', [Validators.required]),
+      cellPhone: new FormControl('', [Validators.required]),
       password: new FormControl('', Validation.validatePassword(8, /[!@#$%^&*(),.?":{}|<>]/)),
       confirmPassword: new FormControl('', Validation.validatePassword(8, /[!@#$%^&*(),.?":{}|<>]/)),
     }, Validation.matchingPasswords('password', 'confirmPassword'));
 
     this.step5Form = new FormGroup({
       identityDocument: new FormControl('', [Validators.required]),
-      identityDocumentInfo: new FormControl('', [Validators.required]),
+      filename: new FormControl('', [Validators.required]),
       acceptTermsAndConditions: new FormControl(false, [Validators.requiredTrue]),
       acceptNotifications: new FormControl(false, [Validators.requiredTrue]),
       acceptLocation: new FormControl(false, [Validators.requiredTrue]),
@@ -145,9 +143,7 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
     });
 
     this.step6Form = new FormGroup({
-      //background check
-      backgroundCheck: new FormControl(false, [Validators.requiredTrue]),
-      registrationFee: new FormControl('', [Validators.required]),
+      backgroundCheck: new FormControl(false, [Validators.requiredTrue])
     });
 
     this.mapLoader = new Loader({
@@ -173,6 +169,7 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     if (this.zipcode?.value && this.zipcode?.valid) {
+      this.search();
       this.geocodeZipcode(this.zipcode?.value);
     }
     this.step0Form.get('zipcode')?.valueChanges.subscribe((value) => {
@@ -231,7 +228,7 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
             this.drawCircle(this.step0Form.get('radius')?.value || 20);
           }
         } else {
-          alert('Geocode was not successful for the following reason: ' + status);
+          this.logger.error('Geocode was not successful for the following reason: ' + status);
         }
       });
     });
@@ -270,63 +267,73 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
     return Object.keys(this.careReceiverOptions);
   }
 
-  fileName: string = '';
-  requiredFileType: string = 'image/jpg,image/jpeg,image/gif,application/pdf';
-  uploadInProgress: boolean = false;
-  fileInfo: any = {};
-  fileError: string|null = null;
-  onFileDropped(files: FileList) {
-    this.cancelUpload();
-    this.fileInfo = files[0];
-    this.uploadInProgress = true;
-    if (this.fileInfo.size > (1048576 * 10)) { // 10MB
-      this.fileError = 'File size exceeds 10MB';
+  getOtherCareTypeValues() {
+    const otherCareTypes = this.step3Form.get('otherCareTypes')?.value;
+    let step3FormValues = [];
+    for (let i = 0; i < otherCareTypes.length; i++) {
+      if (otherCareTypes[i] == true) {
+        step3FormValues.push(this.otherCareReceiverValues[i]);
+      }
     }
-    if (!this.requiredFileType.split(',').includes(this.fileInfo.type)) {
-      this.fileError = 'Invalid file type. Only jpg, jpeg, gif, and pdf are allowed.';
-    }
-    if (this.fileError) {
-      this.uploadInProgress = false;
-      this.step5Form.patchValue({ identityDocument: '', identityDocumentInfo: '' });
+    return { otherCareTypes: step3FormValues };
+  }
+
+  
+  onFileUpload({ fileBase64, fileInfo }: { fileBase64: string | null; fileInfo: File | null }) {
+    if (fileBase64) {
+      this.step5Form.patchValue({ identityDocument: fileBase64, filename: fileInfo?.name });
       this.step5Form.updateValueAndValidity();
+    } else {
+      this.step5Form.patchValue({ identityDocument: '', filename: '' });
+      this.step5Form.updateValueAndValidity();
+    }
+  }
+
+  submit() {
+    if (this.step6Form.invalid) {
       return;
     }
-    this.fileError = null;
-    this.fileName = this.fileInfo.name;
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const base64String = (e.target?.result as string).replace(/^data:.+;base64,/, '');
-      this.step5Form.patchValue({ identityDocument: base64String, identityDocumentInfo: this.fileInfo });
-      this.step5Form.updateValueAndValidity();
-      this.uploadInProgress = false;
-    }
-    reader.readAsDataURL(this.fileInfo);
-    this.uploadInProgress = false;
-  }
 
-  onFileSelected(event: Event) {
-    const fileInput = event.target as HTMLInputElement;
-    if (fileInput.files && fileInput.files.length > 0) {
-      this.onFileDropped(fileInput.files);
-    }
-  }
+    this.isSubmitted = true;
+    const allData = {
+      ...this.step0Form.value,
+      ...this.step1Form.value,
+      ...this.step2Form.value,
+      ...this.getOtherCareTypeValues(),
+      ...this.step4Form.value,
+      ...this.step5Form.value,
+      ...this.step6Form.value,
+    };
 
-  cancelUpload() {
-    this.step5Form.patchValue({ identityDocument: '', identityDocumentInfo: '' });
-    this.step5Form.updateValueAndValidity();
-    this.fileInfo = null;
-    this.fileError = null;
-    this.fileName = '';
-    this.uploadInProgress = false;
-  }
+    allData['backgroundCheck'] = allData['backgroundCheck'] ? 'INITIATED' : null;
+    allData['radius'] = +allData['radius'];
+    allData['latitude'] = +allData['latitude'];
+    allData['longitude'] = +allData['longitude'];
+    delete allData['confirmPassword'];
 
-  getStarted() {
-    if (this.step0Form.invalid) {
-      this.snackBar.open(this.errorMessage, 'close', { duration: 3000 })
-        .afterDismissed().subscribe((_) => {
-          this.step0Form.reset();
-        });
-    }
+    this.logger.info(allData);
+
+    this.authenticationService.registerCaregiver(allData)
+      .subscribe((response: any) => {
+        if (response.status) {
+          this.showSuccessMessage = true;
+          this.snackBar.openFromTemplate(this.notificationTemplate, {
+            horizontalPosition: 'center',
+            verticalPosition: 'bottom',
+            duration: 2000
+          }).afterDismissed().subscribe((_) => {
+            this.isSubmitted = false;
+            this.router.navigate(['/auth/login']);
+          });
+        } else {
+          this.isSubmitted = false;
+          this.snackBar.open(response.message, 'close', { duration: 3000 });
+        }
+      }, (error: any) => {
+          this.isSubmitted = false;
+          this.snackBar.open(error.message, 'close', { duration: 3000 });
+          this.logger.error(error);
+      });
   }
 
 }
