@@ -40,4 +40,11 @@ export class SubscriptionComponent {
 
     }
 
+    stayLimited() {
+      this.router.navigate(['/onboarding/client/select-caregiver']);
+    }
+
+    goPremium() {
+      this.router.navigate(['/onboarding/client/select-caregiver']);
+    }
 }

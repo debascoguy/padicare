@@ -6,6 +6,8 @@ export interface LoginContext {
     refreshToken: string;
     user: User;
     profileImage?: any;
+    userAddress?: any;
+    userPreferences?: any;
     clientPreferences?: any;
     [key: string]: any;
 }

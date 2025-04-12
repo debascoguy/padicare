@@ -20,5 +20,9 @@ export class ClientGetStartedComponent {
 
   }
 
+  gotoDashboard() {
+    this.router.navigate(['/client/dashboard']);
+  }
+
 
 }

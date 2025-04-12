@@ -34,19 +34,25 @@ export class HttpInterceptorService implements HttpInterceptor {
       request = request.clone({ url: serverUrl + url });
     }
 
+    const originalRequestHeaders = request.headers;
     if (isCentralApi) {
+      const authorizationHeader = this.credentialService.isAuthenticated() ?
+
+        //AuthenticationInterceptor: Test if Authenticated, Append Authorization Header
+        (
+          (url == this.envService.getValue('renewTokenUrl')) ?
+            HttpHeadersHelpers.getJsonContentTypeHeadersWithToken(this.credentialService.refreshToken + '') :
+            HttpHeadersHelpers.getJsonContentTypeHeadersWithToken(this.credentialService.token + '')
+        ) :
+
+        //isCentralApiInterceptor: This uses json for request/response!
+        HttpHeadersHelpers.getJsonContentTypeHeaders();
+
+      Object.keys(authorizationHeader).forEach(headerKey => {
+        originalRequestHeaders.set(headerKey, authorizationHeader[headerKey]);
+      });
       request = request.clone({
-        setHeaders: this.credentialService.isAuthenticated() ?
-
-                    //AuthenticationInterceptor: Test if Authenticated, Append Authorization Header
-                    (
-                      (url == this.envService.getValue('renewTokenUrl')) ?
-                      HttpHeadersHelpers.getJsonContentTypeHeadersWithToken(this.credentialService.refreshToken+'') :
-                      HttpHeadersHelpers.getJsonContentTypeHeadersWithToken(this.credentialService.token+'')
-                    ) :
-
-                    //isCentralApiInterceptor: This uses json for request/response!
-                    HttpHeadersHelpers.getJsonContentTypeHeaders()
+        headers: originalRequestHeaders
       });
     }
 
@@ -58,7 +64,7 @@ export class HttpInterceptorService implements HttpInterceptor {
         //Renew Token
         const renewTokenRequest = request.clone({
           url: serverUrl + renewTokenUrl,
-          setHeaders: HttpHeadersHelpers.getJsonContentTypeHeadersWithToken(this.credentialService.refreshToken+''),
+          setHeaders: HttpHeadersHelpers.getJsonContentTypeHeadersWithToken(this.credentialService.refreshToken + ''),
           method: 'GET'
         });
         return next.handle(renewTokenRequest).pipe(
@@ -68,7 +74,7 @@ export class HttpInterceptorService implements HttpInterceptor {
               //Then, Retry Request
               const retryRequest = request.clone({
                 url: retryUrl,
-                setHeaders: HttpHeadersHelpers.getJsonContentTypeHeadersWithToken(this.credentialService.token+'')
+                setHeaders: HttpHeadersHelpers.getJsonContentTypeHeadersWithToken(this.credentialService.token + '')
               });
               return next.handle(retryRequest).pipe(share());
             }
@@ -78,7 +84,7 @@ export class HttpInterceptorService implements HttpInterceptor {
       }
       if (!isLoggedIn && (httpErrorCode === HttpStatusCode.Unauthorized || httpErrorCode === HttpStatusCode.Forbidden)) {
         this.authService.logout().subscribe((_) => {
-          console.log("Unathorized Request!");
+          console.log("Unauthorized Request!");
         });
       }
       return this.handleErrors(err);
@@ -89,8 +95,7 @@ export class HttpInterceptorService implements HttpInterceptor {
     let msg: string = "";
     msg = "Status: " + error.status;
     msg += " - Status Text: " + error.statusText;
-    console.error('An error occurred ', msg);
-    console.error('An error occurred ', error);
+    console.error('An error occurred ', msg, error);
     this.snackBar.open(error.error.message, 'close', {
       duration: 3000
     });

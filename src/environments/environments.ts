@@ -1,24 +1,25 @@
+const process = {env: []} as any;
+
 export const environment = {
   production: false,
-  pageTitle: "Padicare",
-  serverUrl: "http://localhost:8081/api/v1",
+  pageTitle: process?.env?.["APP_NAME"] || "Padicare",
+  timeZone: process?.env?.["APP_TIMEZONE"] || "UTC",
+  locale: process?.env?.["APP_LOCALE"] || "en-US",
+  serverUrl: process?.env?.["SERVER_URL"] || "http://localhost:8081/api/v1",
+  fileServerUrl: process?.env?.["FILE_SERVER_URL"] || "http://localhost:8090",
+  socketServerUrlEndPoint: process?.env?.["SOCKET_SERVER_URL"] || "http://localhost:8082",
   renewTokenUrl: "/auth/renew-token",
-  fileServerUrl: "http://localhost:8090",
-  socketServerUrlEndPoint: "http://localhost:8082",
-  clientSideSiteKey_invisible_captcha: '6LdxtT0gAAAAADDB04GF30J3iQTZ4NKViT8MQNxT',
-  privateSiteKey_invisible_captcha: '6LdxtT0gAAAAAMla1cjmYkkuiDB3gr_mOvIxkiLd',
-  googleMapApiKey: 'AIzaSyCpYeT3cBLvGBUVuYhrXOBAY8_ZW7IKzGY',
-  googleMapApiUrl: 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCpYeT3cBLvGBUVuYhrXOBAY8_ZW7IKzGY&libraries=places',
-  googleMapApiUrlForAutocomplete: 'https://maps.googleapis.com/maps/api/place/autocomplete/json?key=AIzaSyCpYeT3cBLvGBUVuYhrXOBAY8_ZW7IKzGY&libraries=places',
-  googleMapApiUrlForDirections: 'https://maps.googleapis.com/maps/api/directions/json?key=AIzaSyCpYeT3cBLvGBUVuYhrXOBAY8_ZW7IKzGY&libraries=places',
+  clientSideSiteKey_invisible_captcha: process?.env?.["CLIENT_SIDE_KEY_INVISIBLE_CAPTCHA"] || "6LdxtT0gAAAAADDB04GF30J3iQTZ4NKViT8MQNxT",
+  privateSiteKey_invisible_captcha: process?.env?.["PRIVATE_KEY_INVISIBLE_CAPTCHA"] || "6LdxtT0gAAAAAMla1cjmYkkuiDB3gr_mOvIxkiLd",
+  googleMapApiKey: process?.env?.["GOOGLE_MAP_API_KEY"] || "AIzaSyCpYeT3cBLvGBUVuYhrXOBAY8_ZW7IKzGY",
   get baseURL(): string {
     const parsedUrl = new URL(window.location.href);
     let baseUrl = parsedUrl.origin;
     return baseUrl;
   },
   logger: {
-    console: true,
-    localStorage: false,
-    webApi: false
+    console: process?.env?.["LOGGER_CONSOLE"] === "true" || true,
+    localStorage: process?.env?.["LOGGER_LOCAL_STORAGE"] === "true" || false,
+    webApi: process?.env?.["LOGGER_WEB_API"] === "true" || false,
   },
 };

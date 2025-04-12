@@ -128,6 +128,13 @@ export class Validation {
 
 }
 
+export const parseBoolean = (value: string | undefined): boolean => {
+  const falseContainer = [undefined, null, "", "false"];
+  if (falseContainer.includes(value) || (!!value && value.trim().length === 0)) {
+    return false;
+  }
+  return value === "true" || !!value;
+}
 
 export function matchingPasswords(passwordKey: string, confirmPasswordKey: string): any {
   return (group: FormGroup): any => {

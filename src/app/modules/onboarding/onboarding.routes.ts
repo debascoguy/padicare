@@ -6,6 +6,7 @@ import { ClientAccountComponent } from './client-account/client-account.componen
 import { SubscriptionComponent } from './subscription/subscription.component';
 import { SearchCaregiverComponent } from './search-caregiver/search-caregiver.component';
 import { ClientGetStartedComponent } from './client-get-started/client-get-started.component';
+import { VerifyEmailComponent } from './verify-email/verify-email.component';
 
 export const onboardingRoutes: Routes = [
   {
@@ -179,4 +180,22 @@ export const onboardingRoutes: Routes = [
       pageAuthorities: []
     } as RouteData,
   },
+  {
+    path: 'verify/email/:token',
+    component: VerifyEmailComponent,
+    data: {
+      title: 'Verify Email',
+      breadcrumbs: [
+        {
+          text: 'Home',
+          link: '/'
+        },
+        {
+          text: 'Verify Email',
+          active: true,
+        },
+      ],
+      pageAuthorities: []
+    } as RouteData,
+  }
 ];

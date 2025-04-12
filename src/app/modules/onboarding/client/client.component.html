@@ -34,7 +34,7 @@
               <mat-hint>{{ !!zipCodeInfo ? zipCodeInfo.city + ', ' + zipCodeInfo.state : '' }}</mat-hint>
             </mat-form-field>
           </div>
-          <div class="d-grid gap-2">
+          <div class="d-grid gap-2 mt-2">
             <button class="btn btn-primary" matStepperNext (click)="getStarted()">Next</button>
           </div>
         </form>
@@ -55,8 +55,9 @@
               </label>
             </div>
           </div>
-          <div class="d-grid gap-2">
+          <div class="d-grid gap-2 mt-2">
             <button class="btn btn-primary" matStepperNext>Next</button>
+            <button class="btn btn-light" matStepperPrevious *ngIf="showStep0Form">Back</button>
           </div>
         </form>
       </mat-step>
@@ -67,28 +68,29 @@
           <span class="fs-6">Join Padicare to get access to trusted & verified caregivers.</span>
           <div class="mt-4 mb-3">
             <div class="d-grid gap-2 mb-4">
-              <input type="radio" name="carePeriod" formControlName="carePeriod" value="RIGHT_NOW" class="btn-check"
+              <input type="radio" name="careReadiness" formControlName="careReadiness" value="RIGHT_NOW" class="btn-check"
                 id="right-now">
               <label class="btn btn-outline-dark" for="right-now">Right Now</label>
             </div>
             <div class="d-grid gap-2 mb-4">
-              <input type="radio" name="carePeriod" formControlName="carePeriod" value="WITHIN_A_WEEK" class="btn-check"
+              <input type="radio" name="careReadiness" formControlName="careReadiness" value="WITHIN_A_WEEK" class="btn-check"
                 id="within-a-week">
               <label class="btn btn-outline-dark" for="within-a-week">Within a week</label>
             </div>
             <div class="d-grid gap-2 mb-4">
-              <input type="radio" name="carePeriod" formControlName="carePeriod" value="IN_1_2_MONTH" class="btn-check"
+              <input type="radio" name="careReadiness" formControlName="careReadiness" value="IN_1_2_MONTH" class="btn-check"
                 id="in-1-2-months">
               <label class="btn btn-outline-dark" for="in-1-2-months">In 1-2 Months</label>
             </div>
             <div class="d-grid gap-2 mb-4">
-              <input type="radio" name="carePeriod" formControlName="carePeriod" value="JUST_BROWSING" class="btn-check"
+              <input type="radio" name="careReadiness" formControlName="careReadiness" value="JUST_BROWSING" class="btn-check"
                 id="just-browsing">
               <label class="btn btn-outline-dark" for="just-browsing">Just Browsing</label>
             </div>
           </div>
-          <div class="d-grid gap-2">
+          <div class="d-grid gap-2 mt-2">
             <button class="btn btn-primary" matStepperNext>Next</button>
+            <button class="btn btn-light" matStepperPrevious>Back</button>
           </div>
         </form>
       </mat-step>
@@ -108,8 +110,9 @@
               </label>
             </div>
           </div>
-          <div class="d-grid gap-2">
+          <div class="d-grid gap-2 mt-2">
             <button class="btn btn-primary" matStepperNext>Next</button>
+            <button class="btn btn-light" matStepperPrevious>Back</button>
           </div>
         </form>
       </mat-step>
@@ -141,8 +144,9 @@
               Add another child
             </button>
           </div>
-          <div class="d-grid gap-2">
+          <div class="d-grid gap-2 mt-2">
             <button class="btn btn-primary" matStepperNext>Next</button>
+            <button class="btn btn-light" matStepperPrevious>Back</button>
           </div>
         </form>
       </mat-step>
@@ -158,14 +162,15 @@
               </mat-checkbox>
             </div>
           </div>
-          <div class="d-grid gap-2">
+          <div class="d-grid gap-2 mt-2">
             <button class="btn btn-primary" matStepperNext>Next</button>
+            <button class="btn btn-light" matStepperPrevious>Back</button>
           </div>
         </form>
       </mat-step>
 
       <mat-step [stepControl]="step6Form">
-        <form [formGroup]="step6Form" (ngSubmit)="submit()">
+        <form [formGroup]="step6Form">
           <h4 class="fw-bold">Finish setting up your account!</h4>
           <span class="fs-5">See caregivers who match your needs. It only takes a few seconds.</span>
           <div class="mt-2 mb-1">
@@ -187,16 +192,19 @@
               </button>
             </mat-form-field>
 
-            <mat-form-field class="col-md-6 pe-1">
+            <mat-form-field class="col-md-6 pe-1 mt-2">
               <mat-label>Email</mat-label>
               <input matInput type="text" formControlName="email">
-              <button matSuffix mat-icon-button aria-label="Clear" *ngIf="step4Form.get('email')?.valid"
-                (click)="step4Form.get('email')?.setValue('')">
+              <button matSuffix mat-icon-button aria-label="Clear" *ngIf="email?.valid" (click)="email?.setValue('')">
                 <mat-icon>close</mat-icon>
               </button>
+              <mat-error *ngIf="email?.invalid && (email?.dirty || email?.touched)">
+                <span *ngIf="email?.errors?.['uniqueEmail']">Email already exists. Please <a href='/auth/login'>login</a></span>
+                <span *ngIf="email?.errors?.['email']">Not a valid email</span>
+              </mat-error>
             </mat-form-field>
 
-            <mat-form-field class="col-md-6 ps-1">
+            <mat-form-field class="col-md-6 ps-1 mt-2">
               <mat-label>Phone Number</mat-label>
               <input matInput type="text" formControlName="cellPhone">
               <button matSuffix mat-icon-button aria-label="Clear" *ngIf="step4Form.get('cellPhone')?.valid"
@@ -205,7 +213,7 @@
               </button>
             </mat-form-field>
 
-            <mat-form-field class="col-md-6 pe-1">
+            <mat-form-field class="col-md-6 pe-1 mt-2">
               <mat-label>Password</mat-label>
               <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password">
               <button type="button" *ngIf="step4Form.get('password')?.invalid" matSuffix mat-icon-button
@@ -220,7 +228,7 @@
               <mat-hint>It must be a combination of minimum 8 letters, numbers, and symbols.</mat-hint>
             </mat-form-field>
 
-            <mat-form-field class="col-md-6 ps-1">
+            <mat-form-field class="col-md-6 ps-1 mt-2">
               <mat-label>Confirm Password</mat-label>
               <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="confirmPassword">
               <button type="button" *ngIf="step4Form.get('confirmPassword')?.invalid" matSuffix mat-icon-button
@@ -236,15 +244,16 @@
             </mat-form-field>
 
           </div>
-          <div class="d-grid gap-2">
+          <div class="d-grid gap-2 mt-2">
             <button class="btn btn-primary" matStepperNext>Join Now</button>
+            <button class="btn btn-light" matStepperPrevious>Back</button>
           </div>
         </form>
       </mat-step>
 
       
       <mat-step [stepControl]="step7Form">
-        <form [formGroup]="step7Form">
+        <form [formGroup]="step7Form" (ngSubmit)="submit()">
           <h4 class="fw-bold">Authorization and Preference Settings!</h4>
           <span class="fs-5">Terms and condition and background check authorization.</span>
           <div class="mt-4 mb-3 text-start">
@@ -294,19 +303,18 @@
               <small>
                 Upload a clear and legible copy of your identity document (e.g., driver's license, passport, etc.) to verify your identity.
               </small>
-
               <app-document-uploader (documentUploaded)="onFileUpload($event)"></app-document-uploader>
-
             </div>
 
           </div>
-          <div class="d-grid gap-2">
-            <button class="btn btn-primary" matStepperNext [disabled]="isSubmitted">
+          <div class="d-grid gap-2 mt-2">
+            <button type="submit" class="btn btn-primary" matStepperNext [disabled]="isSubmitted">
               <span class="d-inline-flex">
                 <mat-spinner *ngIf="isSubmitted" [diameter]="20"></mat-spinner>
               </span>
               Join Now
             </button>
+            <button class="btn btn-light" matStepperPrevious>Back</button>
           </div>
           <!-- <p class="mt-2">
             By clicking "Join now", you agree to our <a href="#" class="link-underline-primary">Terms of Use</a>

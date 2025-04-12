@@ -1,0 +1,39 @@
+<div class="position-absolute top-40 start-50 translate-middle text-center">
+  <div class="border border-secondary text-center rounded shadow-sm bg-light">
+
+    <div class="row">
+      <div class="col-md-12 col-lg-12 col-xl-12 mb-3 p-3">
+
+        <div class="d-block" *ngIf="emailVerificationStatus === 'IN_PROGRESS'">
+          <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+        </div>
+
+        <div *ngIf="emailVerificationStatus === 'NONE'" class="alert alert-info" role="alert">
+          <h3>Account Verification</h3>
+          <p>To verify your account, please log in to your email and check your email for the verification link.</p>
+          <p>If you have not received the verification email, please check your spam folder or request a new verification
+            email.</p>
+        </div>
+
+        <div *ngIf="emailVerificationStatus === 'VERIFIED'" class="alert alert-success" role="alert">
+          <h3>Account Email Verified</h3>
+          <p>Your account has been verified successfully.</p>
+          <p>You can now log in to your account.</p>
+        </div>
+
+        <div *ngIf="emailVerificationStatus === 'ERROR'" class="alert alert-danger" role="alert">
+          <h3> This Link Has Expired </h3>
+          <p>Either this account has already been verified or wasn't verified within the time allowed</p>
+          <p>If you have forgotten your password, click on the "Forgot Password" link on the Log In page to reset it.</p>
+        </div>
+
+        <div class="d-flex justify-content-center mt-3 mb-3" *ngIf="emailVerificationStatus !== 'IN_PROGRESS'">
+          <a href="/auth/login" class="btn btn-primary me-2">Log In</a>
+          <a href="/" class="btn btn-primary ms-2">Home</a>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>

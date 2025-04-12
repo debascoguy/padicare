@@ -28,6 +28,8 @@ import { Router } from '@angular/router';
 import { AuthenticationService } from '../../../core/authentication/authentication.service';
 import { SecondaryCareTypeEnums } from '../../../enums/secondary.care.type.enum';
 import { DocumentUploaderComponent } from '@app/components/document-uploader/document-uploader.component';
+import { firstValueFrom } from 'rxjs';
+import { AppUserType } from '@app/enums/app.user.type.enum';
 
 @Component({
   selector: 'app-client',
@@ -109,7 +111,7 @@ export class ClientComponent implements OnInit, AfterViewInit {
       primaryCareType: new FormControl('', [Validators.required]),
     });
     this.step2Form = new FormGroup({
-      carePeriod: new FormControl('', [Validators.required]),
+      careReadiness: new FormControl('', [Validators.required]),
     });
     this.step3Form = new FormGroup({
       secondaryCareType: new FormControl('', [Validators.required]),
@@ -150,7 +152,23 @@ export class ClientComponent implements OnInit, AfterViewInit {
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.email?.valueChanges.subscribe((value) => {
+      firstValueFrom(this.authenticationService.validateEmail(AppUserType.careGiver, value))
+        .then((response: any) => {
+          if (response.status) {
+            //That is, The email is not unique error = true
+            this.email?.setErrors({uniqueEmail: response.status});
+          }
+        }).catch(error => {
+          this.email?.setErrors({email: true});
+        });
+    });
+  }
+
+  get email() {
+    return this.step6Form.get('email');
+  }
 
   get zipcode() {
     return this.step0Form.get('zipcode');
@@ -262,7 +280,7 @@ export class ClientComponent implements OnInit, AfterViewInit {
   }
 
   submit() {
-    if (this.step6Form.invalid) {
+    if (this.step7Form.invalid) {
       return;
     }
 
@@ -278,10 +296,12 @@ export class ClientComponent implements OnInit, AfterViewInit {
       ...this.step7Form.value,
     };
 
+    allData['latitude'] = +allData['latitude'];
+    allData['longitude'] = +allData['longitude'];
     delete allData['confirmPassword'];
 
-    this.authenticationService.registerClient(allData)
-    .subscribe((response: any) => {
+    this.isSubmitted = false;
+    firstValueFrom(this.authenticationService.registerClient(allData)).then((response: any) => {
       if (response.status) {
         this.showSuccessMessage = true;
         this.snackBar.openFromTemplate(this.notificationTemplate, {

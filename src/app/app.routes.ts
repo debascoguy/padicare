@@ -30,7 +30,7 @@ export const routes: Routes = [
   },
   {
     path: 'auth',
-    // loadComponent: () => import('./modules/auth/auth-routing.module').then(m => m),
+    loadComponent: () => import('./modules/onboarding/onboarding.component').then(m => m.OnboardingComponent),
     loadChildren: () => import('./modules/auth/auth-routing.module').then(m => m.authRoutes)
   },
   {

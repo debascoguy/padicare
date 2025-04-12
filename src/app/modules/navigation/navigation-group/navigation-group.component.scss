@@ -1,8 +1,0 @@
-:host {
-  display: block;
-  border-radius: var(--padicare-navigation-group-border-radius);
-}
-
-:host:has(.padicare-navigation-group-toggle.is-active) {
-  background: var(--padicare-navigation-group-active-bg);
-}

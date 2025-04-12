@@ -5,6 +5,7 @@ import { RoutingStateService } from './core/services/routing-state.service';
 import { filter } from 'rxjs';
 import { InactivityTrackerService } from './core/services/inactivity-tracker.service';
 import { ScreenLoaderService } from './core/services/screen-loader.service';
+import { LogService } from './core/logger/LogService';
 
 @Component({
   selector: 'app-root',
@@ -29,6 +30,7 @@ export class AppComponent implements OnInit {
   private _inactivityTracker = inject(InactivityTrackerService);
   private _screenLoader = inject(ScreenLoaderService);
   private _router = inject(Router);
+  private _logger = inject(LogService);
 
   constructor() {
     afterNextRender(() => {
@@ -52,7 +54,7 @@ export class AppComponent implements OnInit {
       // this._analyticsService.trackPageViews();
       this._inactivityTracker.setupInactivityTimer()
         .subscribe(() => {
-          console.log('Inactive mode has been activated!');
+          this._logger.info('Inactive mode has been activated!', new Date());
           // Perfom some actions when user is inactive - e.g. logout or show a modal to keep session alive
           // this._inactivityTracker.reset();
         });

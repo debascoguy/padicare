@@ -5,6 +5,9 @@ import { CredentialsService } from './credentials.service';
 import { NumberToWord } from '../services/NumberToWord';
 import { HttpClient, HttpStatusCode } from '@angular/common/http';
 import { environment } from '../../../environments/environments';
+import { LoginContext } from '../models/login-context.model';
+import { HttpHeadersHelpers } from '../http/HttpHeadersHelpers';
+import { AppUserType } from '@app/enums/app.user.type.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -67,6 +70,10 @@ export class AuthenticationService {
     );
   }
 
+  validateEmail(userType: AppUserType, email: string) {
+    return this.httpClient.get(`/auth/validate/email/${userType}/${email}`);
+  }
+
   register(context: any): Observable<any> {
     return this.httpClient.post("/auth/create-user", context).pipe(
       map((response: any) => {
@@ -98,6 +105,21 @@ export class AuthenticationService {
 
   registerCaregiver(context: any) {
     return this.httpClient.post('/auth/register/caregiver', context).pipe(
+      map((response: any) => {
+        if (!!response.status) {
+          this.credentialsService.setCredentials(response.data, true);
+        }
+        return response;
+      }),
+      catchError(error => {
+        return of(error);
+      })
+    );
+  }
+
+  verifyEmail(token : string) {
+    const headers = HttpHeadersHelpers.getAuthorization(token);
+    return this.httpClient.get("/onboarding/verify/email", { headers }).pipe(
       map((response: any) => {
         if (!!response.status) {
           this.credentialsService.setCredentials(response.data, true);

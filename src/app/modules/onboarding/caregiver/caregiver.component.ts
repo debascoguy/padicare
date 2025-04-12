@@ -1,3 +1,4 @@
+import { firstValueFrom } from 'rxjs';
 import { Loader } from '@googlemaps/js-api-loader';
 import { MatInputModule } from '@angular/material/input';
 import { MatStepper, MatStepperModule } from '@angular/material/stepper';
@@ -15,7 +16,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import * as zipcodes from 'zipcodes';
 import { LogService } from '@app/core/logger/LogService';
-import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
 import { Validation } from '@app/core/services/Validation';
@@ -24,6 +24,7 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatCardModule } from '@angular/material/card';
 import { DocumentUploaderComponent } from '@app/components/document-uploader/document-uploader.component';
+import { AppUserType } from '@app/enums/app.user.type.enum';
 
 @Component({
   selector: 'app-caregiver',
@@ -92,7 +93,6 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
   constructor(
     protected snackBar: MatSnackBar,
     protected logger: LogService,
-    protected http: HttpClient,
     protected router: Router,
     protected authenticationService: AuthenticationService,
     protected environmentService: EnvironmentService
@@ -115,7 +115,7 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
     });
 
     this.step2Form = new FormGroup({
-      carePeriod: new FormControl('', [Validators.required]),
+      careReadiness: new FormControl('', [Validators.required]),
     });
 
     this.step3Form = new FormGroup({
@@ -181,6 +181,16 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
     this.step0Form.get('radius')?.valueChanges.subscribe((value) => {
       this.drawCircle(value);
     });
+    this.email?.valueChanges.subscribe((value) => {
+      firstValueFrom(this.authenticationService.validateEmail(AppUserType.careGiver, value))
+        .then((response: any) => {
+          if (response.status) {
+            this.email?.setErrors({uniqueEmail: false});
+          }
+        }).catch(error => {
+          this.email?.setErrors({email: true});
+        });
+    });
   }
 
   ngAfterViewInit(): void {
@@ -196,6 +206,10 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
     this.otherCareReceiverValues.forEach((_) => {
       formArray.push(new FormControl(''));
     });
+  }
+
+  get email() {
+    return this.step4Form.get('email');
   }
 
   get primaryCareType() {
@@ -278,7 +292,6 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
     return { otherCareTypes: step3FormValues };
   }
 
-  
   onFileUpload({ fileBase64, fileInfo }: { fileBase64: string | null; fileInfo: File | null }) {
     if (fileBase64) {
       this.step5Form.patchValue({ identityDocument: fileBase64, filename: fileInfo?.name });
@@ -311,11 +324,8 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
     allData['longitude'] = +allData['longitude'];
     delete allData['confirmPassword'];
 
-    this.logger.info(allData);
-
-    this.authenticationService.registerCaregiver(allData)
-      .subscribe((response: any) => {
-        if (response.status) {
+    firstValueFrom(this.authenticationService.registerCaregiver(allData)).then((response: any) => {
+        if (response && response.status) {
           this.showSuccessMessage = true;
           this.snackBar.openFromTemplate(this.notificationTemplate, {
             horizontalPosition: 'center',
