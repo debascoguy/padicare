@@ -158,10 +158,10 @@ export class ClientComponent implements OnInit, AfterViewInit {
         .then((response: any) => {
           if (response.status) {
             //That is, The email is not unique error = true
-            this.email?.setErrors({uniqueEmail: response.status});
+            this.email?.setErrors({ uniqueEmail: response.status });
           }
         }).catch(error => {
-          this.email?.setErrors({email: true});
+          this.email?.setErrors({ email: true });
         });
     });
   }
@@ -316,10 +316,10 @@ export class ClientComponent implements OnInit, AfterViewInit {
         this.isSubmitted = false;
         this.snackBar.open(response.message, 'close', { duration: 3000 });
       }
-    }, (error: any) => {
+    }).catch(error => {
       this.isSubmitted = false;
-      this.snackBar.open(error.message, 'close', { duration: 3000 });
-      this.logger.error(error);
+      this.snackBar.open(error.error.message, 'close', { duration: 3000 });
+      this.logger.error(error.error);
     });
   }
 

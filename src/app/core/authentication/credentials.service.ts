@@ -3,6 +3,7 @@ import { User } from '../models/user';
 import { LoginContext } from '../models/login-context.model';
 import { SecuredLocalStorage } from '../services/SecuredLocalStorage';
 import { SecuredSessionStorage } from '../services/SecuredSessionStorage';
+import { AppUserType } from '@app/enums/app.user.type.enum';
 
 
 const credentialsKey = 'credentials';
@@ -64,8 +65,20 @@ export class CredentialsService {
     return !!this.credentials ? this.credentials.user : {} as User;
   }
 
+  get userAddress(): any {
+    return !!this.credentials ? this.credentials?.userAddress : {};
+  }
+
+  get userPreference(): any {
+    return !!this.credentials ? this.credentials?.userPreferences : {};
+  }
+
   get clientPreference(): any {
     return !!this.credentials ? this.credentials?.clientPreferences : {};
+  }
+
+  get activePortal(): AppUserType | null | undefined {
+    return !!this.credentials ? this.credentials?.activePortal : null;
   }
 
   get profileImage() {
@@ -108,12 +121,11 @@ export class CredentialsService {
     if (!credentials) {
       return ;
     }
-    if (field != refreshTokenKey) {
-      credentials[field] = value;
-      this.updateCredentials(credentials);
-    }
     if (field == refreshTokenKey) {
       this.refreshToken = value;
+    } else {
+      credentials[field] = value;
+      this.updateCredentials(credentials);
     }
   }
 

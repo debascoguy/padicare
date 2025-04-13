@@ -1,0 +1,22 @@
+
+<div class="spaceTop">
+  <mat-card appearance="outlined" (click)="go('/caregiver')" class="clickable-card" mat-raised-button>
+    <mat-card-header>
+      <mat-card-title> Caregiver</mat-card-title>
+      <mat-card-subtitle>Log into your caregiver portal</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-actions align="end">
+      <button mat-raised-button (click)="go('/caregiver')">Enter</button>
+    </mat-card-actions>
+  </mat-card>
+  <br>
+  <mat-card appearance="outlined" (click)="go('/client')" class="clickable-card" mat-raised-button>
+    <mat-card-header>
+      <mat-card-title>Client</mat-card-title>
+      <mat-card-subtitle>Log into your client side portal</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-actions align="end">
+      <button mat-raised-button (click)="go('/client')">Enter</button>
+    </mat-card-actions>
+  </mat-card>
+</div>

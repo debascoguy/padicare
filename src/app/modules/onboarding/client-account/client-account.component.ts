@@ -19,6 +19,7 @@ import { DayOfWeekShortEnum, SeasonOfDay } from '../../../enums/schedules.enum';
 import { CaregiverQualities } from '../../../enums/caregiver.qualities.enum';
 import { SecondaryCareTypeEnums } from '../../../enums/secondary.care.type.enum';
 import { Router } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-client-account',
@@ -153,12 +154,15 @@ export class ClientAccountComponent {
       ...this.step5Form.value,
     };
 
-    this.httpClient.post('/onboarding/client/preference', allData).subscribe((response: any) => {
+    firstValueFrom(this.httpClient.post('/onboarding/client/preference', allData)).then((response: any) => {
       if (response.status) {
         this.isSubmitted = false;
         this.credentialsService.updateCredentialsField('clientPreference', response.data);
         this.router.navigate(['/onboarding/client/subscription']);
       }
+    }).catch(error => {
+      this.isSubmitted = false;
+      this.snackBar.open(error.error.message, 'close', { duration: 3000 });
     });
   }
 }

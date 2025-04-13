@@ -1,5 +1,4 @@
 /* You can add global styles to this file, and also import other style files */
-// @use '@angular/material/prebuilt-themes/deeppurple-amber.css';
 /**
 Available pre-built themes:
   @angular/material/prebuilt-themes/azure-blue.css
@@ -14,7 +13,8 @@ Available pre-built themes:
 @use 'bootstrap/scss/bootstrap.scss';
 @use 'bootstrap-icons/font/bootstrap-icons.min.css';
 
-@use "./styles/themes/default";
+// @use "./styles/themes/default";
+@use '@angular/material/prebuilt-themes/deeppurple-amber.css';
 
 // Custom buttons
 body {

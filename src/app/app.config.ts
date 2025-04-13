@@ -24,7 +24,7 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(withEventReplay()),
     provideAnimationsAsync(),
     provideHttpClient(withInterceptorsFromDi()),
-    // provideHttpClient(withFetch()),
+    // provideHttpClient(withFetch()), importProvidersFrom(MatNativeDateModule), importProvidersFrom(MatSnackBarModule),
     provideStore(),
     provideNativeDateAdapter(),
     provideAppInitializer(() => {

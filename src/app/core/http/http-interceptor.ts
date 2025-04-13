@@ -1,7 +1,7 @@
 import { HttpHeadersHelpers } from './HttpHeadersHelpers';
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse, HttpStatusCode } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { catchError, share, switchMap } from 'rxjs/operators';
 import { CredentialsService } from '../authentication/credentials.service';
 import { AuthenticationService } from '../authentication/authentication.service';
@@ -99,7 +99,7 @@ export class HttpInterceptorService implements HttpInterceptor {
     this.snackBar.open(error.error.message, 'close', {
       duration: 3000
     });
-    return of(error);
+    return throwError(() => error);
   }
 
 }

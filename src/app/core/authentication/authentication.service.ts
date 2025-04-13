@@ -47,11 +47,11 @@ export class AuthenticationService {
   login(context: any, remember: boolean): Observable<any> {
     return this.httpClient.post("/auth/login", context).pipe(
       map((response: any) => {
-        this.credentialsService.setCredentials(response.data, remember);
+        if (response.status) {
+          response.data.activePortal = response.data.user.userType;
+          this.credentialsService.setCredentials(response.data, remember);
+        }
         return response;
-      }),
-      catchError(error => {
-        return of(error);
       })
     );
   }
@@ -82,11 +82,7 @@ export class AuthenticationService {
           this.credentialsService.setCredentials(response.data, false);
         }
         return response;
-      }),
-      catchError(error => {
-        return of(error);
-      })
-    );
+      }));
   }
 
   registerClient(context: any) {
@@ -96,11 +92,7 @@ export class AuthenticationService {
           this.credentialsService.setCredentials(response.data, true);
         }
         return response;
-      }),
-      catchError(error => {
-        return of(error);
-      })
-    );
+      }));
   }
 
   registerCaregiver(context: any) {
@@ -110,11 +102,7 @@ export class AuthenticationService {
           this.credentialsService.setCredentials(response.data, true);
         }
         return response;
-      }),
-      catchError(error => {
-        return of(error);
-      })
-    );
+      }));
   }
 
   verifyEmail(token : string) {
@@ -125,11 +113,7 @@ export class AuthenticationService {
           this.credentialsService.setCredentials(response.data, true);
         }
         return response;
-      }),
-      catchError(error => {
-        return of(error);
-      })
-    );
+      }));
   }
 
   /**

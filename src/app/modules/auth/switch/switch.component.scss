@@ -1,11 +1,15 @@
-mat-card {
-  width: 400px;
+.spaceTop {
+  // width: 400px;
   margin: 100px auto;
-  text-align: center;
 }
+
 
 mat-form-field {
   width: 100%;
   margin-bottom: 10px;
   display: block;
+}
+
+.clickable-card {
+  cursor: pointer;
 }

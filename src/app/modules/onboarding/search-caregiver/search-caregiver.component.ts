@@ -108,7 +108,12 @@ export class SearchCaregiverComponent {
     protected router: Router,
     protected authenticationService: AuthenticationService
   ) {
-
+/**
+ * TODO:
+ * use google captcha for all form pages. invisible captcha for login page.
+ * create landing page after login.
+ * Then, work on the client search engine for caregiver
+ */
   }
 
   handleFavorites(isLiked: boolean, user: any) {

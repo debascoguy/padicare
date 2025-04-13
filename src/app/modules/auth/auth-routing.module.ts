@@ -18,6 +18,10 @@ export const authRoutes: Routes = [
     path: 'set-new-password',
     loadComponent: () => import('./set-new-password/set-new-password.component').then(c => c.SetNewPasswordComponent)
   },
+  {
+    path: 'switch',
+    loadComponent: () => import('./switch/switch.component').then(c => c.SwitchComponent)
+  },
 ];
 
 @NgModule({

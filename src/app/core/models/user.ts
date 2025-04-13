@@ -13,6 +13,7 @@ export interface User {
   enabled: boolean;
   createdAt: Date;
   updatedAt: Date;
+  appRoles?: [];
 }
 
 export interface UserAddress {

@@ -339,10 +339,10 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
           this.isSubmitted = false;
           this.snackBar.open(response.message, 'close', { duration: 3000 });
         }
-      }, (error: any) => {
+      }).catch(error => {
           this.isSubmitted = false;
-          this.snackBar.open(error.message, 'close', { duration: 3000 });
-          this.logger.error(error);
+          this.snackBar.open(error.error.message, 'close', { duration: 3000 });
+          this.logger.error(error.error);
       });
   }
 
