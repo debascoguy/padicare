@@ -271,7 +271,7 @@
       </mat-step>
 
       <mat-step [stepControl]="step6Form">
-        <form [formGroup]="step6Form"  (ngSubmit)="submit()">
+        <form [formGroup]="step6Form" (ngSubmit)="captchaRef.execute()">
           <h4 class="fw-bold">Authorization and Preference Settings!</h4>
           <span class="fs-5">Background check authorization.</span>
           <div class="mt-4 mb-3 text-start">
@@ -298,6 +298,14 @@
               </mat-checkbox>
             </div>
           </div>
+
+          <!-- Invisible recaptcha -->
+          <re-captcha #captchaRef="reCaptcha" errorMode="handled"
+            (resolved)="captchaService.resolved($event)"
+            (error)="captchaService.onError($event);
+            captchaRef.reset();"
+          />
+          
           <div class="d-grid gap-2">
             <button class="btn btn-primary" matStepperNext [disabled]="isSubmitted">
               <span class="d-inline-flex">

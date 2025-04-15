@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { AuthenticationService } from '../../../core/authentication/authentication.service';
 import { CommonModule } from '@angular/common';
 import { UserSummaryComponent } from '../../../components/user-summary/user-summary.component';
+import { CaptchaService } from '@app/core/services/captcha.service';
 
 @Component({
   selector: 'app-search-caregiver',
@@ -110,7 +111,6 @@ export class SearchCaregiverComponent {
   ) {
 /**
  * TODO:
- * use google captcha for all form pages. invisible captcha for login page.
  * create landing page after login.
  * Then, work on the client search engine for caregiver
  */

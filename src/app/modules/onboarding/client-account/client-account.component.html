@@ -125,7 +125,7 @@
       </mat-step>
 
       <mat-step [stepControl]="step5Form">
-        <form [formGroup]="step5Form">
+        <form [formGroup]="step5Form" (ngSubmit)="captchaRef.execute()">
           <h4 class="fw-bold">Tell us more...</h4>
           <span class="fs-6">Provide job details, and we'll match you with the right caregiver.</span>
           <div class="mt-4 mb-2 col-md-12">
@@ -143,9 +143,17 @@
                   formControlName="additionalComments"></textarea>
               </mat-form-field>
             </div>
+             
+            <!-- Invisible recaptcha -->
+            <re-captcha #captchaRef="reCaptcha" errorMode="handled"
+              (resolved)="captchaService.resolved($event)"
+              (error)="captchaService.onError($event);
+              captchaRef.reset();"
+            />
+
           </div>
           <div class="d-grid gap-2">
-            <button class="btn btn-primary" (click)="submit()" matStepperNext>Submit</button>
+            <button type="submit" class="btn btn-primary" matStepperNext>Submit</button>
           </div>
         </form>
       </mat-step>

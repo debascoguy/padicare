@@ -25,6 +25,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatCardModule } from '@angular/material/card';
 import { DocumentUploaderComponent } from '@app/components/document-uploader/document-uploader.component';
 import { AppUserType } from '@app/enums/app.user.type.enum';
+import { RecaptchaErrorParameters, RecaptchaFormsModule, RecaptchaModule } from 'ng-recaptcha';
+import { CaptchaService } from '@app/core/services/captcha.service';
 
 @Component({
   selector: 'app-caregiver',
@@ -46,6 +48,8 @@ import { AppUserType } from '@app/enums/app.user.type.enum';
     MatProgressBarModule,
     DocumentUploaderComponent,
     ReplaceStringPipe,
+    RecaptchaModule,  //this is the recaptcha main module
+    RecaptchaFormsModule, //this is the module for form incase form validation 
   ],
   providers: [
     MatSnackBar,
@@ -95,7 +99,8 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
     protected logger: LogService,
     protected router: Router,
     protected authenticationService: AuthenticationService,
-    protected environmentService: EnvironmentService
+    protected environmentService: EnvironmentService,
+    public captchaService: CaptchaService
   ) {
     const getStarted = sessionStorage.getItem('getStarted');
     const step0Data = !!getStarted ? JSON.parse(getStarted) : null;
@@ -165,6 +170,7 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
         console.error('Map element not found');
       }
     });
+    this.captchaService.setSubmitCallback(() => this.submit());
   }
 
   ngOnInit() {
@@ -185,10 +191,10 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
       firstValueFrom(this.authenticationService.validateEmail(AppUserType.careGiver, value))
         .then((response: any) => {
           if (response.status) {
-            this.email?.setErrors({uniqueEmail: false});
+            this.email?.setErrors({ uniqueEmail: false });
           }
         }).catch(error => {
-          this.email?.setErrors({email: true});
+          this.email?.setErrors({ email: true });
         });
     });
   }
@@ -325,25 +331,37 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
     delete allData['confirmPassword'];
 
     firstValueFrom(this.authenticationService.registerCaregiver(allData)).then((response: any) => {
-        if (response && response.status) {
-          this.showSuccessMessage = true;
-          this.snackBar.openFromTemplate(this.notificationTemplate, {
-            horizontalPosition: 'center',
-            verticalPosition: 'bottom',
-            duration: 2000
-          }).afterDismissed().subscribe((_) => {
-            this.isSubmitted = false;
-            this.router.navigate(['/auth/login']);
-          });
-        } else {
+      if (response && response.status) {
+        this.showSuccessMessage = true;
+        this.snackBar.openFromTemplate(this.notificationTemplate, {
+          horizontalPosition: 'center',
+          verticalPosition: 'bottom',
+          duration: 2000
+        }).afterDismissed().subscribe((_) => {
           this.isSubmitted = false;
-          this.snackBar.open(response.message, 'close', { duration: 3000 });
-        }
-      }).catch(error => {
-          this.isSubmitted = false;
-          this.snackBar.open(error.error.message, 'close', { duration: 3000 });
-          this.logger.error(error.error);
-      });
+          this.router.navigate(['/auth/login']);
+        });
+      } else {
+        this.isSubmitted = false;
+        this.snackBar.open(response.message, 'close', { duration: 3000 });
+      }
+    }).catch(error => {
+      this.isSubmitted = false;
+      this.snackBar.open(error.error.message, 'close', { duration: 3000 });
+      this.logger.error(error.error);
+    });
+  }
+
+  public captchaResponse = "";
+  public resolved(captchaResponse: string | null): void {
+    this.captchaResponse = captchaResponse ? `${JSON.stringify(captchaResponse)}\n` : "";
+    console.log(captchaResponse);
+    this.submit();
+  }
+
+  public onError(errorDetails: RecaptchaErrorParameters): void {
+    this.captchaResponse = `ERROR; error details (if any) have been logged to console\n`;
+    console.log(`reCAPTCHA error encountered; details:`, errorDetails);
   }
 
 }

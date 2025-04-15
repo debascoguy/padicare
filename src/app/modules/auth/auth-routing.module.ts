@@ -11,11 +11,7 @@ export const authRoutes: Routes = [
     loadComponent: () => import('./forgot-password/forgot-password.component').then(c => c.ForgotPasswordComponent)
   },
   {
-    path: 'password-reset',
-    loadComponent: () => import('./password-reset/password-reset.component').then(c => c.PasswordResetComponent)
-  },
-  {
-    path: 'set-new-password',
+    path: 'set-new-password/:token',
     loadComponent: () => import('./set-new-password/set-new-password.component').then(c => c.SetNewPasswordComponent)
   },
   {

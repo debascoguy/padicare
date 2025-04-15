@@ -3,7 +3,7 @@
     <h2>Log In</h2>
   </mat-card-header>
   <mat-card-content>
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <form [formGroup]="loginForm" (ngSubmit)="captchaRef.execute()">
       <mat-form-field appearance="outline" class="mt-2">
         <mat-label>Email</mat-label>
         <input matInput type="email" formControlName="email" placeholder="Email" required>
@@ -14,10 +14,20 @@
         <input matInput type="password" formControlName="password" placeholder="Password" required>
         <mat-error *ngIf="loginForm.get('password')?.hasError('required')">Please provide a valid password</mat-error>
       </mat-form-field>
+      
+      <!-- Invisible recaptcha -->
+      <re-captcha #captchaRef="reCaptcha" errorMode="handled"
+        (resolved)="captchaService.resolved($event)"
+        (error)="captchaService.onError($event);
+        captchaRef.reset();"
+      />
+
       <mat-error *ngIf="loginError">
         {{ loginError }}
       </mat-error>
       <button mat-raised-button color="primary" [disabled]="loginForm.invalid">Login</button>
+      <br>
+      <button mat-button (click)="forgotPassword()" class="mt-2">Forgot Password? Click here</button>
     </form>
   </mat-card-content>
 </mat-card>

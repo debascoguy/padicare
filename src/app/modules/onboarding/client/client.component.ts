@@ -30,6 +30,8 @@ import { SecondaryCareTypeEnums } from '../../../enums/secondary.care.type.enum'
 import { DocumentUploaderComponent } from '@app/components/document-uploader/document-uploader.component';
 import { firstValueFrom } from 'rxjs';
 import { AppUserType } from '@app/enums/app.user.type.enum';
+import { RecaptchaErrorParameters, RecaptchaFormsModule, RecaptchaModule } from 'ng-recaptcha';
+import { CaptchaService } from '@app/core/services/captcha.service';
 
 @Component({
   selector: 'app-client',
@@ -49,6 +51,8 @@ import { AppUserType } from '@app/enums/app.user.type.enum';
     MatProgressSpinnerModule,
     ReplaceStringPipe,
     DocumentUploaderComponent,
+    RecaptchaModule,  //this is the recaptcha main module
+    RecaptchaFormsModule, //this is the module for form incase form validation 
   ],
   providers: [
     MatSnackBar,
@@ -94,7 +98,8 @@ export class ClientComponent implements OnInit, AfterViewInit {
     protected logger: LogService,
     protected http: HttpClient,
     protected router: Router,
-    protected authenticationService: AuthenticationService
+    protected authenticationService: AuthenticationService,
+    public captchaService: CaptchaService
   ) {
     const getStarted = sessionStorage.getItem('getStarted');
     const step0Data = !!getStarted ? JSON.parse(getStarted) : null;
@@ -142,6 +147,7 @@ export class ClientComponent implements OnInit, AfterViewInit {
       acceptSMS: new FormControl(false, [Validators.requiredTrue]),
       acceptPhone: new FormControl(false, [Validators.requiredTrue]),
     });
+    this.captchaService.setSubmitCallback(() => this.submit());
   }
 
   ngAfterViewInit(): void {
@@ -321,6 +327,18 @@ export class ClientComponent implements OnInit, AfterViewInit {
       this.snackBar.open(error.error.message, 'close', { duration: 3000 });
       this.logger.error(error.error);
     });
+  }
+
+  public captchaResponse = "";
+  public resolved(captchaResponse: string | null): void {
+    this.captchaResponse = captchaResponse ? `${JSON.stringify(captchaResponse)}\n` : "";
+    console.log(captchaResponse);
+    this.submit();
+  }
+
+  public onError(errorDetails: RecaptchaErrorParameters): void {
+    this.captchaResponse = `ERROR; error details (if any) have been logged to console\n`;
+    console.log(`reCAPTCHA error encountered; details:`, errorDetails);
   }
 
 }

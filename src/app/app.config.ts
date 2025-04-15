@@ -15,6 +15,8 @@ import { provideNativeDateAdapter } from '@angular/material/core';
 import { GlobalStore } from '../global.state';
 import { LayoutSidebarStore } from './modules/layouts/layout.store';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
+import { RECAPTCHA_SETTINGS, RecaptchaSettings } from 'ng-recaptcha';
+import { CaptchaService } from './core/services/captcha.service';
 
 
 export const appConfig: ApplicationConfig = {
@@ -54,6 +56,14 @@ export const appConfig: ApplicationConfig = {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
       useValue: { appearance: 'outline' }
     },
+    {
+      provide: RECAPTCHA_SETTINGS,
+      useValue: {
+        siteKey: environment.recaptcha.invisibleCaptchaClientSideKey,
+        size: 'invisible',
+      } as RecaptchaSettings,
+    },
+    CaptchaService,
     LogService,
     LogPublishersService,
   ]

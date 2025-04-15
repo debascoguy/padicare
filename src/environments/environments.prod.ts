@@ -9,8 +9,10 @@ export const environment = {
   fileServerUrl: process?.env?.["FILE_SERVER_URL"] || "http://localhost:8090",
   socketServerUrlEndPoint: process?.env?.["SOCKET_SERVER_URL"] || "http://localhost:8082",
   renewTokenUrl: "/auth/renew-token",
-  clientSideSiteKey_invisible_captcha: process?.env?.["CLIENT_SIDE_KEY_INVISIBLE_CAPTCHA"] || "6LdxtT0gAAAAADDB04GF30J3iQTZ4NKViT8MQNxT",
-  privateSiteKey_invisible_captcha: process?.env?.["PRIVATE_KEY_INVISIBLE_CAPTCHA"] || "6LdxtT0gAAAAAMla1cjmYkkuiDB3gr_mOvIxkiLd",
+  recaptcha:{
+    invisibleCaptchaClientSideKey: process?.env?.["CLIENT_SIDE_KEY_INVISIBLE_CAPTCHA"] || "6LdxtT0gAAAAADDB04GF30J3iQTZ4NKViT8MQNxT",
+    invisibleCaptchaPrivateKey: process?.env?.["PRIVATE_KEY_INVISIBLE_CAPTCHA"] || "6LdxtT0gAAAAAMla1cjmYkkuiDB3gr_mOvIxkiLd",
+  },
   googleMapApiKey: process?.env?.["GOOGLE_MAP_API_KEY"] || "AIzaSyCpYeT3cBLvGBUVuYhrXOBAY8_ZW7IKzGY",
   get baseURL(): string {
     const parsedUrl = new URL(window.location.href);

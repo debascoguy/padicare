@@ -1,8 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatButton } from '@angular/material/button';
-import { MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardSubtitle, MatCardTitle } from '@angular/material/card';
-import { MatIcon } from '@angular/material/icon';
+import { MatCard, MatCardActions, MatCardHeader, MatCardSubtitle, MatCardTitle } from '@angular/material/card';
 import { Router, RouterLink } from '@angular/router';
 import { CredentialsService } from '@app/core/authentication/credentials.service';
 import { AppUserType } from '@app/enums/app.user.type.enum';
@@ -17,7 +16,6 @@ import { AppUserType } from '@app/enums/app.user.type.enum';
     MatCardSubtitle,
     MatCardActions,
     MatButton,
-    RouterLink
   ],
   templateUrl: './switch.component.html',
   styleUrl: './switch.component.scss'

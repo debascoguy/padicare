@@ -11,9 +11,10 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
 import { firstValueFrom } from 'rxjs';
-import { HttpStatusCode } from '@angular/common/http';
 import { User } from '@app/core/models/user';
 import { AppUserType } from '@app/enums/app.user.type.enum';
+import { RecaptchaModule, RecaptchaFormsModule } from 'ng-recaptcha';
+import { CaptchaService } from '@app/core/services/captcha.service';
 
 @Component({
   selector: 'app-signin',
@@ -28,7 +29,9 @@ import { AppUserType } from '@app/enums/app.user.type.enum';
     MatCardHeader,
     MatError,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    RecaptchaModule,  //this is the recaptcha main module
+    RecaptchaFormsModule, //this is the module for form incase form validation
   ],
   providers: [
     MatSnackBar
@@ -46,12 +49,14 @@ export class SigninComponent {
     protected logger: LogService,
     protected snackBar: MatSnackBar,
     protected router: Router,
-    protected authenticationService: AuthenticationService
+    protected authenticationService: AuthenticationService,
+    public captchaService: CaptchaService
   ) {
     this.loginForm = new FormGroup({
       email: new FormControl('', [Validation.validateEmailField]),
       password: new FormControl('', [Validation.validatePassword(8)])
     });
+    this.captchaService.setSubmitCallback(() => this.onSubmit());
   }
 
   onSubmit() {
@@ -82,15 +87,18 @@ export class SigninComponent {
         this.isSubmitted = false;
         this.loginError = error.error.message;
         this.snackBar.open(error.error.message, 'close', { duration: 3000 });
-        if (error.error.statusCode == HttpStatusCode.Unauthorized) {
-          console.log(error);
-        }
-        if (error.error.statusCode == HttpStatusCode.Forbidden) {
-          console.log(error);
-        }
+        // if (error.error.statusCode == HttpStatusCode.Unauthorized) {
+        //   console.log(error);
+        // }
+        // if (error.error.statusCode == HttpStatusCode.Forbidden) {
+        //   console.log(error);
+        // }
       });
     }
+  }
 
+  forgotPassword() {
+    this.router.navigate(['/auth/forgot-password']);
   }
 
 }

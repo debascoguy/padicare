@@ -20,6 +20,8 @@ import { CaregiverQualities } from '../../../enums/caregiver.qualities.enum';
 import { SecondaryCareTypeEnums } from '../../../enums/secondary.care.type.enum';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
+import { RecaptchaErrorParameters, RecaptchaFormsModule, RecaptchaModule } from 'ng-recaptcha';
+import { CaptchaService } from '@app/core/services/captcha.service';
 
 @Component({
   selector: 'app-client-account',
@@ -37,7 +39,9 @@ import { firstValueFrom } from 'rxjs';
     MatTimepickerModule,
     MatIconModule,
     MatCheckboxModule,
-    MatSliderModule
+    MatSliderModule,
+    RecaptchaModule,  //this is the recaptcha main module
+    RecaptchaFormsModule, //this is the module for form incase form validation 
   ],
   providers: [
     MatSnackBar,
@@ -64,7 +68,8 @@ export class ClientAccountComponent {
     protected httpClient: HttpClient,
     protected credentialsService: CredentialsService,
     protected router: Router,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    public captchaService: CaptchaService
   ) {
     this.step1Form = new FormGroup({
       careStartDate: new FormControl('', [Validators.required]),
@@ -93,6 +98,7 @@ export class ClientAccountComponent {
     this.step5Form = new FormGroup({
       additionalComments: new FormControl(''),
     });
+    this.captchaService.setSubmitCallback(() => this.submit());
   }
 
   // getClientPreferencePrimaryCareType() {
@@ -165,4 +171,17 @@ export class ClientAccountComponent {
       this.snackBar.open(error.error.message, 'close', { duration: 3000 });
     });
   }
+
+  public captchaResponse = "";
+  public resolved(captchaResponse: string | null): void {
+    this.captchaResponse = captchaResponse ? `${JSON.stringify(captchaResponse)}\n` : "";
+    console.log(captchaResponse);
+    this.submit();
+  }
+
+  public onError(errorDetails: RecaptchaErrorParameters): void {
+    this.captchaResponse = `ERROR; error details (if any) have been logged to console\n`;
+    console.log(`reCAPTCHA error encountered; details:`, errorDetails);
+  }
+
 }

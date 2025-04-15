@@ -3,9 +3,8 @@ import { Observable, of } from 'rxjs';
 import { catchError, finalize, map } from 'rxjs/operators';
 import { CredentialsService } from './credentials.service';
 import { NumberToWord } from '../services/NumberToWord';
-import { HttpClient, HttpStatusCode } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environments';
-import { LoginContext } from '../models/login-context.model';
 import { HttpHeadersHelpers } from '../http/HttpHeadersHelpers';
 import { AppUserType } from '@app/enums/app.user.type.enum';
 
@@ -54,6 +53,15 @@ export class AuthenticationService {
         return response;
       })
     );
+  }
+
+  resetPassword(context: {email: string, resetPasswordUrl: string}): Observable<any> {
+    return this.httpClient.post("/auth/reset-password", context);
+  }
+
+  changePassword(context: {token: string, newPassword: string}): Observable<any> {
+    const headers = HttpHeadersHelpers.getAuthorization(context.token);
+    return this.httpClient.post("/auth/change-password", { newPassword: context.newPassword }, { headers });
   }
 
   renewToken() {
