@@ -9,9 +9,9 @@ export class AuthenticationAdminGuard implements CanActivate {
 
     constructor(private router: Router, private credentialsService: CredentialsService) { }
 
-    canActivate(_route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {        
+    canActivate(_route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
         if (this.credentialsService.isAdmin()) {
-            return true;    
+            return true;
         }
 
         console.log('Not An Admin, redirecting to login...');

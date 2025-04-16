@@ -26,12 +26,12 @@
             </li>
             <li class="nav-item dropdown ms-2 me-2">
               <a class="btn btn-outline-primary dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                Login
+                Join Us
               </a>
               <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" href="#">User</a></li>
+                <li><a class="dropdown-item" href="/onboarding/client">User</a></li>
                 <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="#">Caregiver</a></li>
+                <li><a class="dropdown-item" href="/onboarding/caregiver">Caregiver</a></li>
               </ul>
             </li>
             <li class="nav-item lm-4 ms-3 me-2">
@@ -39,10 +39,10 @@
                 Join Now
                 <mat-icon iconPositionEnd>arrow_forward</mat-icon>
               </button> -->
-              <button type="button" class="btn btn-primary p-auto fw-bold">
-                <span class="pe-2">Join Now</span>
+              <a href="/auth/login" type="button" class="btn btn-primary p-auto fw-bold">
+                <span class="pe-2">Login</span>
                 <i class="fa-solid fa-arrow-right fa-1x ms-2"></i>
-              </button>
+              </a>
             </li>
           </ul>
         </div>
@@ -51,7 +51,7 @@
   </nav>
 </header>
 
-<header *ngIf="headerType == HeaderType.ONBOARDING">
+<header *ngIf="headerType == HeaderType.ONBOARDING || headerType == HeaderType.AUTH">
   <nav class="navbar navbar-expand-sm navbar-light bg-light lh-lg" [class.fixed-top]="isFixed">
     <div class="container-fluid">
       <a class="navbar-brand ms-5" href="javascript:void(0)" (click)="pageReload()">

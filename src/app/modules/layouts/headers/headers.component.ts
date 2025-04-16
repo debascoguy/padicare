@@ -1,4 +1,4 @@
-import { Component, computed, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { HeaderType } from './header.type.enum';
 import { CommonModule, NgIf } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
