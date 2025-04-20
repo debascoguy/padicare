@@ -27,6 +27,7 @@ export interface UserAddress {
   city?: string;
   state?: string;
   country?: string;
+  radius?: number;
   createdAt?: Date;
   updatedAt?: Date;
   isDeleted?: boolean;

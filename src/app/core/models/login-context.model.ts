@@ -1,5 +1,5 @@
 import { AppUserType } from './../../enums/app.user.type.enum';
-import { User } from "./user";
+import { User, UserAddress } from "./user";
 
 export interface LoginContext {
     authorities: string[];
@@ -7,7 +7,7 @@ export interface LoginContext {
     refreshToken: string;
     user: User;
     profileImage?: any;
-    userAddress?: any;
+    userAddress?: UserAddress;
     userPreferences?: any;
     clientPreferences?: any;
     activePortal?: AppUserType;

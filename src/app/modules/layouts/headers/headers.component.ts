@@ -5,12 +5,13 @@ import { MatIcon } from '@angular/material/icon';
 import { LayoutApiService } from '../layout-api.service';
 import { MatDivider } from '@angular/material/divider';
 import { MatMenuModule } from '@angular/material/menu';
+import { ProfileImageComponent } from '@app/shared/profile-image/profile-image.component';
 
 @Component({
   selector: 'padicare-basic-headers',
   templateUrl: './headers.component.html',
   styleUrls: ['./headers.component.scss'],
-  imports: [CommonModule, NgIf, MatMenuModule, MatIcon, MatDivider]
+  imports: [CommonModule, NgIf, MatMenuModule, MatIcon, MatDivider, ProfileImageComponent]
 })
 export class HeadersComponent implements OnInit {
 

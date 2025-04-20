@@ -87,16 +87,19 @@
       <div class="flex justify-content-end collapse navbar-collapse" id="navbarNavDropdown">
         <ul class="navbar-nav link-light">
           <li class="nav-item">
-            <a class="nav-link link-light" href="#">Accounts</a>
+            <app-profile-image size="SMALL" badgeColor=""></app-profile-image>
           </li>
           <li class="nav-item">
-            <a class="nav-link link-light" href="#">Dependents</a>
+            <a class="nav-link link-light" href="javascript:void();" (click)="pageReload()">Accounts</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link link-light" href="#">Payments</a>
+            <a class="nav-link link-light" href="javascript:void();" (click)="pageReload()">Dependents</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link link-light" href="#">Settings</a>
+            <a class="nav-link link-light" href="javascript:void();" (click)="pageReload()">Payments</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link link-light" href="javascript:void();" (click)="pageReload()">Settings</a>
           </li>
           <li class="nav-item">
             <button type="button" mat-icon-button [matMenuTriggerFor]="appsMenu" matTooltip="Applications" class="btn btn-outline-light ms-1 me-1">

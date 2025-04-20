@@ -208,6 +208,40 @@
         </form>
       </mat-step>
 
+      <mat-step [stepControl]="step4bForm">
+        <form [formGroup]="step4bForm">
+          <h4 class="fw-bold">Professional Preference Settings!</h4>
+          <div class="mt-4 mb-3 text-start">
+            <mat-form-field class="col-md-6 pe-1">
+              <mat-label>Years of Experiences</mat-label>
+              <input matInput type="number" formControlName="yearsOfExperience">
+              <button matSuffix mat-icon-button aria-label="Clear" *ngIf="step4bForm.get('yearsOfExperience')?.valid"
+                (click)="step4bForm.get('yearsOfExperience')?.setValue('')">
+                <mat-icon>close</mat-icon>
+              </button>
+            </mat-form-field>
+
+            <mat-form-field class="col-md-6 pe-1">
+              <mat-label>Rate - Charge Per Hour</mat-label>
+              <button matSuffix mat-icon-button aria-label="USD">
+                <mat-icon>attach_money</mat-icon>
+              </button>
+              <input matInput type="number" formControlName="chargePerHour">
+              <mat-hint>Amount you will charge client per hour of service</mat-hint>
+            </mat-form-field>
+
+            <mat-form-field class="col-md-12">
+              <mat-label>Professional Summary</mat-label>
+              <textarea matInput type="text" formControlName="biography" rows="5"></textarea>
+            </mat-form-field>
+          </div>
+          <div class="d-grid gap-2 mt-2">
+            <button class="btn btn-primary" matStepperNext>Next</button>
+            <button class="btn btn-light" matStepperPrevious>Back</button>
+          </div>
+        </form>
+      </mat-step>
+
       <mat-step [stepControl]="step5Form">
         <form [formGroup]="step5Form">
           <h4 class="fw-bold">Authorization and Preference Settings!</h4>
@@ -305,7 +339,7 @@
             (error)="captchaService.onError($event);
             captchaRef.reset();"
           />
-          
+
           <div class="d-grid gap-2">
             <button class="btn btn-primary" matStepperNext [disabled]="isSubmitted">
               <span class="d-inline-flex">

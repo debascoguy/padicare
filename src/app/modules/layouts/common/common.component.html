@@ -1,0 +1,26 @@
+<padicare-layout layoutId="root" windowMode>
+
+  <padicare-basic-headers [headerType]="headerType"/>
+  
+  @if (announcement()) {
+    <padicare-announcement [iconName]="announcement()?.iconName || ''"
+                      [variant]="announcement()?.variant || ''"
+                      closable
+                      (closed)="onClose()">
+      {{ announcement()?.message }}
+    </padicare-announcement>
+  }
+  
+  <div class="container">
+    <div class="main text-start">
+
+      <router-outlet />
+
+    </div>
+  </div>
+
+  <padicare-basic-footers [isFixed]="true" [footerType]="footerType"/>
+
+</padicare-layout>
+
+

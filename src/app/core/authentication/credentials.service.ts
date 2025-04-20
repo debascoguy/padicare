@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { User } from '../models/user';
+import { User, UserAddress } from '../models/user';
 import { LoginContext } from '../models/login-context.model';
 import { SecuredLocalStorage } from '../services/SecuredLocalStorage';
 import { SecuredSessionStorage } from '../services/SecuredSessionStorage';
@@ -42,7 +42,7 @@ export class CredentialsService {
   }
 
   hasAuthority(authority: string) {
-    return this.credentials?.authorities.map((x: string) => x.toLowerCase()).includes(authority.toLowerCase());
+    return this.credentials?.authorities?.map((x: string) => x.toLowerCase()).includes(authority.toLowerCase());
   }
 
   isAdmin() {
@@ -65,8 +65,8 @@ export class CredentialsService {
     return !!this.credentials ? this.credentials.user : {} as User;
   }
 
-  get userAddress(): any {
-    return !!this.credentials ? this.credentials?.userAddress : {};
+  get userAddress(): UserAddress {
+    return !!this.credentials && this.credentials.userAddress ? this.credentials.userAddress : {} as UserAddress;
   }
 
   get userPreference(): any {
@@ -88,6 +88,13 @@ export class CredentialsService {
     else {
       return "./assets/images/avatars/1.jpg";
     }
+  }
+
+  get userNameAcronym() {
+    if (!!this.credentials) {
+      return this.user?.firstName?.charAt(0) + this.user?.lastName?.charAt(0);
+    }
+    return "";
   }
 
   get authorities(): string[] {

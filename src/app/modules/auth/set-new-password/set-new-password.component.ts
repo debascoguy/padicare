@@ -14,7 +14,7 @@ import { LogService } from '@app/core/logger/LogService';
 import { CaptchaService } from '@app/core/services/captcha.service';
 import { EnvironmentService } from '@app/core/services/environment.service';
 import { Validation } from '@app/core/services/Validation';
-import { PasswordMeterComponent } from '@app/components/password-meter/password-meter.component';
+import { PasswordMeterComponent } from '@app/shared/password-meter/password-meter.component';
 import { firstValueFrom } from 'rxjs';
 
 @Component({

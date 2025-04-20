@@ -27,7 +27,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../../../core/authentication/authentication.service';
 import { SecondaryCareTypeEnums } from '../../../enums/secondary.care.type.enum';
-import { DocumentUploaderComponent } from '@app/components/document-uploader/document-uploader.component';
+import { DocumentUploaderComponent } from '@app/shared/document-uploader/document-uploader.component';
 import { firstValueFrom } from 'rxjs';
 import { AppUserType } from '@app/enums/app.user.type.enum';
 import { RecaptchaErrorParameters, RecaptchaFormsModule, RecaptchaModule } from 'ng-recaptcha';

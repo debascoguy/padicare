@@ -23,7 +23,7 @@ import { EnvironmentService } from '@app/core/services/environment.service';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatCardModule } from '@angular/material/card';
-import { DocumentUploaderComponent } from '@app/components/document-uploader/document-uploader.component';
+import { DocumentUploaderComponent } from '@app/shared/document-uploader/document-uploader.component';
 import { AppUserType } from '@app/enums/app.user.type.enum';
 import { RecaptchaErrorParameters, RecaptchaFormsModule, RecaptchaModule } from 'ng-recaptcha';
 import { CaptchaService } from '@app/core/services/captcha.service';
@@ -49,7 +49,7 @@ import { CaptchaService } from '@app/core/services/captcha.service';
     DocumentUploaderComponent,
     ReplaceStringPipe,
     RecaptchaModule,  //this is the recaptcha main module
-    RecaptchaFormsModule, //this is the module for form incase form validation 
+    RecaptchaFormsModule, //this is the module for form incase form validation
   ],
   providers: [
     MatSnackBar,
@@ -75,6 +75,7 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
   step2Form: FormGroup;
   step3Form: FormGroup;
   step4Form: FormGroup;
+  step4bForm: FormGroup;
   step5Form: FormGroup;
   step6Form: FormGroup;
 
@@ -136,6 +137,12 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
       confirmPassword: new FormControl('', Validation.validatePassword(8, /[!@#$%^&*(),.?":{}|<>]/)),
     }, Validation.matchingPasswords('password', 'confirmPassword'));
 
+    this.step4bForm = new FormGroup({
+      biography: new FormControl('', [Validators.required]),
+      chargePerHour: new FormControl(20, [Validators.required]),
+      yearsOfExperience: new FormControl(1, Validators.required),
+    });
+
     this.step5Form = new FormGroup({
       identityDocument: new FormControl('', [Validators.required]),
       filename: new FormControl('', [Validators.required]),
@@ -190,7 +197,7 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
     this.email?.valueChanges.subscribe((value) => {
       firstValueFrom(this.authenticationService.validateEmail(AppUserType.careGiver, value))
         .then((response: any) => {
-          if (response.status) {
+          if (response.status && response.status == true) {
             this.email?.setErrors({ uniqueEmail: false });
           }
         }).catch(error => {
@@ -320,6 +327,7 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
       ...this.step2Form.value,
       ...this.getOtherCareTypeValues(),
       ...this.step4Form.value,
+      ...this.step4bForm.value,
       ...this.step5Form.value,
       ...this.step6Form.value,
     };

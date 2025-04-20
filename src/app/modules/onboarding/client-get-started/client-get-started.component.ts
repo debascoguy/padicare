@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ProfileImageComponent } from '../../../components/profile-image/profile-image.component';
+import { ProfileImageComponent } from '../../../shared/profile-image/profile-image.component';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../../../core/authentication/authentication.service';
 

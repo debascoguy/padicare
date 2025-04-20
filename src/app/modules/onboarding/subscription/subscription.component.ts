@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -7,9 +6,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-import { AuthenticationService } from '../../../core/authentication/authentication.service';
-import { LogService } from '../../../core/logger/LogService';
 import { CommonModule } from '@angular/common';
+import { firstValueFrom } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-subscription',
@@ -32,10 +31,8 @@ export class SubscriptionComponent {
 
   constructor(
       protected snackBar: MatSnackBar,
-      protected logger: LogService,
-      protected http: HttpClient,
-      protected router: Router,
-      protected authenticationService: AuthenticationService
+      protected httpClient: HttpClient,
+      protected router: Router
     ) {
 
     }
@@ -45,6 +42,14 @@ export class SubscriptionComponent {
     }
 
     goPremium() {
-      this.router.navigate(['/onboarding/client/select-caregiver']);
+      const subscriptionDetails = {};
+      firstValueFrom(this.httpClient.post('/client/subscription/premium', subscriptionDetails))
+      .then((response: any) => {
+        if (response.status && response.status == true) {
+          this.router.navigate(['/onboarding/client/select-caregiver']);
+        }
+      }).catch(error => {
+        this.snackBar.open('ERROR: ' + error.error.message, 'close', { duration: 4000 });
+      });
     }
 }

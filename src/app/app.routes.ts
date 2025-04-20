@@ -57,8 +57,13 @@ export const routes: Routes = [
   },
   {
     path: 'admin',
-    loadComponent: () => import('./modules/common/common.component').then(m => m.CommonComponent),
+    loadComponent: () => import('./modules/layouts/common/common.component').then(m => m.CommonComponent),
     loadChildren: () => import('./modules/admin/admin.routes').then(m => m.adminRoutes),
     canActivate: [AuthenticationAdminGuard]
+  },
+  {
+    path: 'error',
+    loadComponent: () => import('./modules/layouts/common/common.component').then(m => m.CommonComponent),
+    loadChildren: () => import('./modules/error/error-routing.module').then(m => m.errorRoutes),
   },
 ];

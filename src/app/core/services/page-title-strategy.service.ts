@@ -25,6 +25,9 @@ export class PageTitleStrategyService extends TitleStrategy {
     while (snapshotData.firstChild !== null) {
       snapshotData = snapshotData.firstChild;
     }
+    if (snapshotData != null && snapshotData.title) {
+      title = snapshotData.title;
+    }
     let data = this.sanitizeData(snapshotData.data, snapshotData.params);
     if (data && data.title) {
       title = data.title;

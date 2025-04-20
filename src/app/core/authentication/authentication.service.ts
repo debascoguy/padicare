@@ -44,7 +44,7 @@ export class AuthenticationService {
    * @return The user credentials.
    */
   login(context: any, remember: boolean): Observable<any> {
-    return this.httpClient.post("/auth/login", context).pipe(
+    return this.httpClient.post("/access/auth/login", context).pipe(
       map((response: any) => {
         if (response.status) {
           response.data.activePortal = response.data.user.userType;
@@ -56,12 +56,12 @@ export class AuthenticationService {
   }
 
   resetPassword(context: {email: string, resetPasswordUrl: string}): Observable<any> {
-    return this.httpClient.post("/auth/reset-password", context);
+    return this.httpClient.post("/access/auth/reset-password", context);
   }
 
   changePassword(context: {token: string, newPassword: string}): Observable<any> {
     const headers = HttpHeadersHelpers.getAuthorization(context.token);
-    return this.httpClient.post("/auth/change-password", { newPassword: context.newPassword }, { headers });
+    return this.httpClient.post("/access/auth/change-password", { newPassword: context.newPassword }, { headers });
   }
 
   renewToken() {
@@ -79,11 +79,11 @@ export class AuthenticationService {
   }
 
   validateEmail(userType: AppUserType, email: string) {
-    return this.httpClient.get(`/auth/validate/email/${userType}/${email}`);
+    return this.httpClient.get(`/access/auth/validate/email/${userType}/${email}`);
   }
 
   register(context: any): Observable<any> {
-    return this.httpClient.post("/auth/create-user", context).pipe(
+    return this.httpClient.post("/access/auth/create-user", context).pipe(
       map((response: any) => {
         if (!!response.status && response.code == 200) {
           console.log(response.data);
@@ -94,7 +94,7 @@ export class AuthenticationService {
   }
 
   registerClient(context: any) {
-    return this.httpClient.post('/auth/register/client', context).pipe(
+    return this.httpClient.post('/access/auth/register/client', context).pipe(
       map((response: any) => {
         if (!!response.status) {
           this.credentialsService.setCredentials(response.data, true);
@@ -104,7 +104,7 @@ export class AuthenticationService {
   }
 
   registerCaregiver(context: any) {
-    return this.httpClient.post('/auth/register/caregiver', context).pipe(
+    return this.httpClient.post('/access/auth/register/caregiver', context).pipe(
       map((response: any) => {
         if (!!response.status) {
           this.credentialsService.setCredentials(response.data, true);
@@ -115,7 +115,7 @@ export class AuthenticationService {
 
   verifyEmail(token : string) {
     const headers = HttpHeadersHelpers.getAuthorization(token);
-    return this.httpClient.get("/onboarding/verify/email", { headers }).pipe(
+    return this.httpClient.get("/access/onboarding/verify/email", { headers }).pipe(
       map((response: any) => {
         if (!!response.status) {
           this.credentialsService.setCredentials(response.data, true);
@@ -130,7 +130,7 @@ export class AuthenticationService {
    */
   logout(): Observable<boolean> {
     if (this.isLoggedIn()) {
-      this.httpClient.get("/auth/logout").pipe(finalize(() => {
+      this.httpClient.get("/access/auth/logout").pipe(finalize(() => {
         this.credentialsService.clearCredentials();
         return of(true);
       })).subscribe((response: any) => {
@@ -146,21 +146,6 @@ export class AuthenticationService {
 
   isLoggedIn() {
     return this.credentialsService.isLoggedIn();
-  }
-
-  getLandingPage() {
-    const authorities = this.credentialsService?.credentials?.authorities;
-    if (authorities?.includes("LOGIN")) {
-      if (authorities?.includes("ADMIN")) {
-        return '/admin/user-management';
-      }
-      else {
-        return '/client/dashboard';
-      }
-    }
-    else {
-      return '/auth/login';
-    }
   }
 
 }

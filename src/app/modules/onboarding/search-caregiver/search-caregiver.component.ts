@@ -4,7 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../../../core/authentication/authentication.service';
 import { CommonModule } from '@angular/common';
-import { UserSummaryComponent } from '../../../components/user-summary/user-summary.component';
+import { UserSummaryComponent } from '../../../shared/user-summary/user-summary.component';
 import { CaptchaService } from '@app/core/services/captcha.service';
 
 @Component({
@@ -28,7 +28,7 @@ export class SearchCaregiverComponent {
     profileImage: string;
     badgeColor: string;
     info: string;
-    summaryText: string;
+    reviewText: string;
     userRating: number;
     address: { city: string };
     chargePerHour: number;
@@ -44,7 +44,7 @@ export class SearchCaregiverComponent {
 
         info: "I am a compassionate and dedicated caregiver with 12 years of experience in providing personalized care to individuals of all ages. My approach focuses on fostering a safe, supportive",
 
-        summaryText: "Brenda A. is an exceptional caregiver who goes above and beyond to provide compassionate and " +
+        reviewText: "Brenda A. is an exceptional caregiver who goes above and beyond to provide compassionate and " +
           "professional care. Her attention to detail, patience, and ability to connect with those she cares for make her truly " +
           "stand out. Brenda is reliable, trustworthy, and always ensures the comfort and well-being of her clients. We highly " +
           "recommend her to anyone seeking dedicated and skilled caregiving services",
@@ -67,7 +67,7 @@ export class SearchCaregiverComponent {
 
         info: "I am a compassionate and dedicated caregiver with 12 years of experience in providing personalized care to individuals of all ages. My approach focuses on fostering a safe, supportive",
 
-        summaryText: "Brenda A. is an exceptional caregiver who goes above and beyond to provide compassionate and " +
+        reviewText: "Brenda A. is an exceptional caregiver who goes above and beyond to provide compassionate and " +
           "professional care. Her attention to detail, patience, and ability to connect with those she cares for make her truly " +
           "stand out. Brenda is reliable, trustworthy, and always ensures the comfort and well-being of her clients. We highly " +
           "recommend her to anyone seeking dedicated and skilled caregiving services",
@@ -90,7 +90,7 @@ export class SearchCaregiverComponent {
 
         info: "I am a compassionate and dedicated caregiver with 12 years of experience in providing personalized care to individuals of all ages. My approach focuses on fostering a safe, supportive",
 
-        summaryText: "Brenda A. is an exceptional caregiver who goes above and beyond to provide compassionate and " +
+        reviewText: "Brenda A. is an exceptional caregiver who goes above and beyond to provide compassionate and " +
           "professional care. Her attention to detail, patience, and ability to connect with those she cares for make her truly " +
           "stand out. Brenda is reliable, trustworthy, and always ensures the comfort and well-being of her clients. We highly " +
           "recommend her to anyone seeking dedicated and skilled caregiving services",

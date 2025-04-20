@@ -1,20 +1,19 @@
 import { Component, inject } from '@angular/core';
-import { MatAnchor, MatButton } from '@angular/material/button';
+import { MatAnchor } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
 import { CredentialsService } from '@app/core/authentication/credentials.service';
 import { AppUserType } from '@app/enums/app.user.type.enum';
 
 @Component({
-  selector: 'app-internal-server-error',
+  selector: 'app-unauthorized',
   imports: [
     MatAnchor,
-    RouterLink,
-    MatButton
+    RouterLink
   ],
-  templateUrl: './internal-server-error.component.html',
-  styleUrl: './internal-server-error.component.scss'
+  templateUrl: './unauthorized.component.html',
+  styleUrl: './unauthorized.component.scss'
 })
-export class InternalServerErrorComponent {
+export class UnauthorizedComponent {
 
   public credentialService: CredentialsService = inject(CredentialsService);
 
@@ -33,5 +32,4 @@ export class InternalServerErrorComponent {
 
     return null;
   }
-
 }
