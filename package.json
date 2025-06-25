@@ -27,6 +27,7 @@
     "@ngrx/signals": "^19.0.1",
     "@ngrx/store": "^19.0.1",
     "@popperjs/core": "^2.11.8",
+    "@stripe/stripe-js": "^7.3.1",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
     "crypto-ts": "^1.0.2",

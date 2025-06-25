@@ -8,7 +8,7 @@ export const environment = {
   serverUrl: process?.env?.["SERVER_URL"] || "http://localhost:8081/api/v1",
   fileServerUrl: process?.env?.["FILE_SERVER_URL"] || "http://localhost:8090",
   socketServerUrlEndPoint: process?.env?.["SOCKET_SERVER_URL"] || "http://localhost:8082",
-  renewTokenUrl: "/auth/renew-token",
+  renewTokenUrl: "/access/auth/renew-token",
   recaptcha:{
     invisibleCaptchaClientSideKey: process?.env?.["CLIENT_SIDE_KEY_INVISIBLE_CAPTCHA"] || "6LdxtT0gAAAAADDB04GF30J3iQTZ4NKViT8MQNxT",
     invisibleCaptchaPrivateKey: process?.env?.["PRIVATE_KEY_INVISIBLE_CAPTCHA"] || "6LdxtT0gAAAAAMla1cjmYkkuiDB3gr_mOvIxkiLd",

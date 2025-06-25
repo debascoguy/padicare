@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
 import { firstValueFrom } from 'rxjs';
 import { User } from '@app/core/models/user';
-import { AppUserType } from '@app/enums/app.user.type.enum';
+import { AppUserType } from '@app/shared/enums/app.user.type.enum';
 import { RecaptchaModule, RecaptchaFormsModule } from 'ng-recaptcha';
 import { CaptchaService } from '@app/core/services/captcha.service';
 

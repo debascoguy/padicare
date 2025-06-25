@@ -26,10 +26,10 @@ import { LogService } from '../../../core/logger/LogService';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../../../core/authentication/authentication.service';
-import { SecondaryCareTypeEnums } from '../../../enums/secondary.care.type.enum';
+import { SecondaryCareTypeEnums } from '../../../shared/enums/secondary.care.type.enum';
 import { DocumentUploaderComponent } from '@app/shared/document-uploader/document-uploader.component';
 import { firstValueFrom } from 'rxjs';
-import { AppUserType } from '@app/enums/app.user.type.enum';
+import { AppUserType } from '@app/shared/enums/app.user.type.enum';
 import { RecaptchaErrorParameters, RecaptchaFormsModule, RecaptchaModule } from 'ng-recaptcha';
 import { CaptchaService } from '@app/core/services/captcha.service';
 
@@ -52,7 +52,7 @@ import { CaptchaService } from '@app/core/services/captcha.service';
     ReplaceStringPipe,
     DocumentUploaderComponent,
     RecaptchaModule,  //this is the recaptcha main module
-    RecaptchaFormsModule, //this is the module for form incase form validation 
+    RecaptchaFormsModule, //this is the module for form incase form validation
   ],
   providers: [
     MatSnackBar,
@@ -146,6 +146,7 @@ export class ClientComponent implements OnInit, AfterViewInit {
       acceptEmail: new FormControl(false, [Validators.requiredTrue]),
       acceptSMS: new FormControl(false, [Validators.requiredTrue]),
       acceptPhone: new FormControl(false, [Validators.requiredTrue]),
+      visibility: new FormControl(false, [Validators.requiredTrue])
     });
     this.captchaService.setSubmitCallback(() => this.submit());
   }

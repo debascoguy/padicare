@@ -251,7 +251,7 @@
         </form>
       </mat-step>
 
-      
+
       <mat-step [stepControl]="step7Form">
         <form [formGroup]="step7Form" (ngSubmit)="captchaRef.execute()">
           <h4 class="fw-bold">Authorization and Preference Settings!</h4>
@@ -267,28 +267,34 @@
 
             <div class="col-md-12 mt-2 mb-1">
               <mat-checkbox formControlName="acceptLocation" class="text-start">
-                I agree to share my location with Padicare to help me find clients in my area.
+                I agree to share my location with Padicare to help me find caregivers in my area.
               </mat-checkbox>
             </div>
 
             <div class="col-md-12 mt-2 mb-1">
               <mat-checkbox formControlName="acceptEmail" class="text-start">
                 I agree to receive marketing emails from Padicare about new features, promotions,
-                client communications and other relevant information.
+                caregivers communications and other relevant information.
               </mat-checkbox>
             </div>
 
             <div class="col-md-12 mt-2 mb-1">
               <mat-checkbox formControlName="acceptSMS" class="text-start">
                 I agree to receive SMS notifications from Padicare about my account activity,
-                including but not limited to new job opportunities, messages from clients, and other important updates.
+                including but not limited to new opportunities, messages from caregivers, and other important updates.
               </mat-checkbox>
             </div>
 
             <div class="col-md-12 mt-2 mb-1">
               <mat-checkbox formControlName="acceptPhone" class="text-start">
                 I agree to receive Phone voice calls from Padicare about my account activity,
-                including but not limited to new job opportunities, voice-calls from clients, and other important updates.
+                including but not limited to new opportunities, voice-calls from caregivers, and other important updates.
+              </mat-checkbox>
+            </div>
+
+            <div class="col-md-12 mt-2 mb-1">
+              <mat-checkbox formControlName="visibility" class="text-start">
+                I agree to allow my basic user information such as (name, gender, etc.) and/or professional summary information to be visibility and/or searchable via the padicare plateform
               </mat-checkbox>
             </div>
 
@@ -312,7 +318,7 @@
             (error)="captchaService.onError($event);
             captchaRef.reset();"
           />
-          
+
           </div>
           <div class="d-grid gap-2 mt-2">
             <button type="submit" class="btn btn-primary" matStepperNext [disabled]="isSubmitted">

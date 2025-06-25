@@ -22,25 +22,25 @@ export class HttpInterceptorService implements HttpInterceptor {
     private envService: EnvironmentService
   ) { }
 
+  getHeaders(request: HttpRequest<any>) {
+
+  }
+
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     //ApiPrefixInterceptor: Test if NOT external request, Append Server URL
-    const isCentralApi = !/^(http|https):/i.test(request.url);
+    const isInternal = !/^(http|https):/i.test(request.url);
     const isJson = /\.json$/i.test(request.url);
-    const url = request.url;
     const serverUrl = this.envService.getValue('serverUrl');
     const renewTokenUrl = this.envService.getValue('renewTokenUrl');
 
-    if (isCentralApi && !isJson) {
-      request = request.clone({ url: serverUrl + url });
-    }
+    const url = isInternal && !isJson ? (serverUrl + request.url) : request.url;
 
-    const originalRequestHeaders = request.headers;
-    if (isCentralApi) {
+    if (isInternal) {
       const authorizationHeader = this.credentialService.isAuthenticated() ?
 
         //AuthenticationInterceptor: Test if Authenticated, Append Authorization Header
         (
-          (url == this.envService.getValue('renewTokenUrl')) ?
+          (request.url == renewTokenUrl) ?
             HttpHeadersHelpers.getJsonContentTypeHeadersWithToken(this.credentialService.refreshToken + '') :
             HttpHeadersHelpers.getJsonContentTypeHeadersWithToken(this.credentialService.token + '')
         ) :
@@ -48,12 +48,12 @@ export class HttpInterceptorService implements HttpInterceptor {
         //isCentralApiInterceptor: This uses json for request/response!
         HttpHeadersHelpers.getJsonContentTypeHeaders();
 
-      Object.keys(authorizationHeader).forEach(headerKey => {
-        originalRequestHeaders.set(headerKey, authorizationHeader[headerKey]);
-      });
       request = request.clone({
-        headers: originalRequestHeaders
+        url: url,
+        setHeaders: authorizationHeader
       });
+    } else {
+      request = request.clone({ url });
     }
 
     return next.handle(request).pipe(catchError(err => {
@@ -67,6 +67,7 @@ export class HttpInterceptorService implements HttpInterceptor {
           setHeaders: HttpHeadersHelpers.getJsonContentTypeHeadersWithToken(this.credentialService.refreshToken + ''),
           method: 'GET'
         });
+
         return next.handle(renewTokenRequest).pipe(
           switchMap((response: any) => {
             if (response instanceof HttpResponse && response.status == HttpStatusCode.Ok) {

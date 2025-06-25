@@ -1,9 +1,71 @@
-<div class="position-absolute top-80 start-50 translate-middle text-center">
-  <!-- For Each User  -->
-  <div *ngFor="let user of allUsers">
-    <app-user-summary [user]="user" (isLiked)="handleFavorites($event, user)" (isReadMore)="readMoreCallBack($event, user)">
-    </app-user-summary>
-    <div class="clearfix mt-1 mb-1">&nbsp;</div>
-  </div>
+<div class="row">
 
+  <div class="col-md-12 text-center">
+    <!-- Search Box -->
+     <form [formGroup]="searchForm" (ngSubmit)="search()">
+      <mat-form-field appearance="outline" class="col-md-4 pe-1">
+        <mat-label>Search For Caregivers using zipcode</mat-label>
+        <input matInput type="text" placeholder="Zipcode" formControlName="zipcode" required>
+        <mat-error *ngIf="zipcode?.invalid">Invalid zipcode</mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="col-md-4 ps-1">
+        <mat-label>Radius</mat-label>
+        <input matInput type="text" placeholder="Radius" formControlName="radius" required>
+        <mat-error *ngIf="radius?.errors?.['required']">Mile radius is required</mat-error>
+        <mat-error *ngIf="radius?.errors?.['min'] ">Min mile radius is 2</mat-error>
+        <mat-error *ngIf="radius?.errors?.['max'] ">Max mile radius is 30</mat-error>
+      </mat-form-field>
+     </form>
+  </div>
+</div>
+
+<div class="d-flex justify-content-center">
+  <div class="col-md-8 justify-content-center">
+
+    <div class="d-flex justify-content-center align-items-center" *ngIf="isSearching">
+      <mat-spinner [diameter]="25"></mat-spinner>
+    </div>
+
+    <div class="d-flex justify-content-center align-items-center" *ngIf="!isSearching && searchedResultsCount === 0">
+      <p class="text-muted">No caregivers found for the given zipcode and radius. Please try a different zipcode and/or radius </p>
+    </div>
+
+    <div class="d-flex justify-content-center align-items-center" *ngIf="!isSearching && searchedResultsCount > 0">
+      <p class="text-muted text-success-emphasis">Found {{searchedResultsCount}} caregivers for the given zipcode and radius</p>
+    </div>
+
+    <mat-paginator
+      *ngIf="!isSearching && searchedResultsCount > 0"
+      #topPaginator
+      [length]="searchedResultsCount"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions"
+      [showFirstLastButtons]="true"
+      [pageIndex]="pageIndex"
+      (page)="pageChange($event)">
+    </mat-paginator>
+
+    <div *ngFor="let user of searchedResults | slice: startIndex : endIndex " class="mb-3">
+       <!-- Search Results -->
+      <app-user-summary
+        [user]="user"
+        (isLiked)="isLikedHandler($event, user)"
+        (isReadMore)="isReadMoreHandler($event, user)"
+        (isBookAppointment)="bookAppointmentHandler($event, user)">
+      </app-user-summary>
+      <div class="clearfix mt-1 mb-1">&nbsp;</div>
+    </div>
+
+    <mat-paginator
+      *ngIf="!isSearching && searchedResultsCount > 0"
+      #bottomPaginator
+      [length]="searchedResultsCount"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions"
+      [showFirstLastButtons]="true"
+      [pageIndex]="pageIndex"
+      (page)="pageChange($event)">
+    </mat-paginator>
+
+  </div>
 </div>

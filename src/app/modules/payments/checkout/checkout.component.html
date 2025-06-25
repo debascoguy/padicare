@@ -1,0 +1,11 @@
+<script src="https://js.stripe.com/basil/stripe.js"></script>
+<script src="checkout.js" defer></script>
+
+<h2>Checkout Works!</h2>
+
+<form (submit)="handleSubmit()">
+  <div #paymentElement id="payment-element">
+  <!-- Checkout will insert the payment form here -->
+  </div>
+  <button type="submit" class="btn btn-success-outline">PAY</button>
+</form>

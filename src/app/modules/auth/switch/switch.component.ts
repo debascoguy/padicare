@@ -4,7 +4,7 @@ import { MatButton } from '@angular/material/button';
 import { MatCard, MatCardActions, MatCardHeader, MatCardSubtitle, MatCardTitle } from '@angular/material/card';
 import { Router, RouterLink } from '@angular/router';
 import { CredentialsService } from '@app/core/authentication/credentials.service';
-import { AppUserType } from '@app/enums/app.user.type.enum';
+import { AppUserType } from '@app/shared/enums/app.user.type.enum';
 
 @Component({
   selector: 'app-switch',

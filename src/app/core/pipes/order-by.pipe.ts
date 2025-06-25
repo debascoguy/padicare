@@ -12,18 +12,14 @@ export class OrderByPipe implements PipeTransform {
 
     const sorted = value.sort((a, b) => {
       if (a[property] < b[property]) {
-        return -1;
+        return direction === 'asc' ? -1 : 1;
       } else if (a[property] > b[property]) {
-        return 1;
+        return direction === 'asc' ? 1 : -1;
       } else {
         return 0;
       }
     });
 
-    if (direction === 'asc') {
-      return sorted;
-    } else if (direction === 'desc') {
-      return sorted.reverse();
-    }
+    return sorted;
   }
 }

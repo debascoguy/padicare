@@ -13,8 +13,8 @@ Available pre-built themes:
 @use 'bootstrap/scss/bootstrap.scss';
 @use 'bootstrap-icons/font/bootstrap-icons.min.css';
 
-// @use "./styles/themes/default";
-@use '@angular/material/prebuilt-themes/deeppurple-amber.css';
+@use "./styles/themes/default";
+// @use '@angular/material/prebuilt-themes/deeppurple-amber.css';
 
 // Custom buttons
 body {
@@ -68,6 +68,10 @@ body {
   // flex: 1;
   margin: 100px auto;
   text-align: center;
+}
+
+.space-top {
+  margin-top: 70px !important;
 }
 
 .top-40 {

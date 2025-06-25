@@ -1,18 +1,35 @@
-import { Component } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
+import { Component, Output, ViewChild } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
-import { AuthenticationService } from '../../../core/authentication/authentication.service';
 import { CommonModule } from '@angular/common';
 import { UserSummaryComponent } from '../../../shared/user-summary/user-summary.component';
-import { CaptchaService } from '@app/core/services/captcha.service';
+import { UserSummary } from '@app/shared/user-summary/UserSummary';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { RecaptchaModule, RecaptchaFormsModule } from 'ng-recaptcha';
+import { CredentialsService } from '@app/core/authentication/credentials.service';
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
+import { AppUserType } from '@app/shared/enums/app.user.type.enum';
+import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-search-caregiver',
   imports: [
     CommonModule,
-    MatIconModule,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    MatError,
+    MatProgressSpinner,
+    FormsModule,
+    ReactiveFormsModule,
+    RecaptchaModule,  //this is the recaptcha main module
+    RecaptchaFormsModule, //this is the module for form incase form validation
     UserSummaryComponent,
+    MatPaginatorModule
   ],
   providers: [
     MatSnackBar
@@ -22,106 +39,130 @@ import { CaptchaService } from '@app/core/services/captcha.service';
 })
 export class SearchCaregiverComponent {
 
-  allUsers: Array<{
-    firstName: string;
-    lastName: string;
-    profileImage: string;
-    badgeColor: string;
-    info: string;
-    reviewText: string;
-    userRating: number;
-    address: { city: string };
-    chargePerHour: number;
-    yearsOfExperience: number;
-  }> = [
-      {
-        //Defaults Sample.
-        firstName: "Brenda",
-        lastName: "Aina",
+  @Output() bookAppointmentAction = new EventEmitter<UserSummary>();
 
-        profileImage: "assets/img/sandra-michaels.png",
-        badgeColor: "#7A5AF8",
+  @ViewChild('topPaginator') topPaginator!: MatPaginator;
+  @ViewChild('bottomPaginator') bottomPaginator!: MatPaginator;
+  pageSizeOptions: number[] = [5, 10, 20, 50];
+  pageSize = this.pageSizeOptions[1];
+  pageIndex: number = 0;
+  startIndex: number = 0;
+  endIndex: number = this.pageSize;
 
-        info: "I am a compassionate and dedicated caregiver with 12 years of experience in providing personalized care to individuals of all ages. My approach focuses on fostering a safe, supportive",
-
-        reviewText: "Brenda A. is an exceptional caregiver who goes above and beyond to provide compassionate and " +
-          "professional care. Her attention to detail, patience, and ability to connect with those she cares for make her truly " +
-          "stand out. Brenda is reliable, trustworthy, and always ensures the comfort and well-being of her clients. We highly " +
-          "recommend her to anyone seeking dedicated and skilled caregiving services",
-
-        userRating: 5,
-
-        address: { city: 'New York' },
-
-        chargePerHour: 20,
-
-        yearsOfExperience: 10,
-      },
-      {
-        //Defaults Sample.
-        firstName: "John",
-        lastName: "Morrison",
-
-        profileImage: "assets/img/john-morrison.png",
-        badgeColor: "#E54545",
-
-        info: "I am a compassionate and dedicated caregiver with 12 years of experience in providing personalized care to individuals of all ages. My approach focuses on fostering a safe, supportive",
-
-        reviewText: "Brenda A. is an exceptional caregiver who goes above and beyond to provide compassionate and " +
-          "professional care. Her attention to detail, patience, and ability to connect with those she cares for make her truly " +
-          "stand out. Brenda is reliable, trustworthy, and always ensures the comfort and well-being of her clients. We highly " +
-          "recommend her to anyone seeking dedicated and skilled caregiving services",
-
-        userRating: 5,
-
-        address: { city: 'New Jersey' },
-
-        chargePerHour: 22,
-
-        yearsOfExperience: 12,
-      },
-      {
-        //Defaults Sample.
-        firstName: "Zainab",
-        lastName: "Ikhu",
-
-        profileImage: "assets/img/sandra-michaels.png",
-        badgeColor: "#7A5AF8",
-
-        info: "I am a compassionate and dedicated caregiver with 12 years of experience in providing personalized care to individuals of all ages. My approach focuses on fostering a safe, supportive",
-
-        reviewText: "Brenda A. is an exceptional caregiver who goes above and beyond to provide compassionate and " +
-          "professional care. Her attention to detail, patience, and ability to connect with those she cares for make her truly " +
-          "stand out. Brenda is reliable, trustworthy, and always ensures the comfort and well-being of her clients. We highly " +
-          "recommend her to anyone seeking dedicated and skilled caregiving services",
-
-        userRating: 5,
-
-        address: { city: 'Oklahoma City' },
-
-        chargePerHour: 21,
-
-        yearsOfExperience: 11,
-      }
-    ];
-
-  constructor(
-    protected router: Router,
-    protected authenticationService: AuthenticationService
-  ) {
-/**
- * TODO:
- * create landing page after login.
- * Then, work on the client search engine for caregiver
- */
+  pageChange(event: PageEvent) {
+    this.pageIndex = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.startIndex = event.pageIndex * event.pageSize;
+    this.endIndex = this.startIndex + event.pageSize;
+    if (this.endIndex > this.searchedResults.length) {
+      this.endIndex = this.searchedResults.length;
+    }
+    if (!this.topPaginator.hasNextPage()) {
+      window.scrollTo(0, document.body.scrollHeight);
+    }
   }
 
-  handleFavorites(isLiked: boolean, user: any) {
+  searchForm!: FormGroup;
+  errorMessage: string | null = null;
+  // badgeColors: "#7A5AF8" | "#E54545"; // Default badge color
+  searchedResults: UserSummary[] = [];
+  isSearching: boolean = false;
+
+  constructor(
+    protected credentialsService: CredentialsService,
+    private httpClient: HttpClient,
+    protected snackBar: MatSnackBar
+  ) {
+    this.searchForm = new FormGroup({
+      zipcode: new FormControl(this.credentialsService.userAddress.zipcode || '', [Validators.required, Validators.minLength(5)]),
+      radius: new FormControl(this.credentialsService.userAddress.radius || 10, [
+        Validators.required,
+        Validators.min(2),
+        Validators.max(30)
+      ])
+    });
+  }
+
+  ngOnInit(): void {
+    this.search();
+    this.searchForm.valueChanges.subscribe((_) => {
+      this.search();
+    })
+  }
+
+  get searchedResultsCount(): number {
+    return this.searchedResults.length;
+  }
+
+  get zipcode() {
+    return this.searchForm.get('zipcode');
+  }
+
+  get radius() {
+    return this.searchForm.get('radius');
+  }
+
+  search() {
+    if (this.searchForm.invalid) {
+      return;
+    }
+
+    this.isSearching = true;
+    const address = this.credentialsService.userAddress;
+    const searchRequest = this.zipcode?.value == address.zipcode ?
+                          {
+                            ...this.searchForm.value,
+                            latitude: parseFloat(address.latitude+""),
+                            longitude: parseFloat(address.longitude+"")
+                          } : this.searchForm.value;
+    firstValueFrom(this.httpClient.post('/caregiver/search', searchRequest)).then((response: any) => {
+      this.searchedResults = response.status ? response.data : [];
+      this.isSearching = false;
+      if (this.credentialsService.activePortal == AppUserType.client) {
+        this.findCaregiversCareTypes(this.searchedResults.map((user: UserSummary) => user.userId));
+      }
+    }).catch(error => {
+      this.isSearching = false;
+      this.errorMessage = error.error.message;
+      this.snackBar.open(error.error.message, 'close', { duration: 4000 });
+    });
+  }
+
+  findCaregiversCareTypes(caregiversId: string[]) {
+    if (!caregiversId || caregiversId.length === 0) {
+      return ;
+    }
+
+    firstValueFrom(this.httpClient.post('/caregiver/care-types/find-all/by/ids', { caregiversId })).then((response: any) => {
+      if (response.status) {
+        Object.entries(response.data).forEach( ([userId, caregiverCareTypes]) => {
+          this.searchedResults.forEach((user: UserSummary, index: number) => {
+            if (user.userId === userId) {
+              this.searchedResults[index].caregiverCareTypes = caregiverCareTypes as [];
+            }
+          });
+        });
+      }
+    }).catch(error => {
+      console.log(error);
+      this.errorMessage = error.error.message;
+      this.snackBar.open(error.error.message, 'close', { duration: 4000 });
+    });
+  }
+
+  isLikedHandler(isLiked: boolean, user: UserSummary) {
     console.log("Is Liked: ", isLiked, user);
   }
 
-  readMoreCallBack(isReadMore: boolean, user: any) {
+  isReadMoreHandler(isReadMore: boolean, user: UserSummary) {
     console.log("Is Read More: ", isReadMore, user);
+  }
+
+  bookAppointmentHandler(isBookAppointment: boolean, user: UserSummary) {
+    if (!isBookAppointment) {
+      return;
+    }
+    this.bookAppointmentAction.emit(user);
   }
 
 }

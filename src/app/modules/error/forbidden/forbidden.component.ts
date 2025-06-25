@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { MatAnchor } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
 import { CredentialsService } from '@app/core/authentication/credentials.service';
-import { AppUserType } from '@app/enums/app.user.type.enum';
+import { AppUserType } from '@app/shared/enums/app.user.type.enum';
 
 @Component({
   selector: 'app-forbidden',

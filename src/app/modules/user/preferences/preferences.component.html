@@ -1,0 +1,103 @@
+<mat-card class="p-4">
+  <mat-card-header>
+    <mat-card-title class="text-start">
+      <h3 class="fw-bold">Authorization and Preference Settings</h3>
+    </mat-card-title>
+  </mat-card-header>
+
+  <form [formGroup]="preferenceForm" (ngSubmit)="submitPreferences()">
+    <div class="mt-4 mb-3 text-start">
+
+      <ng-template #notificationTemplate>
+        <div class="alert alert-success" role="alert">
+          <div class="d-flex align-item-center">
+            <mat-icon class="m-2 text-success">check_circle</mat-icon>
+            <span class="p-2"> {{ notificationMessage }} </span>
+          </div>
+        </div>
+      </ng-template>
+
+      <div class="mt-2 mb-2 border-bottom" *ngIf="!showSuccessMessage">&nbsp;</div>
+
+      <ng-template [ngTemplateOutlet]="notificationTemplate" *ngIf="showSuccessMessage"></ng-template>
+
+      <div class="col-md-12 mt-2 mb-1">
+        <mat-checkbox formControlName="acceptNotifications" class="text-start">
+          <span *ngIf="activePortal == AppUserType.careGiver">
+            I agree to receive notifications via email and/or SMS about my account activity,
+            including but not limited to new job opportunities, messages from clients, and other important updates.
+          </span>
+          <span *ngIf="activePortal == AppUserType.client">
+            I agree to receive notifications via email and/or SMS about my account activity,
+            including but not limited to new job opportunities, messages from clients, and other important updates.
+          </span>
+        </mat-checkbox>
+      </div>
+
+      <div class="col-md-12 mt-2 mb-1">
+        <mat-checkbox formControlName="acceptLocation" class="text-start">
+          <span *ngIf="activePortal == AppUserType.careGiver">
+            I agree to share my location with Padicare to help me find clients in my area.
+          </span>
+          <span *ngIf="activePortal == AppUserType.client">
+           I agree to share my location with Padicare to help me find caregivers in my area.
+          </span>
+        </mat-checkbox>
+      </div>
+
+      <div class="col-md-12 mt-2 mb-1">
+        <mat-checkbox formControlName="acceptEmail" class="text-start">
+          <span *ngIf="activePortal == AppUserType.careGiver">
+           I agree to receive marketing emails from Padicare about new features, promotions,
+           client communications and other relevant information.
+          </span>
+          <span *ngIf="activePortal == AppUserType.client">
+           I agree to receive marketing emails from Padicare about new features, promotions,
+           caregivers communications and other relevant information.
+          </span>
+        </mat-checkbox>
+      </div>
+
+      <div class="col-md-12 mt-2 mb-1">
+        <mat-checkbox formControlName="acceptSMS" class="text-start">
+          <span *ngIf="activePortal == AppUserType.careGiver">
+           I agree to receive SMS notifications from Padicare about my account activity,
+           including but not limited to new job opportunities, messages from clients, and other important updates.
+          </span>
+          <span *ngIf="activePortal == AppUserType.client">
+          I agree to receive SMS notifications from Padicare about my account activity,
+          including but not limited to new opportunities, messages from caregivers, and other important updates.
+          </span>
+        </mat-checkbox>
+      </div>
+
+      <div class="col-md-12 mt-2 mb-1">
+        <mat-checkbox formControlName="acceptPhone" class="text-start">
+          <span *ngIf="activePortal == AppUserType.careGiver">
+           I agree to receive Phone voice calls from Padicare about my account activity,
+           including but not limited to new job opportunities, voice-calls from clients, and other important updates.
+          </span>
+          <span *ngIf="activePortal == AppUserType.client">
+          I agree to receive Phone voice calls from Padicare about my account activity,
+          including but not limited to new opportunities, voice-calls from caregivers, and other important updates.
+          </span>
+        </mat-checkbox>
+      </div>
+
+      <div class="col-md-12 mt-2 mb-1">
+        <mat-checkbox formControlName="visibility" class="text-start">
+          <span *ngIf="activePortal == AppUserType.careGiver">
+           I agree to allow my basic user information such as (name, gender, etc.) and/or professional summary information to be visibility and/or searchable via the padicare plateform
+          </span>
+          <span *ngIf="activePortal == AppUserType.client">
+            I agree to allow my basic user information such as (name, gender, etc.) to be visibility and/or searchable via the padicare plateform
+          </span>
+        </mat-checkbox>
+      </div>
+
+    </div>
+    <div class="d-grid gap-2">
+      <button type="submit" class="btn btn-primary" [disabled]="preferenceForm.invalid">Save</button>
+    </div>
+  </form>
+</mat-card>

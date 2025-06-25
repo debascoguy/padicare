@@ -18,7 +18,6 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { RECAPTCHA_SETTINGS, RecaptchaSettings } from 'ng-recaptcha';
 import { CaptchaService } from './core/services/captcha.service';
 
-
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
@@ -65,6 +64,6 @@ export const appConfig: ApplicationConfig = {
     },
     CaptchaService,
     LogService,
-    LogPublishersService,
+    LogPublishersService
   ]
 };

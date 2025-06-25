@@ -3,7 +3,7 @@ import { User, UserAddress } from '../models/user';
 import { LoginContext } from '../models/login-context.model';
 import { SecuredLocalStorage } from '../services/SecuredLocalStorage';
 import { SecuredSessionStorage } from '../services/SecuredSessionStorage';
-import { AppUserType } from '@app/enums/app.user.type.enum';
+import { AppUserType } from '@app/shared/enums/app.user.type.enum';
 
 
 const credentialsKey = 'credentials';
@@ -77,8 +77,37 @@ export class CredentialsService {
     return !!this.credentials ? this.credentials?.clientPreferences : {};
   }
 
+  get userType(): AppUserType | null | undefined {
+    return !!this.credentials ? this.credentials.user?.userType as AppUserType : null;
+  }
+
+  getActivePortal(): AppUserType | null | undefined {
+    const userType = this.credentials?.user?.userType as AppUserType || null;
+    if (userType) {
+      if (userType == AppUserType.both) {
+        return location.pathname.includes('/client') ? AppUserType.client : AppUserType.careGiver;
+      } else {
+        return userType
+      }
+    }
+    return null;
+  }
+
   get activePortal(): AppUserType | null | undefined {
-    return !!this.credentials ? this.credentials?.activePortal : null;
+    if (!this.credentials) {
+      return null;
+    }
+    if (this.credentials.activePortal && this.credentials.activePortal != AppUserType.both) {
+      return this.credentials.activePortal;
+    }
+    // If activePortal is not set, default to the user type
+    if (this.credentials.user?.userType) {
+      const portal = this.getActivePortal();
+      this.credentials.activePortal = portal !== null ? portal : undefined;
+      this.updateCredentials(this.credentials);
+      return this.credentials.activePortal;
+    }
+    return null;
   }
 
   get profileImage() {

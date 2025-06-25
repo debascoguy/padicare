@@ -52,7 +52,7 @@
 </header>
 
 <header *ngIf="headerType == HeaderType.ONBOARDING || headerType == HeaderType.AUTH">
-  <nav class="navbar navbar-expand-sm navbar-light bg-light lh-lg" [class.fixed-top]="isFixed">
+  <nav class="navbar navbar-expand-sm navbar-light bg-light" [class.fixed-top]="isFixed">
     <div class="container-fluid">
       <a class="navbar-brand ms-5" href="javascript:void(0)" (click)="pageReload()">
         <span class="fs-3" style="font-weight: 900;">
@@ -63,9 +63,20 @@
   </nav>
 </header>
 
+<div *ngIf="headerType == HeaderType.MODAL">
+  <div class="navbar navbar-expand-sm navbar-light bg-light" [class.fixed-top]="isFixed">
+    <div class="container-fluid">
+      <a class="navbar-brand ms-5" href="javascript:void(0)" (click)="pageReload()">
+        <span class="fs-3" style="font-weight: 900;">
+          <h4 class="fw-bold">{{ headerText }}</h4>
+        </span>
+      </a>
+    </div>
+  </div>
+</div>
 
-<header *ngIf="headerType == HeaderType.ADMIN || headerType == HeaderType.CAREGIVER || headerType == HeaderType.CLIENT">
-  <nav class="navbar navbar-expand-sm navbar-light lh-lg w-full px-10 header2" [class.fixed-top]="isFixed">
+<header *ngIf="headerType == HeaderType.ADMIN || headerType == HeaderType.CAREGIVER || headerType == HeaderType.CLIENT || headerType == HeaderType.DASHBOARD">
+  <nav class="navbar navbar-expand-sm navbar-light header2" [class.fixed-top]="isFixed">
 
     <div class="container-fluid">
 
@@ -90,7 +101,7 @@
             <app-profile-image size="SMALL" badgeColor=""></app-profile-image>
           </li>
           <li class="nav-item">
-            <a class="nav-link link-light" href="javascript:void();" (click)="pageReload()">Accounts</a>
+            <a class="nav-link link-light" href="/user">Accounts</a>
           </li>
           <li class="nav-item">
             <a class="nav-link link-light" href="javascript:void();" (click)="pageReload()">Dependents</a>
@@ -99,7 +110,7 @@
             <a class="nav-link link-light" href="javascript:void();" (click)="pageReload()">Payments</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link link-light" href="javascript:void();" (click)="pageReload()">Settings</a>
+            <a class="nav-link link-light" href="javascript:void();" (click)="logout()">Logout</a>
           </li>
           <li class="nav-item">
             <button type="button" mat-icon-button [matMenuTriggerFor]="appsMenu" matTooltip="Applications" class="btn btn-outline-light ms-1 me-1">

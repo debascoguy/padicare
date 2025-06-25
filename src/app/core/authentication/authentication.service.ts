@@ -6,7 +6,7 @@ import { NumberToWord } from '../services/NumberToWord';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environments';
 import { HttpHeadersHelpers } from '../http/HttpHeadersHelpers';
-import { AppUserType } from '@app/enums/app.user.type.enum';
+import { AppUserType } from '@app/shared/enums/app.user.type.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -23,7 +23,7 @@ export class AuthenticationService {
   }
 
   getLoginPage() {
-    return "/";
+    return "/auth/login";
   }
 
   fetchUserProfileImage() {
@@ -62,6 +62,10 @@ export class AuthenticationService {
   changePassword(context: {token: string, newPassword: string}): Observable<any> {
     const headers = HttpHeadersHelpers.getAuthorization(context.token);
     return this.httpClient.post("/access/auth/change-password", { newPassword: context.newPassword }, { headers });
+  }
+
+  updatePassword(newPassword: string): Observable<any> {
+    return this.httpClient.post("/access/auth/change-password", { newPassword });
   }
 
   renewToken() {
@@ -116,6 +120,17 @@ export class AuthenticationService {
   verifyEmail(token : string) {
     const headers = HttpHeadersHelpers.getAuthorization(token);
     return this.httpClient.get("/access/onboarding/verify/email", { headers }).pipe(
+      map((response: any) => {
+        if (!!response.status) {
+          this.credentialsService.setCredentials(response.data, true);
+        }
+        return response;
+      }));
+  }
+
+  verifyPhone(token : string) {
+    const headers = HttpHeadersHelpers.getAuthorization(token);
+    return this.httpClient.get("/access/onboarding/verify/phone", { headers }).pipe(
       map((response: any) => {
         if (!!response.status) {
           this.credentialsService.setCredentials(response.data, true);

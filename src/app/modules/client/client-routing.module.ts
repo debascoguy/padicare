@@ -22,6 +22,46 @@ export const clientRoutes: Routes = [
       pageAuthorities: []
     } as RouteData,
   },
+  {
+    path: 'checkout/:checkoutEntity/:checkoutEntityId',
+    loadComponent: () => import('../payments/checkout/checkout.component').then(c => c.CheckoutComponent),
+    data: {
+      title: 'Client | Checkout',
+      breadcrumbs: [
+        {
+          text: 'Dashboard',
+          link: '/client/dashboard'
+        },
+        {
+          text: 'Checkout',
+          active: true
+        }
+      ],
+      pageAuthorities: []
+    } as RouteData,
+  },
+  {
+    path: 'checkout-complete/:checkoutEntity/:checkoutEntityId',
+    loadComponent: () => import('../payments/checkout-complete/checkout-complete.component').then(c => c.CheckoutCompleteComponent),
+    data: {
+      title: 'Client | Checkout Processed',
+      breadcrumbs: [
+        {
+          text: 'Dashboard',
+          link: '/client/dashboard'
+        },
+        {
+          text: 'Checkout',
+          link: '/client/checkout/:checkoutEntity/:checkoutEntityId'
+        },
+        {
+          text: 'Checkout',
+          active: true
+        }
+      ],
+      pageAuthorities: []
+    } as RouteData,
+  },
 ];
 
 @NgModule({

@@ -11,13 +11,13 @@
   </span>
 </span>
 
-<span class="position-relative border-0 rounded-circle" *ngIf="size=='NORMAL'">
-  <img [src]="src" [alt]="alt" width="60" height="60" class="bg-profile-picture">
+<div class="position-relative border-0 rounded-circle" *ngIf="size=='NORMAL'">
+  <img [src]="src" [alt]="alt" class="bg-profile-picture">
   <span *ngIf="badgeColor" class="position-absolute translate-middle"
-        style="left: 88% !important; top: 185% !important;">
+        style="left: 88% !important; top: 95% !important;">
     <i class="fa-solid fa-circle-chevron-down fa-border bg-white" [style]="badgeStyle"></i>
   </span>
-</span>
+</div>
 
 <span class="position-relative border-0 rounded-circle" *ngIf="size=='LARGE'">
   <img [src]="src" [alt]="alt" width="80" height="80" class="bg-profile-picture">

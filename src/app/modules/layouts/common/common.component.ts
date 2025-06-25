@@ -10,7 +10,7 @@ import { AnnouncementComponent } from '../announcement';
 import { HeaderType } from '../headers/header.type.enum';
 import { FooterType } from '../footers/footer.type';
 import { CredentialsService } from '@app/core/authentication/credentials.service';
-import { AppUserType } from '@app/enums/app.user.type.enum';
+import { AppUserType } from '@app/shared/enums/app.user.type.enum';
 
 @Component({
   imports: [

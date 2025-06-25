@@ -42,6 +42,11 @@ export const routes: Routes = [
     loadChildren: () => import('./modules/onboarding/onboarding.routes').then(m => m.onboardingRoutes),
   },
   {
+    path: 'user',
+    loadComponent: () => import('./modules/user/user.component').then(m => m.UserComponent),
+    canActivate: [AuthenticationGuard],
+  },
+  {
     path: 'caregiver',
     loadComponent: () => import('./modules/caregiver/caregiver.component').then(m => m.CaregiverComponent),
     loadChildren: () => import('./modules/caregiver/caregiver-routing.module').then(m => m.caregiverRoutes),

@@ -1,0 +1,56 @@
+<div class="container">
+
+  <padicare-basic-headers [headerType]="HeaderType.MODAL" [headerText]="'Book Appointment With ' + caregiverName">
+  </padicare-basic-headers>
+  <span class="fs-6">&nbsp;</span>
+
+  <div class="row">
+    <div class="col-md-12 col-lg-6 offset-lg-3">
+      <div class="mt-4 mb-3">
+        <form [formGroup]="appointmentForm" (ngSubmit)="bookAppointment()">
+          <div class="form-group d-grid gap-2 mb-2">
+            <label for="productName">What type of care do you want from {{ caregiverName }}:</label>
+            <select id="productName" formControlName="productName" class="form-control" (change)="findProductsPricesOption()">
+              <option *ngFor="let careType of data.user.caregiverCareTypes | orderBy: 'product_name' " [value]="careType.product_name" [selected]="careType.category === 'PRIMARY'">
+                {{ careType.product_name | replaceString : '_' : ' ' | titlecase }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group d-grid gap-2 mb-2">
+            <label for="productsPricesId">Please select the specific service type:</label>
+            <select id="productsPricesId" formControlName="productsPricesId" class="form-control">
+              <option *ngFor="let productsPrices of productsPricesOptions" [value]="productsPrices.id">
+                {{
+                (productsPrices.billingPeriod !== 'CUSTOM' ? (productsPrices.billingPeriod | replaceString : '_' : ' ' | titlecase) : (productsPrices.billingPeriodDetails) )
+                + ' - '  +
+                (productsPrices.careType | replaceString : '_' : ' ' | titlecase) + ' - ' +
+                (productsPrices.price | currency : productsPrices.currency : 'symbol')
+                }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group d-grid gap-2 mb-2">
+            <label for="appointmentDate">Select Date:</label>
+            <input type="date" id="appointmentDate" formControlName="appointmentDate" class="form-control">
+          </div>
+
+          <div class="form-group d-grid gap-2 mb-2">
+            <label for="appointmentTime">Select Time:</label>
+            <input type="time" id="appointmentTime" formControlName="appointmentTime" class="form-control">
+          </div>
+          <div class="form-group d-grid gap-2 mb-2">
+            <label for="additionalNotes">Notes:</label>
+            <textarea id="additionalNotes" formControlName="additionalNotes" class="form-control" rows="3"></textarea>
+            <small class="form-text text-muted">Optional notes for the caregiver.</small>
+          </div>
+          <div class="form-group d-grid gap-2 mb-2">
+            <button type="submit" class="btn btn-outline-success">Book Appointment</button>
+            <button type="button" class="btn btn-outline-secondary" (click)="closeModal()">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

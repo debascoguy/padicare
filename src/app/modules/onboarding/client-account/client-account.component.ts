@@ -15,9 +15,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatSliderModule } from '@angular/material/slider';
-import { DayOfWeekShortEnum, SeasonOfDay } from '../../../enums/schedules.enum';
-import { CaregiverQualities } from '../../../enums/caregiver.qualities.enum';
-import { SecondaryCareTypeEnums } from '../../../enums/secondary.care.type.enum';
+import { DayOfWeekShortEnum, SeasonOfDay } from '../../../shared/enums/schedules.enum';
+import { CaregiverQualities } from '../../../shared/enums/caregiver.qualities.enum';
+import { SecondaryCareTypeEnums } from '../../../shared/enums/secondary.care.type.enum';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { RecaptchaErrorParameters, RecaptchaFormsModule, RecaptchaModule } from 'ng-recaptcha';
@@ -41,7 +41,7 @@ import { CaptchaService } from '@app/core/services/captcha.service';
     MatCheckboxModule,
     MatSliderModule,
     RecaptchaModule,  //this is the recaptcha main module
-    RecaptchaFormsModule, //this is the module for form incase form validation 
+    RecaptchaFormsModule, //this is the module for form incase form validation
   ],
   providers: [
     MatSnackBar,
@@ -160,7 +160,7 @@ export class ClientAccountComponent {
       ...this.step5Form.value,
     };
 
-    firstValueFrom(this.httpClient.post('/onboarding/client/preference', allData)).then((response: any) => {
+    firstValueFrom(this.httpClient.post('/access/onboarding/client/preference', allData)).then((response: any) => {
       if (response.status) {
         this.isSubmitted = false;
         this.credentialsService.updateCredentialsField('clientPreference', response.data);

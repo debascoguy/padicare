@@ -1,4 +1,4 @@
-import { AppUserType } from './../../enums/app.user.type.enum';
+import { AppUserType } from '../../shared/enums/app.user.type.enum';
 import { User, UserAddress } from "./user";
 
 export interface LoginContext {

@@ -24,7 +24,7 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatCardModule } from '@angular/material/card';
 import { DocumentUploaderComponent } from '@app/shared/document-uploader/document-uploader.component';
-import { AppUserType } from '@app/enums/app.user.type.enum';
+import { AppUserType } from '@app/shared/enums/app.user.type.enum';
 import { RecaptchaErrorParameters, RecaptchaFormsModule, RecaptchaModule } from 'ng-recaptcha';
 import { CaptchaService } from '@app/core/services/captcha.service';
 
@@ -152,6 +152,7 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
       acceptEmail: new FormControl(false, [Validators.requiredTrue]),
       acceptSMS: new FormControl(false, [Validators.requiredTrue]),
       acceptPhone: new FormControl(false, [Validators.requiredTrue]),
+      visibility: new FormControl(false, [Validators.requiredTrue])
     });
 
     this.step6Form = new FormGroup({

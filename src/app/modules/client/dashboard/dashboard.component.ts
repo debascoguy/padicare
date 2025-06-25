@@ -1,92 +1,89 @@
+import { BookAppointmentComponent } from './../book-appointment/book-appointment.component';
 import { CredentialsService } from '@app/core/authentication/credentials.service';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatButton } from '@angular/material/button';
-import { MatCard, MatCardContent, MatCardHeader } from '@angular/material/card';
-import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
-import { MatIcon } from '@angular/material/icon';
-import { MatInput } from '@angular/material/input';
-import { UserSummaryComponent } from '@app/shared/user-summary/user-summary.component';
-import { RecaptchaModule, RecaptchaFormsModule } from 'ng-recaptcha';
 import { HttpClient } from '@angular/common/http';
-import { firstValueFrom } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { SearchCaregiverComponent } from '@app/modules/onboarding/search-caregiver/search-caregiver.component';
+import { UserSummary } from '@app/shared/user-summary/UserSummary';
+import { AppUserType } from '@app/shared/enums/app.user.type.enum';
+import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
   imports: [
     CommonModule,
-    MatFormField,
-    MatLabel,
-    MatInput,
-    MatError,
-    FormsModule,
-    ReactiveFormsModule,
-    RecaptchaModule,  //this is the recaptcha main module
-    RecaptchaFormsModule, //this is the module for form incase form validation
-    UserSummaryComponent,
+    SearchCaregiverComponent
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent implements OnInit {
 
-  searchForm!: FormGroup;
-  errorMessage: string | null = null;
-
-  searchedResults: [] = [];
-
   constructor(
-    protected credentialsService: CredentialsService,
     private httpClient: HttpClient,
-    protected snackBar: MatSnackBar
+    protected credentialsService: CredentialsService,
+    protected snackBar: MatSnackBar,
+    protected modalDialogService: MatDialog,
+    protected router: Router
   ) {
-    this.searchForm = new FormGroup({
-      zipcode: new FormControl(this.credentialsService.userAddress.zipcode || '', [Validators.required]),
-      radius: new FormControl(this.credentialsService.userAddress.radius || 20, [
-        Validators.required,
-        Validators.min(5),
-        Validators.max(60)
-      ])
-    });
+
   }
 
   ngOnInit(): void {
-    this.searchForm.valueChanges.subscribe((_) => {
-      this.search();
-    })
+
   }
 
-  get zipcode() {
-    return this.searchForm.get('zipcode');
-  }
-
-  get radius() {
-    return this.searchForm.get('radius');
-  }
-
-  search() {
-    if (this.searchForm.invalid) {
-      return ;
+  bookAppointmentHandler(user: UserSummary) {
+    if (!this.credentialsService.isLoggedIn()) {
+      this.snackBar.open("Please login to book an appointment", "Close", {
+        duration: 3000,
+        panelClass: ['error-snackbar']
+      });
+      return;
     }
-    console.log(this.searchForm.value);
-    firstValueFrom(this.httpClient.post('/caregiver/search', this.searchForm.value)).then((response: any) => {
-      if (response.status) {
+    if (this.credentialsService.userType !== AppUserType.client && this.credentialsService.userType !== AppUserType.both) {
+      this.snackBar.open("Only clients can book appointments with caregivers", "Close", {
+        duration: 3000,
+        panelClass: ['error-snackbar']
+      });
+      return;
+    }
+    if (!user || !user.userId) {
+      this.snackBar.open("Invalid caregiver selected", "Close", {
+        duration: 3000,
+        panelClass: ['error-snackbar']
+      });
+      return;
+    }
 
+    this.modalDialogService.open(BookAppointmentComponent, {
+      data: { user },
+      width: '650px',
+      disableClose: false,
+      autoFocus: false,
+  }).afterClosed().subscribe((result) => {
+      if (result && result.success) {
+        const { success, ...data } = result;
+        this.httpClient.post('/caregiver/book/appointment', {...data}).subscribe({
+          next: (response: any) => {
+            if (response.status) {
+              this.router.navigate(['/client/checkout/booking-appointment/' + response.data.id]);
+            }
+          },
+          error: (error) => {
+            this.snackBar.open("Failed to book appointment. Please try again.", "Close", {
+              duration: 3000,
+              panelClass: ['error-snackbar']
+            });
+          }
+        });
       }
-    }).catch(error => {
-      this.errorMessage = error.error.message;
-      this.snackBar.open(error.error.message, 'close', { duration: 3000 });
     });
-  }
 
-  isLikedHandler(isLiked: boolean) {
 
-  }
-
-  isReadMoreHandler(isReadMore: boolean) {
-
+    
   }
 
 }
