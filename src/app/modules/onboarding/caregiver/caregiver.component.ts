@@ -139,7 +139,7 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
 
     this.step4bForm = new FormGroup({
       biography: new FormControl('', [Validators.required]),
-      chargePerHour: new FormControl(20, [Validators.required]),
+      chargePerHour: new FormArray([]),
       yearsOfExperience: new FormControl(1, Validators.required),
     });
 
@@ -186,15 +186,20 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
       this.search();
       this.geocodeZipcode(this.zipcode?.value);
     }
+  }
+
+  ngAfterViewInit(): void {
     this.step0Form.get('zipcode')?.valueChanges.subscribe((value) => {
       if (value && value.length >= 5) {
         this.search();
         this.geocodeZipcode(value);
       }
     });
+    
     this.step0Form.get('radius')?.valueChanges.subscribe((value) => {
       this.drawCircle(value);
     });
+
     this.email?.valueChanges.subscribe((value) => {
       firstValueFrom(this.authenticationService.validateEmail(AppUserType.careGiver, value))
         .then((response: any) => {
@@ -205,21 +210,40 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
           this.email?.setErrors({ email: true });
         });
     });
-  }
 
-  ngAfterViewInit(): void {
     this.stepper.selectionChange.subscribe((step: StepperSelectionEvent) => {
-      if (step.selectedStep.label == "OtherCareTypes") {
-        this.initStep3Form();
+      if (step.selectedStep.label === "OtherCareTypes") {
+        //Initialize the other care types form array based on the primary care type selected
+        const formArray = this.step3Form.get('otherCareTypes') as FormArray;
+        this.otherCareTypeValue.forEach((_) => {
+          formArray.push(new FormControl(''));
+        });
+      }
+
+      if (step.selectedStep.label === "ProfessionalPreference") {
+        // Initialize the charge per hour form array based on the other care types selected
+        const formArray = this.step4bForm.get('chargePerHour') as FormArray;
+        formArray.clear();
+        formArray.push( new FormGroup({
+          careType: new FormControl(this.primaryCareType?.value, [Validators.required]),
+          amount: new FormControl('', [Validators.required]),
+          currency: new FormControl('USD', [Validators.required]),
+          frequency: new FormControl('HOURLY', [Validators.required]),
+        }));
+        this.otherCareTypeSelected.forEach((careTypeValue) => {
+          formArray.push( new FormGroup({
+          careType: new FormControl(careTypeValue, [Validators.required]),
+          amount: new FormControl('', [Validators.required]),
+          currency: new FormControl('USD', [Validators.required]),
+          frequency: new FormControl('HOURLY', [Validators.required]),
+        }));
+        });
       }
     });
   }
 
-  initStep3Form() {
-    const formArray = this.step3Form.get('otherCareTypes') as FormArray;
-    this.otherCareReceiverValues.forEach((_) => {
-      formArray.push(new FormControl(''));
-    });
+  get careReceiverValues() {
+    return Object.keys(this.careReceiverOptions);
   }
 
   get email() {
@@ -230,16 +254,30 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
     return this.step1Form.get('primaryCareType');
   }
 
-  get otherCareReceiverValues() {
+  get otherCareTypeValue() {
     const copyOfCareReceiverOptions = { ...this.careReceiverOptions };
     delete copyOfCareReceiverOptions[this.primaryCareType?.value];
     return Object.keys(copyOfCareReceiverOptions);
+  }
+  
+  get otherCareTypeSelected() {
+    const otherCareTypes = this.step3Form.get('otherCareTypes')?.value;
+    let step3FormValues = [];
+    for (let i = 0; i < otherCareTypes.length; i++) {
+      if (otherCareTypes[i] == true) {
+        step3FormValues.push(this.otherCareTypeValue[i]);
+      }
+    }
+    return step3FormValues;
   }
 
   get otherCareTypes() {
     return (this.step3Form.get('otherCareTypes') as FormArray).controls as FormControl[];
   }
 
+  get chargePerHourFormGroups() {
+    return (this.step4bForm.get('chargePerHour') as FormArray).controls as FormGroup[];
+  }
 
   get zipcode() {
     return this.step0Form.get('zipcode');
@@ -291,21 +329,6 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
     }
   }
 
-  get careReceiverValues() {
-    return Object.keys(this.careReceiverOptions);
-  }
-
-  getOtherCareTypeValues() {
-    const otherCareTypes = this.step3Form.get('otherCareTypes')?.value;
-    let step3FormValues = [];
-    for (let i = 0; i < otherCareTypes.length; i++) {
-      if (otherCareTypes[i] == true) {
-        step3FormValues.push(this.otherCareReceiverValues[i]);
-      }
-    }
-    return { otherCareTypes: step3FormValues };
-  }
-
   onFileUpload({ fileBase64, fileInfo }: { fileBase64: string | null; fileInfo: File | null }) {
     if (fileBase64) {
       this.step5Form.patchValue({ identityDocument: fileBase64, filename: fileInfo?.name });
@@ -326,7 +349,7 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
       ...this.step0Form.value,
       ...this.step1Form.value,
       ...this.step2Form.value,
-      ...this.getOtherCareTypeValues(),
+      ...{ otherCareTypes: this.otherCareTypeSelected },
       ...this.step4Form.value,
       ...this.step4bForm.value,
       ...this.step5Form.value,

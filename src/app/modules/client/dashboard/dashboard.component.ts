@@ -60,10 +60,10 @@ export class DashboardComponent implements OnInit {
 
     this.modalDialogService.open(BookAppointmentComponent, {
       data: { user },
-      width: '650px',
+      width: '750px',
       disableClose: false,
       autoFocus: false,
-  }).afterClosed().subscribe((result) => {
+    }).afterClosed().subscribe((result) => {
       if (result && result.success) {
         const { success, ...data } = result;
         this.httpClient.post('/caregiver/book/appointment', {...data}).subscribe({
@@ -81,9 +81,7 @@ export class DashboardComponent implements OnInit {
         });
       }
     });
-
-
-    
   }
+
 
 }

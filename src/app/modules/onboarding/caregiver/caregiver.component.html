@@ -113,9 +113,9 @@
           <h4 class="fw-bold">Do you offer any other types of care?</h4>
           <div class="mt-2 mb-1">
             <div class="d-grid gap-2 mb-4 border" *ngFor="let control of otherCareTypes; let i = index">
-              <mat-checkbox class="text-start" [formControl]="control" [value]="otherCareReceiverValues[i]">
-                {{otherCareReceiverValues[i] | replaceString:'_':' ' | titlecase }}
-                <i class="{{careReceiverOptions[otherCareReceiverValues[i]].icon}} ms-2 text-end"></i>
+              <mat-checkbox class="text-start" [formControl]="control" [value]="otherCareTypeValue[i]">
+                {{otherCareTypeValue[i] | replaceString:'_':' ' | titlecase }}
+                <i class="{{careReceiverOptions[otherCareTypeValue[i]]?.icon}} ms-2 text-end"></i>
               </mat-checkbox>
             </div>
           </div>
@@ -155,7 +155,7 @@
               <button matSuffix mat-icon-button aria-label="Clear" *ngIf="email?.valid" (click)="email?.setValue('')">
                 <mat-icon>close</mat-icon>
               </button>
-              <mat-error *ngIf="email?.invalid && (email?.dirty || email?.touched)">
+              <mat-error *ngIf="email?.invalid && email?.errors">
                 <span *ngIf="email?.errors?.['uniqueEmail']">Email already exists. Please <a href='/auth/login'>login</a></span>
                 <span *ngIf="email?.errors?.['email']">Not a valid email</span>
               </mat-error>
@@ -208,11 +208,25 @@
         </form>
       </mat-step>
 
-      <mat-step [stepControl]="step4bForm">
+      <mat-step [stepControl]="step4bForm" label="ProfessionalPreference">
         <form [formGroup]="step4bForm">
           <h4 class="fw-bold">Professional Preference Settings!</h4>
           <div class="mt-4 mb-3 text-start">
-            <mat-form-field class="col-md-6 pe-1">
+
+            <h5>Service Fee Per Hour For Your Service(s) as Caregiver:</h5>
+            <div *ngFor="let chargePerHourFormGroup of chargePerHourFormGroups">
+              <mat-form-field class="col-md-6 pe-1 mb-2" [formGroup]="chargePerHourFormGroup">
+                <mat-label>{{ (chargePerHourFormGroup.get('careType')?.value || '') | replaceString:'_':' ' | titlecase }} Fee</mat-label>
+                <button matPrefix mat-icon-button [attr.aria-label]="chargePerHourFormGroup.get('currency')?.value || 'USD'">
+                  <mat-icon>attach_money</mat-icon>
+                </button>
+                <input matInput type="number" formControlName="amount">
+              </mat-form-field>
+            </div>
+
+            <h5>Profession Information:</h5>
+
+            <mat-form-field class="col-md-12 pe-1 mb-2">
               <mat-label>Years of Experiences</mat-label>
               <input matInput type="number" formControlName="yearsOfExperience">
               <button matSuffix mat-icon-button aria-label="Clear" *ngIf="step4bForm.get('yearsOfExperience')?.valid"
@@ -221,16 +235,7 @@
               </button>
             </mat-form-field>
 
-            <mat-form-field class="col-md-6 pe-1">
-              <mat-label>Rate - Charge Per Hour</mat-label>
-              <button matSuffix mat-icon-button aria-label="USD">
-                <mat-icon>attach_money</mat-icon>
-              </button>
-              <input matInput type="number" formControlName="chargePerHour">
-              <mat-hint>Amount you will charge client per hour of service</mat-hint>
-            </mat-form-field>
-
-            <mat-form-field class="col-md-12">
+            <mat-form-field class="col-md-12 pe-1 mb-2">
               <mat-label>Professional Summary</mat-label>
               <textarea matInput type="text" formControlName="biography" rows="5"></textarea>
             </mat-form-field>

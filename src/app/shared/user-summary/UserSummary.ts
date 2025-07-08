@@ -26,8 +26,6 @@ export interface UserSummary {
 
   userRating: number;
 
-  chargePerHour: number;
-
   yearsOfExperience: number;
 
   caregiverCareTypes?: CareTypes[]; // Optional field for caregiver care types

@@ -57,9 +57,7 @@ export class UserSummaryComponent {
     userAddressCity: 'New York',
 
     userAddressState: 'NY',
-
-    chargePerHour: 20,
-
+    
     yearsOfExperience: 10
   };
 

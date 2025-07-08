@@ -9,7 +9,7 @@ export class ReplaceStringPipe implements PipeTransform {
     if (!value || !find || !replace) {
       return value;
     }
-    return value.replaceAll(find, replace);
+    return (value || "").replaceAll(find, replace);
   }
 
 }

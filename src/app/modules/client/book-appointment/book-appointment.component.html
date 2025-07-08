@@ -1,56 +1,77 @@
-<div class="container">
+<h3 mat-dialog-title class="m-2">Book Appointment With {{ caregiverName }}</h3>
+<mat-dialog-content>
+  <form [formGroup]="appointmentForm">
+    <div class="row">
+      <mat-form-field appearance="outline" class="col-lg-12 col-md-12 col-sm-12 mt-2 mb-2">
+        <mat-label>What type of care do you want from {{ caregiverName }}</mat-label>
+        <mat-select id="productName" formControlName="productName" (selectionChange)="updateCaregiverFee()">
+          <mat-option *ngFor="let careType of data.user.caregiverCareTypes | orderBy: 'product_name' "
+            [value]="careType.product_name">
+            {{ careType.product_name | replaceString : '_' : ' ' | titlecase }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="appointmentForm.get('productName')?.hasError('required')">Select care type</mat-error>
+      </mat-form-field>
 
-  <padicare-basic-headers [headerType]="HeaderType.MODAL" [headerText]="'Book Appointment With ' + caregiverName">
-  </padicare-basic-headers>
-  <span class="fs-6">&nbsp;</span>
-
-  <div class="row">
-    <div class="col-md-12 col-lg-6 offset-lg-3">
-      <div class="mt-4 mb-3">
-        <form [formGroup]="appointmentForm" (ngSubmit)="bookAppointment()">
-          <div class="form-group d-grid gap-2 mb-2">
-            <label for="productName">What type of care do you want from {{ caregiverName }}:</label>
-            <select id="productName" formControlName="productName" class="form-control" (change)="findProductsPricesOption()">
-              <option *ngFor="let careType of data.user.caregiverCareTypes | orderBy: 'product_name' " [value]="careType.product_name" [selected]="careType.category === 'PRIMARY'">
-                {{ careType.product_name | replaceString : '_' : ' ' | titlecase }}
-              </option>
-            </select>
-          </div>
-
-          <div class="form-group d-grid gap-2 mb-2">
-            <label for="productsPricesId">Please select the specific service type:</label>
-            <select id="productsPricesId" formControlName="productsPricesId" class="form-control">
-              <option *ngFor="let productsPrices of productsPricesOptions" [value]="productsPrices.id">
-                {{
-                (productsPrices.billingPeriod !== 'CUSTOM' ? (productsPrices.billingPeriod | replaceString : '_' : ' ' | titlecase) : (productsPrices.billingPeriodDetails) )
-                + ' - '  +
-                (productsPrices.careType | replaceString : '_' : ' ' | titlecase) + ' - ' +
-                (productsPrices.price | currency : productsPrices.currency : 'symbol')
-                }}
-              </option>
-            </select>
-          </div>
-
-          <div class="form-group d-grid gap-2 mb-2">
-            <label for="appointmentDate">Select Date:</label>
-            <input type="date" id="appointmentDate" formControlName="appointmentDate" class="form-control">
-          </div>
-
-          <div class="form-group d-grid gap-2 mb-2">
-            <label for="appointmentTime">Select Time:</label>
-            <input type="time" id="appointmentTime" formControlName="appointmentTime" class="form-control">
-          </div>
-          <div class="form-group d-grid gap-2 mb-2">
-            <label for="additionalNotes">Notes:</label>
-            <textarea id="additionalNotes" formControlName="additionalNotes" class="form-control" rows="3"></textarea>
-            <small class="form-text text-muted">Optional notes for the caregiver.</small>
-          </div>
-          <div class="form-group d-grid gap-2 mb-2">
-            <button type="submit" class="btn btn-outline-success">Book Appointment</button>
-            <button type="button" class="btn btn-outline-secondary" (click)="closeModal()">Cancel</button>
-          </div>
-        </form>
+      <div class="col-lg-12 col-md-12 col-sm-12 mb-2"
+        *ngIf="filteredCaregiverFees && filteredCaregiverFees.length == 1">
+        <b class="d-block">Service - Charge fee per hour is: 
+          {{ selectedFee?.amount || 1 | currency : selectedFee?.currency : 'symbol' }} 
+          and Your Total Due is:
+          {{ ( (selectedFee?.amount || 1) * (appointmentForm.get("quantity")?.value || 1 ) ) | currency :
+          selectedFee?.currency : 'symbol' }}
+        </b>
       </div>
+      <mat-form-field appearance="outline" class="col-lg-12 col-md-12 col-sm-12 mt-2 mb-2"
+        *ngIf="filteredCaregiverFees && filteredCaregiverFees.length > 1">
+        <mat-label>Please mat-select the specific service type</mat-label>
+        <mat-select id="caregiverFeesId" formControlName="caregiverFeesId" (selectionChange)="onCaregiverFeeSelected()">
+          <mat-option *ngFor="let caregiverFee of filteredCaregiverFees" [value]="caregiverFee.id">
+            {{
+            (caregiverFee.frequency | replaceString : '_' : ' ' | titlecase)
+            + ' - ' +
+            (caregiverFee.productName | replaceString : '_' : ' ' | titlecase) + ' - ' +
+            (caregiverFee.amount | currency : caregiverFee.currency : 'symbol')
+            }}
+          </mat-option>
+        </mat-select>
+        <mat-hint> Note: DAILY is: 8-Hours, WEEKLY is: 40-Hours, MONTHLY is: 160-Hours </mat-hint>
+      </mat-form-field>
     </div>
-  </div>
-</div>
+    <div class="row">
+      <mat-form-field appearance="outline" class="col-lg-4 col-md-4 col-sm-12 mt-2 mb-2">
+        <mat-label>{{ quantityLabel }}</mat-label>
+        <mat-select id="quantity" formControlName="quantity">
+          <mat-option *ngFor="let quantity of quantityOptions" [value]="quantity">{{ quantity }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="col-lg-4 col-md-4 col-sm-12 mt-2 mb-2">
+        <mat-label>Select Date</mat-label>
+        <input matInput type="date" id="appointmentDate" formControlName="appointmentDate" />
+        <mat-error *ngIf="appointmentForm.get('appointmentDate')?.hasError('required')">Please enter a valid
+          date</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="col-lg-4 col-md-4 col-sm-12 mt-2 mb-2">
+        <mat-label>Select Time</mat-label>
+        <input matInput type="time" id="appointmentTime" formControlName="appointmentTime" />
+        <mat-error *ngIf="appointmentForm.get('appointmentTime')?.hasError('required')">
+          Please enter a valid time
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="row">
+      <mat-form-field class="col-lg-12 col-md-12 col-sm-12">
+        <mat-label>Any Additional Notes</mat-label>
+        <textarea matInput id="additionalNotes" formControlName="additionalNotes"
+          placeholder="Optional notes for the caregiver. Ex. Estate Gate key, Door knocking rules, etc..."></textarea>
+      </mat-form-field>
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-raised-button type="button" mat-dialog-close color="secondary" (click)="closeModal()">Cancel</button>
+  <button mat-raised-button type="button" color="success" (click)="bookAppointment()">Book Appointment</button>
+</mat-dialog-actions>
