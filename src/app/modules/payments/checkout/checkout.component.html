@@ -18,7 +18,7 @@
           </div>
 
           <div class="d-grid gap-2">
-            <button type="button" class="btn btn-success-outline" matButton="outlined" (click)="handleSubmit()">Pay</button>
+            <button type="button" class="btn btn-success-outline" matButton="outlined" (click)="handleSubmit()" [disabled]="isProcessing">Pay</button>
             <button type="button" class="btn btn-secondary-outline" matButton="outlined">Button</button>
           </div>
         </div>

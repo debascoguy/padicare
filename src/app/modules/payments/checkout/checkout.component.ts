@@ -30,6 +30,8 @@ export class CheckoutComponent implements OnInit {
   elements: StripeElements | null = null;
   @ViewChild('paymentElement') paymentElementRef!: ElementRef;
 
+  isProcessing: boolean = false;
+
   constructor(
     protected credentialsService: CredentialsService,
     private httpClient: HttpClient,
@@ -95,6 +97,7 @@ export class CheckoutComponent implements OnInit {
     if (!this.stripe || !this.elements) {
       return;
     }
+    this.isProcessing = true;
 
     const _returnUrl = this.returnUrl ?
       this.returnUrl :
@@ -113,6 +116,7 @@ export class CheckoutComponent implements OnInit {
         duration: 3000,
         panelClass: ['error-snackbar']
       });
+      this.isProcessing = false;
       return;
     }
 

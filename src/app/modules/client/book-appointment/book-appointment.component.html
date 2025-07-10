@@ -15,8 +15,8 @@
 
       <div class="col-lg-12 col-md-12 col-sm-12 mb-2"
         *ngIf="filteredCaregiverFees && filteredCaregiverFees.length == 1">
-        <b class="d-block">Service - Charge fee per hour is: 
-          {{ selectedFee?.amount || 1 | currency : selectedFee?.currency : 'symbol' }} 
+        <b class="d-block">Service - Charge fee per hour is:
+          {{ selectedFee?.amount || 1 | currency : selectedFee?.currency : 'symbol' }}
           and Your Total Due is:
           {{ ( (selectedFee?.amount || 1) * (appointmentForm.get("quantity")?.value || 1 ) ) | currency :
           selectedFee?.currency : 'symbol' }}
@@ -48,18 +48,78 @@
 
       <mat-form-field appearance="outline" class="col-lg-4 col-md-4 col-sm-12 mt-2 mb-2">
         <mat-label>Select Date</mat-label>
-        <input matInput type="date" id="appointmentDate" formControlName="appointmentDate" />
-        <mat-error *ngIf="appointmentForm.get('appointmentDate')?.hasError('required')">Please enter a valid
-          date</mat-error>
+        <input matInput [matDatepicker]="appointmentDatePicker" formControlName="appointmentDate">
+        <mat-hint>MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle matIconSuffix [for]="appointmentDatePicker"></mat-datepicker-toggle>
+        <mat-datepicker #appointmentDatePicker></mat-datepicker>
+        <mat-error *ngIf="appointmentForm.get('appointmentDate')?.hasError('required')">
+          Enter a valid date
+        </mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="col-lg-4 col-md-4 col-sm-12 mt-2 mb-2">
         <mat-label>Select Time</mat-label>
-        <input matInput type="time" id="appointmentTime" formControlName="appointmentTime" />
+        <input matInput [matTimepicker]="appointmentTimePicker" formControlName="appointmentTime">
+        <mat-timepicker-toggle matIconSuffix [for]="appointmentTimePicker" />
+        <mat-timepicker #appointmentTimePicker />
         <mat-error *ngIf="appointmentForm.get('appointmentTime')?.hasError('required')">
-          Please enter a valid time
+          Enter a valid time
         </mat-error>
       </mat-form-field>
+    </div>
+
+    <div class="row mb-4">
+      <div class="form-check form-switch p-0">
+        <div class="d-inline-flex flex-row-reverse gap-1">
+          <input class="form-check-input ms-0" type="checkbox" role="switch" id="enterServiceAddress"
+          name="enterServiceAddress" ngDefaultControl [(ngModel)]="isManuallyEnteringServiceAddress"
+          [ngModelOptions]="{standalone: true}" (click)="search()">
+          <label class="form-check-label" for="enterServiceAddress">Enter Service Address
+          <br><i>Toggle this switch if the service address is different from your primary user account address</i>
+        </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="row" [formGroup]="serviceAddress" *ngIf="isManuallyEnteringServiceAddress">
+
+      <mat-form-field appearance="outline" class="col-lg-4 col-md-4 col-sm-12 mt-2 mb-2">
+        <mat-label>House Number</mat-label>
+        <input matInput type="text" formControlName="houseNumber">
+        <mat-error *ngIf="serviceAddress.get('houseNumber')?.hasError('required')"> enter a valid house number
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="col-lg-8 col-md-8 col-sm-12 mt-2 mb-2">
+        <mat-label>Street Address</mat-label>
+        <input matInput type="text" formControlName="street">
+        <mat-error *ngIf="serviceAddress.get('street')?.hasError('required')"> Enter a valid street address
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="col-lg-4 col-md-4 col-sm-12 mt-2 mb-2">
+        <mat-label>Zipcode</mat-label>
+        <input matInput type="text" formControlName="zipcode" (keyup)="search()">
+        <mat-error *ngIf="serviceAddress.get('zipcode')?.hasError('required')"> Enter a valid zip code
+        </mat-error>
+      </mat-form-field>
+
+      <div class="col-lg-8 col-md-8 col-sm-12 mt-2 mb-2">
+        <h6> {{ !!zipCodeInfo ? zipCodeInfo.city + ', ' + zipCodeInfo.state : '' }} </h6>
+      </div>
+    </div>
+
+    <div class="row mb-4" *ngIf="isManuallyEnteringServiceAddress">
+      <div class="form-check form-switch p-0">
+        <div class="d-inline-flex flex-row-reverse gap-1">
+          <input class="form-check-input ms-0" type="checkbox" role="switch" id="updateUserAddressWithServiceAddress"
+          name="updateUserAddressWithServiceAddress" ngDefaultControl [(ngModel)]="updateUserAddressWithServiceAddress"
+          [ngModelOptions]="{standalone: true}">
+          <label class="form-check-label" for="updateUserAddressWithServiceAddress">
+            Update My User Account With This Service Address
+        </label>
+        </div>
+      </div>
     </div>
 
     <div class="row">

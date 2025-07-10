@@ -27,6 +27,7 @@ import { DocumentUploaderComponent } from '@app/shared/document-uploader/documen
 import { AppUserType } from '@app/shared/enums/app.user.type.enum';
 import { RecaptchaErrorParameters, RecaptchaFormsModule, RecaptchaModule } from 'ng-recaptcha';
 import { CaptchaService } from '@app/core/services/captcha.service';
+import { ProductsNameEnum } from '@app/shared/enums/products-name.enum';
 
 @Component({
   selector: 'app-caregiver',
@@ -138,7 +139,7 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
     }, Validation.matchingPasswords('password', 'confirmPassword'));
 
     this.step4bForm = new FormGroup({
-      biography: new FormControl('', [Validators.required]),
+      professionalSummary: new FormControl('', [Validators.required]),
       chargePerHour: new FormArray([]),
       yearsOfExperience: new FormControl(1, Validators.required),
     });
@@ -195,7 +196,7 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
         this.geocodeZipcode(value);
       }
     });
-    
+
     this.step0Form.get('radius')?.valueChanges.subscribe((value) => {
       this.drawCircle(value);
     });
@@ -224,22 +225,21 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
         // Initialize the charge per hour form array based on the other care types selected
         const formArray = this.step4bForm.get('chargePerHour') as FormArray;
         formArray.clear();
-        formArray.push( new FormGroup({
-          careType: new FormControl(this.primaryCareType?.value, [Validators.required]),
-          amount: new FormControl('', [Validators.required]),
-          currency: new FormControl('USD', [Validators.required]),
-          frequency: new FormControl('HOURLY', [Validators.required]),
-        }));
+        formArray.push(this.createNewCaregiverFee(this.primaryCareType?.value));
         this.otherCareTypeSelected.forEach((careTypeValue) => {
-          formArray.push( new FormGroup({
-          careType: new FormControl(careTypeValue, [Validators.required]),
-          amount: new FormControl('', [Validators.required]),
-          currency: new FormControl('USD', [Validators.required]),
-          frequency: new FormControl('HOURLY', [Validators.required]),
-        }));
+          formArray.push(this.createNewCaregiverFee(careTypeValue))
         });
       }
     });
+  }
+
+  createNewCaregiverFee(careTypeValue: ProductsNameEnum) {
+    return new FormGroup({
+      careType: new FormControl(careTypeValue, [Validators.required]),
+      amount: new FormControl('', [Validators.required]),
+      currency: new FormControl('USD', [Validators.required]),
+      frequency: new FormControl('HOURLY', [Validators.required]),
+    })
   }
 
   get careReceiverValues() {
@@ -259,7 +259,7 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
     delete copyOfCareReceiverOptions[this.primaryCareType?.value];
     return Object.keys(copyOfCareReceiverOptions);
   }
-  
+
   get otherCareTypeSelected() {
     const otherCareTypes = this.step3Form.get('otherCareTypes')?.value;
     let step3FormValues = [];
@@ -268,7 +268,7 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
         step3FormValues.push(this.otherCareTypeValue[i]);
       }
     }
-    return step3FormValues;
+    return step3FormValues as ProductsNameEnum[];
   }
 
   get otherCareTypes() {

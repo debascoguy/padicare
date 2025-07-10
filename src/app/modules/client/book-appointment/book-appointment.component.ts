@@ -1,7 +1,6 @@
-import { filter } from 'rxjs';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogActions, MatDialogContainer, MatDialogContent, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -9,16 +8,20 @@ import { CredentialsService } from '@app/core/authentication/credentials.service
 import { ApiResponse } from '@app/core/models/api-repsonse';
 import { OrderByPipe } from '@app/core/pipes/order-by.pipe';
 import { ReplaceStringPipe } from '@app/core/pipes/replace.string.pipe';
-import { HeadersComponent } from '@app/modules/layouts';
 import { HeaderType } from '@app/modules/layouts/headers/header.type.enum';
 import { CaregiverFees } from '@app/shared/types/caregiver-fees';
 import { UserSummary } from '@app/shared/user-summary/UserSummary';
 import { FeeFrequencyEnum } from '@app/shared/enums/fee-frequency.enum';
 import { MatError, MatFormFieldModule, MatHint, MatLabel } from '@angular/material/form-field';
-import { MatCard, MatCardContent, MatCardHeader } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
 import { MatButton } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatTimepickerModule } from '@angular/material/timepicker';
+import { provideNativeDateAdapter } from '@angular/material/core';
+import * as zipcodes from 'zipcodes';
+import { firstValueFrom } from 'rxjs';
+
 
 @Component({
   selector: 'app-book-appointment',
@@ -27,6 +30,8 @@ import { MatSelectModule } from '@angular/material/select';
     FormsModule,
     MatFormFieldModule,
     MatInputModule,
+    MatDatepickerModule,
+    MatTimepickerModule,
     MatSelectModule,
     MatButton,
     MatDialogContent,
@@ -37,6 +42,12 @@ import { MatSelectModule } from '@angular/material/select';
     ReplaceStringPipe,
     OrderByPipe
   ],
+  providers: [
+    MatSnackBar,
+    provideNativeDateAdapter(),
+    DatePipe
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './book-appointment.component.html',
   styleUrl: './book-appointment.component.scss'
 })
@@ -63,6 +74,10 @@ export class BookAppointmentComponent implements OnInit {
 
   isManuallyEnteringServiceAddress: boolean = false;
 
+  updateUserAddressWithServiceAddress: boolean = false;
+
+  zipCodeInfo: zipcodes.ZipCode | null = null;
+
   protected allActiveCaregiverFees: CaregiverFees[] = [];
 
   protected selectedFee: CaregiverFees | null = null;
@@ -75,6 +90,7 @@ export class BookAppointmentComponent implements OnInit {
     private httpClient: HttpClient,
     public credentialsService: CredentialsService,
     protected snackBar: MatSnackBar,
+    private datePipe: DatePipe,
     protected dialogRef: MatDialogRef<BookAppointmentComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { user: UserSummary }
   ) {
@@ -96,8 +112,24 @@ export class BookAppointmentComponent implements OnInit {
     });
   }
 
+  search() {
+    if (this.serviceAddress?.get("zipcode")?.invalid) {
+      return;
+    }
+    this.zipCodeInfo = zipcodes?.lookup(this.serviceAddress?.get("zipcode")?.value) || null;
+    this.serviceAddress.get('city')?.setValue('');
+    this.serviceAddress.get('state')?.setValue('');
+    this.serviceAddress.get('country')?.setValue('');
+    this.serviceAddress.get('longitude')?.setValue(null);
+    this.serviceAddress.get('latitude')?.setValue(null);
+    if (this.zipCodeInfo) {
+      this.serviceAddress.patchValue(this.zipCodeInfo);
+      this.serviceAddress.updateValueAndValidity();
+    }
+  }
+
   get serviceAddress() {
-    return this.appointmentForm.get("serviceAddress");
+    return this.appointmentForm.get("serviceAddress") as FormGroup;
   }
 
   get HeaderType() {
@@ -207,7 +239,6 @@ export class BookAppointmentComponent implements OnInit {
     if (this.isManuallyEnteringServiceAddress) {
       this.serviceAddress?.reset();
     } else {
-      console.log(this.credentialsService.credentials);
       this.serviceAddress?.patchValue(this.credentialsService.userAddress);
       this.serviceAddress?.updateValueAndValidity();
     }
@@ -221,10 +252,22 @@ export class BookAppointmentComponent implements OnInit {
       });
       return;
     }
+
     const bookingAppintmentValue = {
       ...this.appointmentForm.value,
-      quantity: parseInt(this.appointmentForm.get('quantity')?.value) || 1
+      quantity: parseInt(this.appointmentForm.get('quantity')?.value) || 1,
+      appointmentTime: this.datePipe.transform(this.appointmentForm.value['appointmentTime'], 'HH:mm:ss'),
     };
+
+    if (this.updateUserAddressWithServiceAddress) {
+      const address = {
+        ...this.serviceAddress.value,
+        houseNumber: parseInt(this.serviceAddress.get("houseNumber")?.value || "0")
+      }
+      firstValueFrom(this.httpClient.post<ApiResponse>(`/access/onboarding/user/address`, address))
+        .then((_: ApiResponse) => { console.log("User Address updated!") });
+    }
+
     this.dialogRef.close({
       success: true,
       ...bookingAppintmentValue,

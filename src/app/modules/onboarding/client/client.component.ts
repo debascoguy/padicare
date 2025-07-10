@@ -161,7 +161,7 @@ export class ClientComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.email?.valueChanges.subscribe((value) => {
-      firstValueFrom(this.authenticationService.validateEmail(AppUserType.careGiver, value))
+      firstValueFrom(this.authenticationService.validateEmail(AppUserType.client, value))
         .then((response: any) => {
           if (response.status) {
             //That is, The email is not unique error = true

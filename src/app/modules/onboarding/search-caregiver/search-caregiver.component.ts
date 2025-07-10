@@ -14,6 +14,9 @@ import { firstValueFrom } from 'rxjs';
 import { AppUserType } from '@app/shared/enums/app.user.type.enum';
 import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { EventEmitter } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
+import { BookAppointmentComponent } from '@app/modules/client/book-appointment/book-appointment.component';
 
 @Component({
   selector: 'app-search-caregiver',
@@ -71,7 +74,9 @@ export class SearchCaregiverComponent {
   constructor(
     protected credentialsService: CredentialsService,
     private httpClient: HttpClient,
-    protected snackBar: MatSnackBar
+    protected snackBar: MatSnackBar,
+    protected modalDialogService: MatDialog,
+    protected router: Router
   ) {
     this.searchForm = new FormGroup({
       zipcode: new FormControl(this.credentialsService.userAddress.zipcode || '', [Validators.required, Validators.minLength(5)]),
@@ -108,13 +113,14 @@ export class SearchCaregiverComponent {
     }
 
     this.isSearching = true;
+    const formValues = { ...this.searchForm.value, radius: parseInt(this.radius?.value + "") }
     const address = this.credentialsService.userAddress;
     const searchRequest = this.zipcode?.value == address.zipcode ?
-                          {
-                            ...this.searchForm.value,
-                            latitude: parseFloat(address.latitude+""),
-                            longitude: parseFloat(address.longitude+"")
-                          } : this.searchForm.value;
+      {
+        ...formValues,
+        latitude: parseFloat(address.latitude + ""),
+        longitude: parseFloat(address.longitude + "")
+      } : formValues;
     firstValueFrom(this.httpClient.post('/caregiver/search', searchRequest)).then((response: any) => {
       this.searchedResults = response.status ? response.data : [];
       this.isSearching = false;
@@ -130,12 +136,12 @@ export class SearchCaregiverComponent {
 
   findCaregiversCareTypes(caregiversId: string[]) {
     if (!caregiversId || caregiversId.length === 0) {
-      return ;
+      return;
     }
 
     firstValueFrom(this.httpClient.post('/caregiver/care-types/find-all/by/ids', { caregiversId })).then((response: any) => {
       if (response.status) {
-        Object.entries(response.data).forEach( ([userId, caregiverCareTypes]) => {
+        Object.entries(response.data).forEach(([userId, caregiverCareTypes]) => {
           this.searchedResults.forEach((user: UserSummary, index: number) => {
             if (user.userId === userId) {
               this.searchedResults[index].caregiverCareTypes = caregiverCareTypes as [];
@@ -162,7 +168,54 @@ export class SearchCaregiverComponent {
     if (!isBookAppointment) {
       return;
     }
-    this.bookAppointmentAction.emit(user);
+
+    if (!this.credentialsService.isLoggedIn()) {
+      this.snackBar.open("Please login to book an appointment", "Close", {
+        duration: 3000,
+        panelClass: ['error-snackbar']
+      });
+      return;
+    }
+
+    if (this.credentialsService.userType !== AppUserType.client && this.credentialsService.userType !== AppUserType.both) {
+      this.snackBar.open("Only clients can book appointments with caregivers", "Close", {
+        duration: 3000,
+        panelClass: ['error-snackbar']
+      });
+      return;
+    }
+
+    if (!user || !user.userId) {
+      this.snackBar.open("Invalid caregiver selected", "Close", {
+        duration: 3000,
+        panelClass: ['error-snackbar']
+      });
+      return;
+    }
+
+    this.modalDialogService.open(BookAppointmentComponent, {
+      data: { user },
+      width: '750px',
+      disableClose: false,
+      autoFocus: false,
+    }).afterClosed().subscribe((result) => {
+      if (result && result.success) {
+        const { success, ...data } = result;
+        this.httpClient.post('/caregiver/book/appointment', { ...data }).subscribe({
+          next: (response: any) => {
+            if (response.status) {
+              this.router.navigate(['/client/checkout/booking-appointment/' + response.data.id]);
+            }
+          },
+          error: (error) => {
+            this.snackBar.open("Failed to book appointment. Please try again.", "Close", {
+              duration: 3000,
+              panelClass: ['error-snackbar']
+            });
+          }
+        });
+      }
+    });
   }
 
 }
