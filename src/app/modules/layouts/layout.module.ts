@@ -1,10 +1,12 @@
 import { NgModule } from '@angular/core';
 import { HeadersComponent } from './headers/headers.component';
 import { FootersComponent } from './footers/footers.component';
+import { SideNavbarComponent } from './side-navbar/side-navbar.component';
 
 const allComponent = [
   HeadersComponent,
-  FootersComponent
+  FootersComponent,
+  SideNavbarComponent
 ];
 
 @NgModule({

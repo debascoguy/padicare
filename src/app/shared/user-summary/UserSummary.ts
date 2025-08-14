@@ -1,6 +1,8 @@
+import { ProductsNameEnum } from "../enums/products-name.enum";
+
 export interface CareTypes {
   id: string;
-  product_name: string;
+  product_name: ProductsNameEnum | string;
   category: string;
 }
 

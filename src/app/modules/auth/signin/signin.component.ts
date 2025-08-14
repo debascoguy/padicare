@@ -82,11 +82,13 @@ export class SigninComponent {
           }
         } else {
           this.isSubmitted = false;
+          this.loginForm.reset();
         }
       }).catch(error => {
         this.isSubmitted = false;
         this.loginError = error.error.message;
         this.snackBar.open(error.error.message, 'close', { duration: 3000 });
+        this.loginForm.reset();
         // if (error.error.statusCode == HttpStatusCode.Unauthorized) {
         //   console.log(error);
         // }

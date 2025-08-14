@@ -1,0 +1,40 @@
+<div class="container-fluid py-2">
+  <div class="row">
+    <div class="col-12 col-md-12">
+      <div class="card">
+        <div class="card-header">
+          <div class="row">
+            <div class="col-4 col-md-4 text-start">
+              <h3>Appointments</h3>
+              <p>Manage your appointments.</p>
+            </div>
+            <div class="col-4 col-md-4 text-center">
+              <mat-radio-group aria-label="Select an view type option" [(ngModel)]="viewType">
+                <mat-radio-button value="BOTH_VIEW">Both</mat-radio-button>
+                <mat-radio-button value="CALENDAR_VIEW">Calendar View</mat-radio-button>
+                <mat-radio-button value="TABLE_VIEW">Table View</mat-radio-button>
+              </mat-radio-group>
+            </div>
+            <div class="col-4 col-md-4 text-end">
+              <button class="btn btn-primary float-end" (click)="bookAppointment()">New Care Appointment</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-body">
+
+          <app-calendar *ngIf="viewType == 'CALENDAR_VIEW' || viewType == 'BOTH_VIEW'" [userEvents]="userEvents"
+            (viewChange)="viewChangeHandler($event)">
+          </app-calendar>
+
+          <div class="mt-2 mb-3" *ngIf="viewType=='BOTH_VIEW'">&nbsp;</div>
+
+          <app-appointments-table-view *ngIf="viewType == 'TABLE_VIEW' || viewType == 'BOTH_VIEW'"
+            [userEvents]="userEvents">
+          </app-appointments-table-view>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

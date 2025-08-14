@@ -7,6 +7,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environments';
 import { HttpHeadersHelpers } from '../http/HttpHeadersHelpers';
 import { AppUserType } from '@app/shared/enums/app.user.type.enum';
+import { ApiResponse } from '../models/api-repsonse';
 
 @Injectable({
   providedIn: 'root',
@@ -87,11 +88,10 @@ export class AuthenticationService {
   }
 
   register(context: any): Observable<any> {
-    return this.httpClient.post("/access/auth/create-user", context).pipe(
+    return this.httpClient.post("/access/auth/register", context).pipe(
       map((response: any) => {
-        if (!!response.status && response.code == 200) {
-          console.log(response.data);
-          this.credentialsService.setCredentials(response.data, false);
+        if (!!response.status) {
+          this.credentialsService.updateCredentials(response.data);
         }
         return response;
       }));
@@ -112,6 +112,16 @@ export class AuthenticationService {
       map((response: any) => {
         if (!!response.status) {
           this.credentialsService.setCredentials(response.data, true);
+        }
+        return response;
+      }));
+  }
+
+  saveUserAddress(address: any) {
+     return this.httpClient.post<ApiResponse>('/access/onboarding/user/address', address).pipe(
+      map((response: any) => {
+        if (!!response.status) {
+          this.credentialsService.updateCredentialsField('userAddress', response.data);
         }
         return response;
       }));

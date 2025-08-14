@@ -5,6 +5,5 @@ export enum HeaderType {
   ADMIN = "admin",
   CLIENT = "client",
   CAREGIVER = "caregiver",
-  DASHBOARD = "dashboard",
-  MODAL = "modal",
+  DASHBOARD = "dashboard"
 }

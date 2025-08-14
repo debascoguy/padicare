@@ -1,12 +1,14 @@
+import { AppUserType } from "@app/shared/enums/app.user.type.enum";
+
 export interface User {
-  id: number;
+  id: string;
   email: string;
   password?: string;
   firstName: string;
   lastName: string;
   cellPhone?: string;
   sourceDirectory?: string;
-  userType: string;
+  userType: AppUserType;
   credentialsNonExpired: boolean;
   accountNonExpired: boolean;
   accountNonLocked: boolean;

@@ -1,0 +1,19 @@
+<div #JsPdfExport id="js-pdf-export" data-test-id="js-pdf-export" class="js-pdf-export">
+  <div #pdfContainer id="pdf-container">
+    <ng-content></ng-content>
+  </div>
+  <div #pdfFooter id="pdf-footer">
+    <ng-container
+      [ngTemplateOutletContext]="{
+        currentDate: currentDate,
+        currentTime: currentTime,
+        pageNumber: pageNumber,
+        totalPages: totalPages,
+      }"
+      [ngTemplateOutlet]="footerTemplate || defaultFooterTemplate"
+    ></ng-container>
+    <ng-template #defaultFooterTemplate>
+      <!--No footer is displayed-->
+    </ng-template>
+  </div>
+</div>

@@ -14,13 +14,10 @@
         <input matInput type="password" formControlName="password" placeholder="Password" required>
         <mat-error *ngIf="loginForm.get('password')?.hasError('required')">Please provide a valid password</mat-error>
       </mat-form-field>
-      
+
       <!-- Invisible recaptcha -->
-      <re-captcha #captchaRef="reCaptcha" errorMode="handled"
-        (resolved)="captchaService.resolved($event)"
-        (error)="captchaService.onError($event);
-        captchaRef.reset();"
-      />
+      <re-captcha #captchaRef="reCaptcha" errorMode="handled" (resolved)="captchaService.resolved($event)" (error)="captchaService.onError($event);
+        captchaRef.reset();" />
 
       <mat-error *ngIf="loginError">
         {{ loginError }}

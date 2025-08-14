@@ -14,6 +14,9 @@ import { CaptchaService } from '@app/core/services/captcha.service';
 import { EnvironmentService } from '@app/core/services/environment.service';
 import { Validation } from '@app/core/services/Validation';
 import { PasswordMeterComponent } from '@app/shared/password-meter/password-meter.component';
+import { SnackBarParams } from '@app/shared/toasts/SnackBarParams';
+import { ToastsComponent } from '@app/shared/toasts/toasts.component';
+import { ToastsConfig } from '@app/shared/toasts/ToastsConfig';
 import { RecaptchaModule, RecaptchaFormsModule } from 'ng-recaptcha';
 import { firstValueFrom } from 'rxjs';
 
@@ -50,7 +53,6 @@ export class ChangePasswordComponent {
   errorMessage: string | null = null;
   isSuccess: boolean = false;
 
-  @ViewChild('notificationTemplate') notificationTemplate!: TemplateRef<any>;
   notificationMessage: string = "Password reset was successful! Please go to login";
 
   passwordStrength: number = 0;
@@ -78,18 +80,25 @@ export class ChangePasswordComponent {
   reset() {
     this.isSubmitted = false;
     this.isSuccess = false;
-    this.errorMessage = null;
     this.passwordStrength = 0;
     this.changePasswordForm.reset();
   }
 
   onSubmit() {
+    this.errorMessage = null;
     if (this.changePasswordForm.invalid) {
       return;
     }
     if (this.passwordStrength <= 3) {
       this.errorMessage = "Password is too Weak!";
-      this.snackBar.open(this.errorMessage, 'close', { duration: 4000 });
+      this.snackBar.openFromComponent(ToastsComponent, {
+        ...ToastsConfig.defaultConfig,
+        data: {
+          type: "DANGER",
+          headerTitle: "Error",
+          message: this.errorMessage,
+        } as SnackBarParams
+      });
       return;
     }
 
@@ -100,7 +109,15 @@ export class ChangePasswordComponent {
       if (response.status) {
         this.isSubmitted = false;
         this.isSuccess = true;
-        this.snackBar.openFromTemplate(this.notificationTemplate, { duration: 4000 }).afterDismissed().subscribe(() => {
+        this.snackBar.openFromComponent(ToastsComponent, {
+          ...ToastsConfig.defaultConfig,
+          duration: 4000,
+          data: {
+            type: "SUCCESS",
+            headerTitle: "Password Changed Successfully",
+            message: "Password reset was successful! Please go to login"
+          } as SnackBarParams
+        }).afterDismissed().subscribe(() => {
           this.reset();
         });
       }

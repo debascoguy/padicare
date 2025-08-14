@@ -1,8 +1,9 @@
+import { BookAppointment } from './../appointments/appointment';
 import { CommonModule, DatePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogActions, MatDialogContainer, MatDialogContent, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogActions, MatDialogContent, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CredentialsService } from '@app/core/authentication/credentials.service';
 import { ApiResponse } from '@app/core/models/api-repsonse';
@@ -20,7 +21,14 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import * as zipcodes from 'zipcodes';
-import { firstValueFrom } from 'rxjs';
+import { debounceTime, firstValueFrom, fromEvent, map } from 'rxjs';
+import { timeToDate } from '@app/core/services/date-fns';
+import { UserAddress } from '@app/core/models/user';
+import { Availability } from './availability';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ToastsComponent } from '@app/shared/toasts/toasts.component';
+import { ToastsConfig } from '@app/shared/toasts/ToastsConfig';
+import { SnackBarParams } from '@app/shared/toasts/SnackBarParams';
 
 
 @Component({
@@ -51,9 +59,12 @@ import { firstValueFrom } from 'rxjs';
   templateUrl: './book-appointment.component.html',
   styleUrl: './book-appointment.component.scss'
 })
-export class BookAppointmentComponent implements OnInit {
+export class bookingAppointmentComponent implements OnInit {
+
+  @ViewChild("availabilityInfo") availabilityInfo!: ElementRef;
 
   appointmentForm: FormGroup = new FormGroup({
+    id: new FormControl(''),
     productName: new FormControl('', [Validators.required]),
     caregiverFeesId: new FormControl('', [Validators.required]),
     quantity: new FormControl(1, [Validators.required, Validators.min(1), Validators.max(160)]),
@@ -61,6 +72,7 @@ export class BookAppointmentComponent implements OnInit {
     appointmentTime: new FormControl('', [Validators.required]),
     additionalNotes: new FormControl('', [Validators.maxLength(255)]),
     serviceAddress: new FormGroup({
+      id: new FormControl(''),
       houseNumber: new FormControl('', [Validators.required]),
       street: new FormControl('', [Validators.required]),
       city: new FormControl('', [Validators.required]),
@@ -80,6 +92,8 @@ export class BookAppointmentComponent implements OnInit {
 
   protected allActiveCaregiverFees: CaregiverFees[] = [];
 
+  protected caregiverAvailabilities: Availability[] = [];
+
   protected selectedFee: CaregiverFees | null = null;
 
   public caregiverFeeOptions: CaregiverFees[] = [];
@@ -91,28 +105,70 @@ export class BookAppointmentComponent implements OnInit {
     public credentialsService: CredentialsService,
     protected snackBar: MatSnackBar,
     private datePipe: DatePipe,
-    protected dialogRef: MatDialogRef<BookAppointmentComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { user: UserSummary }
+    private modal: NgbModal,
+    protected dialogRef: MatDialogRef<bookingAppointmentComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: { user: UserSummary, isEdit: boolean, bookingAppointment?: BookAppointment }
   ) {
-    if (!data || !data.user || !data.user.userId) {
-      this.snackBar.open("Invalid caregiver selected", "Close", {
-        duration: 3000,
-        panelClass: ['error-snackbar']
+    if (!data.isEdit && (!data || !data.user || !data.user.userId)) { // New Booking Appointment
+      this.snackBar.openFromComponent(ToastsComponent, {
+        ...ToastsConfig.defaultConfig,
+        data: {
+          type: "DANGER",
+          headerTitle: "Error",
+          message: "Invalid caregiver selected",
+        } as SnackBarParams
       });
       this.dialogRef.close();
     }
   }
 
   ngOnInit() {
+    this.patchAppointmentForm();
     this.dialogRef.afterOpened().subscribe(() => {
-      this.appointmentForm.reset();
       this.findAllActiveCaregiverFees();
-      // set serviceAddress to default to userAddress. User can override this on the interface.
-      this.onManuallyEnteringServiceAddress();
+      this.findAllCaregiverAvailability();
+      if (this.isNew) {
+        this.appointmentForm.reset();
+        // set serviceAddress to default to userAddress. User can override this on the interface.
+        this.onManuallyEnteringServiceAddress();
+      }
     });
+
   }
 
-  search() {
+  openAvailabilityModal(): void {
+    this.modal.open(this.availabilityInfo, { size: 'md' });
+  }
+
+  patchAppointmentForm() {
+    if (this.data.isEdit && this.data.bookingAppointment) {
+      this.data.user = {
+        userId: this.data.bookingAppointment.caregiver.id,
+        firstName: this.data.bookingAppointment.caregiver.firstName,
+        lastName: this.data.bookingAppointment.caregiver.lastName,
+        email: this.data.bookingAppointment.caregiver.email
+      } as UserSummary;
+      this.appointmentForm.get("id")?.setValue(this.data.bookingAppointment.id);
+      this.appointmentForm.get("caregiverFeesId")?.setValue(this.data.bookingAppointment.caregiver.id);
+      this.appointmentForm.get("productName")?.setValue(this.data.bookingAppointment.productName);
+      this.appointmentForm.get("quantity")?.setValue(this.data.bookingAppointment.quantity);
+      this.appointmentForm.get("appointmentDate")?.setValue(this.data.bookingAppointment.appointmentDate);
+      this.appointmentForm.get("appointmentTime")?.setValue(timeToDate(this.data.bookingAppointment.appointmentTime));
+      this.appointmentForm.get("additionalNotes")?.setValue(this.data.bookingAppointment.additionalNotes);
+      this.patchAddress(this.data.bookingAppointment.serviceAddress);
+      this.appointmentForm.updateValueAndValidity();
+    }
+  }
+
+  get isEdit() {
+    return this.data.isEdit;
+  }
+
+  get isNew() {
+    return !this.data.isEdit;
+  }
+
+  search(event: Event) {
     if (this.serviceAddress?.get("zipcode")?.invalid) {
       return;
     }
@@ -174,9 +230,13 @@ export class BookAppointmentComponent implements OnInit {
       this.appointmentForm.patchValue({
         caregiverFeesId: ''
       });
-      this.snackBar.open("No fees found for this caregiver for the selected service", "Close", {
-        duration: 3000,
-        panelClass: ['error-snackbar']
+      this.snackBar.openFromComponent(ToastsComponent, {
+        ...ToastsConfig.defaultConfig,
+        data: {
+          type: "DANGER",
+          headerTitle: "Error",
+          message: "No fees found for this caregiver for the selected service",
+        } as SnackBarParams
       });
       return;
     }
@@ -191,9 +251,13 @@ export class BookAppointmentComponent implements OnInit {
       return;
     }
 
-    this.snackBar.open("Multiple fees found for this caregiver for the selected service. Please select one.", "Close", {
-      duration: 3000,
-      panelClass: ['info-snackbar']
+    this.snackBar.openFromComponent(ToastsComponent, {
+      ...ToastsConfig.defaultConfig,
+      data: {
+        type: "DANGER",
+        headerTitle: "Error",
+        message: "Multiple fees found for this caregiver for the selected service. Please select one.",
+      } as SnackBarParams
     });
   }
 
@@ -201,9 +265,13 @@ export class BookAppointmentComponent implements OnInit {
     const selectedFeeId = this.appointmentForm.get('caregiverFeesId')?.value;
     this.selectedFee = this.caregiverFeeOptions.find(fee => fee.id === selectedFeeId) || null;
     if (!this.selectedFee) {
-      this.snackBar.open("Selected fee not found", "Close", {
-        duration: 3000,
-        panelClass: ['error-snackbar']
+      this.snackBar.openFromComponent(ToastsComponent, {
+        ...ToastsConfig.defaultConfig,
+        data: {
+          type: "DANGER",
+          headerTitle: "Error",
+          message: "Selected fee not found",
+        } as SnackBarParams
       });
       return;
     }
@@ -219,36 +287,96 @@ export class BookAppointmentComponent implements OnInit {
         if (response.status) {
           this.allActiveCaregiverFees = response.data as CaregiverFees[];
         } else {
-          this.snackBar.open(response.message || "Failed to find caregiver fees", "Close", {
-            duration: 3000,
-            panelClass: ['error-snackbar']
+          this.snackBar.openFromComponent(ToastsComponent, {
+            ...ToastsConfig.defaultConfig,
+            data: {
+              type: "DANGER",
+              headerTitle: "Error",
+              message: response.message || "Failed to find caregiver fees"
+            } as SnackBarParams
           });
         }
       },
       error: (err) => {
-        console.error("Error fetching caregiver fees:", this.data.user.userId, err);
-        this.snackBar.open("Failed to find caregiver fees", "Close", {
-          duration: 3000,
-          panelClass: ['error-snackbar']
+        this.snackBar.openFromComponent(ToastsComponent, {
+          ...ToastsConfig.defaultConfig,
+          data: {
+            type: "DANGER",
+            headerTitle: "Error",
+            message: "Failed to find caregiver fees - " + err.message
+          } as SnackBarParams
         });
       }
     });
   }
 
+  findAllCaregiverAvailability() {
+    this.httpClient.get<ApiResponse>(`/caregiver/availability/all/${this.data.user.userId}`).subscribe({
+      next: (response: any) => {
+        if (response.status) {
+          this.caregiverAvailabilities = response.data as Availability[];
+          this.caregiverAvailabilities = this.caregiverAvailabilities.sort((a, b) => {
+            return new Date(a.available).getTime() - new Date(b.available).getTime()
+          });
+        } else {
+          this.snackBar.openFromComponent(ToastsComponent, {
+            ...ToastsConfig.defaultConfig,
+            data: {
+              type: "DANGER",
+              headerTitle: "Error",
+              message: response.message || "Failed to find caregiver availability"
+            } as SnackBarParams
+          });
+        }
+      },
+      error: (err) => {
+        this.snackBar.openFromComponent(ToastsComponent, {
+          ...ToastsConfig.defaultConfig,
+          data: {
+            type: "DANGER",
+            headerTitle: "Error",
+            message: "Failed to find caregiver availability - " + err.message
+          } as SnackBarParams
+        });
+      }
+    });
+  }
+
+  get showAvailabilityControl() {
+    return !!this.caregiverAvailabilities;
+  }
+
   onManuallyEnteringServiceAddress() {
-    if (this.isManuallyEnteringServiceAddress) {
-      this.serviceAddress?.reset();
-    } else {
-      this.serviceAddress?.patchValue(this.credentialsService.userAddress);
-      this.serviceAddress?.updateValueAndValidity();
+    const defaultAddress = this.isNew ? this.credentialsService.userAddress : this.data.bookingAppointment?.serviceAddress;
+    if (this.isManuallyEnteringServiceAddress) { // Toggle ON
+      if (this.isNew) {
+        this.serviceAddress?.reset();
+      } else {
+        this.patchAddress(defaultAddress || {});
+      }
+    } else { // Toggle OFF
+      this.patchAddress(defaultAddress || {});
     }
   }
 
-  bookAppointment() {
+  patchAddress(defaultAddress: UserAddress) {
+    const { id, ...address } = defaultAddress as { id?: any;[key: string]: any };
+    this.serviceAddress?.patchValue(address || {});
+    if (this.isEdit && id) {
+      this.serviceAddress?.get("id")?.setValue(id);
+    }
+    this.serviceAddress?.updateValueAndValidity();
+  }
+
+  bookingAppointment() {
     if (this.appointmentForm.invalid) {
-      this.snackBar.open("Please fill all required fields", "Close", {
-        duration: 3000,
-        panelClass: ['error-snackbar']
+      this.snackBar.openFromComponent(ToastsComponent, {
+        ...ToastsConfig.defaultConfig,
+        data: {
+          type: "DANGER",
+          headerTitle: "Error",
+          message: "Please fill all required fields"
+        } as SnackBarParams
       });
       return;
     }
@@ -271,15 +399,21 @@ export class BookAppointmentComponent implements OnInit {
     this.dialogRef.close({
       success: true,
       ...bookingAppintmentValue,
+      //Adding caregiverId to payload
       caregiverId: this.data.user.userId
     });
   }
 
   closeModal() {
     this.dialogRef.close();
-    this.snackBar.open("Appointment booking cancelled", "Close", {
-      duration: 3000,
-      panelClass: ['info-snackbar']
+    const message = this.isNew ? "Care - appointment booking cancelled!" : "Care - editing of appointment cancelled!";
+    this.snackBar.openFromComponent(ToastsComponent, {
+      ...ToastsConfig.defaultConfig,
+      data: {
+        type: "INFO",
+        headerTitle: "Information",
+        message: message
+      } as SnackBarParams
     });
   }
 }

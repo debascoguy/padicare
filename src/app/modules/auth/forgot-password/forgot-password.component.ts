@@ -92,5 +92,5 @@ export class ForgotPasswordComponent {
   login() {
     this.router.navigate(['/auth/login']);
   }
-  
+
 }

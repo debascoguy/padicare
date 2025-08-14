@@ -6,12 +6,14 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { SearchCaregiverComponent } from '@app/modules/onboarding/search-caregiver/search-caregiver.component';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { AppointmentsComponent } from '../appointments/appointments.component';
 
 @Component({
   selector: 'app-dashboard',
   imports: [
     CommonModule,
-    SearchCaregiverComponent
+    SearchCaregiverComponent,
+    AppointmentsComponent
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'

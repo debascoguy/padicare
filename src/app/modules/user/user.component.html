@@ -1,36 +1,150 @@
-<padicare-basic-headers [headerType]="HeaderType.DASHBOARD"></padicare-basic-headers>
+<div class="g-sidenav-show bg-gray-100">
 
-<div class="ms-5 me-3 space-top text-start">
-  <div class="ms-3">
+  <app-side-navbar class="sidenav navbar navbar-vertical navbar-expand-xs border-radius-lg fixed-start ms-2  bg-white my-2"></app-side-navbar>
 
-    <mat-tab-group>
-      <mat-tab label="Profile">
-        <ng-template mat-tab-label>
-          <mat-icon class="me-1">account_circle</mat-icon>
-          Profile
-        </ng-template>
-        <app-profile></app-profile>
-      </mat-tab>
+  <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
 
-      <mat-tab label="Preferences">
-        <ng-template mat-tab-label>
-          <mat-icon class="me-1">manage_accounts</mat-icon>
-          Preferences
-        </ng-template>
-        <app-preferences></app-preferences>
-      </mat-tab>
+    <padicare-basic-headers [headerType]="HeaderType.DASHBOARD"></padicare-basic-headers>
 
-      <mat-tab label="Change Password">
-        <ng-template mat-tab-label>
-          <mat-icon class="me-1">key</mat-icon>
-          Change Password
-        </ng-template>
-        <app-change-password></app-change-password>
-      </mat-tab>
+    <div class="container-fluid px-2 px-md-4">
+      <div class="page-header min-height-300 border-radius-xl mt-4" style="background-image: url('https://images.unsplash.com/photo-1531512073830-ba890ca4eba2?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80');">
+        <span class="mask  bg-gradient-dark  opacity-6"></span>
+      </div>
+      <div class="card card-body mx-2 mx-md-2 mt-n6">
+        <div class="row gx-4 mb-2">
+          <div class="col-auto">
+            <div class="avatar avatar-xl position-relative">
+              <img src="../assets/img/bruce-mars.jpg" alt="profile_image" class="w-100 border-radius-lg shadow-sm">
+            </div>
+          </div>
+          <div class="col-auto my-auto">
+            <div class="h-100">
+              <h5 class="mb-1">
+                {{ (user?.firstName + ' ' + user?.lastName) | titlecase}}
+              </h5>
+              <p class="mb-0 font-weight-normal text-sm">
+                {{ (user?.userType != 'BOTH' ? user?.userType : credentials?.activePortal ) | titlecase}} / {{ user?.email }}
+              </p>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-6 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3">
+            <div class="nav-wrapper position-relative end-0">
+              <ul class="nav nav-pills nav-fill p-1" role="tablist">
+                <li class="nav-item">
+                  <a class="nav-link mb-0 px-0 py-1 " [ngClass]="{'active': selectedTab == 'profile'}" data-bs-toggle="tab" href="javascript:;" (click)="switchTab('profile')" role="tab" [attr.aria-selected]="selectedTab == 'profile'">
+                    <i class="material-symbols-rounded text-lg position-relative">home</i>
+                    <span class="ms-1">Profile</span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link mb-0 px-0 py-1 " [ngClass]="{'active': selectedTab == 'preferences'}" data-bs-toggle="tab" href="javascript:;" (click)="switchTab('preferences')" role="tab"  [attr.aria-selected]="selectedTab == 'preferences'">
+                    <i class="material-symbols-rounded text-lg position-relative">settings</i>
+                    <span class="ms-1">Preferences</span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link mb-0 px-0 py-1 " [ngClass]="{'active': selectedTab == 'change-password'}" data-bs-toggle="tab" href="javascript:;" (click)="switchTab('change-password')" role="tab"  [attr.aria-selected]="selectedTab == 'change-password'">
+                    <i class="material-symbols-rounded text-lg position-relative">settings</i>
+                    <span class="ms-1">Change Password</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="row" *ngIf="selectedTab == 'profile'">
+          <div class="row mb-3">
+            <div class="col-12 col-xl-6">
+              <div class="card card-plain h-100">
+                <div class="card-header pb-0 p-3">
+                  <div class="row">
+                    <div class="col-md-8 d-flex align-items-center">
+                      <h6 class="mb-0">Profile Information</h6>
+                    </div>
+                    <div class="col-md-4 text-end">
+                      <a href="javascript:;" (click)="toggleEditingProfile(!isEditingUserProfile)">
+                        <i class="fas fa-user-edit text-secondary text-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit Profile"></i>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body p-3">
 
-    </mat-tab-group>
+                  <app-profile [isEditing]="isEditingUserProfile"></app-profile>
 
-  </div>
-</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-xl-6">
+              <div class="card card-plain h-100">
+                <div class="card-header pb-0 p-3">
+                  <h6 class="mb-0">Authorization and Privacy</h6>
+                </div>
+                <div class="card-body p-1">
 
-<!-- <padicare-basic-footers [isFixed]="true"></padicare-basic-footers> -->
+                  <app-preferences></app-preferences>
+
+                  <!-- <h6 class="text-uppercase text-body text-xs font-weight-bolder">Account</h6>
+                  <ul class="list-group">
+                    <li class="list-group-item border-0 px-0">
+                      <div class="form-check form-switch ps-0">
+                        <input class="form-check-input ms-auto" type="checkbox" id="flexSwitchCheckDefault" checked>
+                        <label class="form-check-label text-body ms-3 text-truncate w-80 mb-0" for="flexSwitchCheckDefault">Email me when someone follows me</label>
+                      </div>
+                    </li>
+                    <li class="list-group-item border-0 px-0">
+                      <div class="form-check form-switch ps-0">
+                        <input class="form-check-input ms-auto" type="checkbox" id="flexSwitchCheckDefault1">
+                        <label class="form-check-label text-body ms-3 text-truncate w-80 mb-0" for="flexSwitchCheckDefault1">Email me when someone answers on my post</label>
+                      </div>
+                    </li>
+                    <li class="list-group-item border-0 px-0">
+                      <div class="form-check form-switch ps-0">
+                        <input class="form-check-input ms-auto" type="checkbox" id="flexSwitchCheckDefault2" checked>
+                        <label class="form-check-label text-body ms-3 text-truncate w-80 mb-0" for="flexSwitchCheckDefault2">Email me when someone mentions me</label>
+                      </div>
+                    </li>
+                  </ul>
+                  <h6 class="text-uppercase text-body text-xs font-weight-bolder mt-4">Application</h6>
+                  <ul class="list-group">
+                    <li class="list-group-item border-0 px-0">
+                      <div class="form-check form-switch ps-0">
+                        <input class="form-check-input ms-auto" type="checkbox" id="flexSwitchCheckDefault3">
+                        <label class="form-check-label text-body ms-3 text-truncate w-80 mb-0" for="flexSwitchCheckDefault3">New launches and projects</label>
+                      </div>
+                    </li>
+                    <li class="list-group-item border-0 px-0">
+                      <div class="form-check form-switch ps-0">
+                        <input class="form-check-input ms-auto" type="checkbox" id="flexSwitchCheckDefault4" checked>
+                        <label class="form-check-label text-body ms-3 text-truncate w-80 mb-0" for="flexSwitchCheckDefault4">Monthly product updates</label>
+                      </div>
+                    </li>
+                    <li class="list-group-item border-0 px-0 pb-0">
+                      <div class="form-check form-switch ps-0">
+                        <input class="form-check-input ms-auto" type="checkbox" id="flexSwitchCheckDefault5">
+                        <label class="form-check-label text-body ms-3 text-truncate w-80 mb-0" for="flexSwitchCheckDefault5">Subscribe to newsletter</label>
+                      </div>
+                    </li>
+                  </ul> -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row" *ngIf="selectedTab == 'preferences'">
+
+        </div>
+        <div class="row" *ngIf="selectedTab == 'change-password'">
+          <div class="row mb-3">
+            <div class="col-12 col-xl-12">
+
+              <app-change-password></app-change-password>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <padicare-basic-footers class="footer position-absolute bottom-2 py-2 w-100" [isFixed]="true"></padicare-basic-footers>
+  </main>

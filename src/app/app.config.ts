@@ -17,6 +17,9 @@ import { LayoutSidebarStore } from './modules/layouts/layout.store';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { RECAPTCHA_SETTINGS, RecaptchaSettings } from 'ng-recaptcha';
 import { CaptchaService } from './core/services/captcha.service';
+import { CalendarModule } from './shared/calendar/CalendarModule';
+import { MatSnackBar } from '@angular/material/snack-bar';
+
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -38,6 +41,8 @@ export const appConfig: ApplicationConfig = {
         resolve(true);
       });
     }),
+    MatSnackBar,
+    provideNativeDateAdapter(),
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HttpInterceptorService,

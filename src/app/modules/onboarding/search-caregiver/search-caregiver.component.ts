@@ -16,7 +16,7 @@ import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/p
 import { EventEmitter } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { BookAppointmentComponent } from '@app/modules/client/book-appointment/book-appointment.component';
+import { BookAppointmentService } from '@app/modules/client/book-appointment/book-appointment-service';
 
 @Component({
   selector: 'app-search-caregiver',
@@ -76,8 +76,18 @@ export class SearchCaregiverComponent {
     private httpClient: HttpClient,
     protected snackBar: MatSnackBar,
     protected modalDialogService: MatDialog,
-    protected router: Router
+    protected router: Router,
+    protected bookAppointmentService: BookAppointmentService
   ) {
+
+    if (!this.credentialsService.isLoggedIn()) {
+      this.snackBar.open("Please login to book an appointment", "Close", {
+        duration: 3000,
+        panelClass: ['error-snackbar']
+      });
+      return;
+    }
+
     this.searchForm = new FormGroup({
       zipcode: new FormControl(this.credentialsService.userAddress.zipcode || '', [Validators.required, Validators.minLength(5)]),
       radius: new FormControl(this.credentialsService.userAddress.radius || 10, [
@@ -165,57 +175,7 @@ export class SearchCaregiverComponent {
   }
 
   bookAppointmentHandler(isBookAppointment: boolean, user: UserSummary) {
-    if (!isBookAppointment) {
-      return;
-    }
-
-    if (!this.credentialsService.isLoggedIn()) {
-      this.snackBar.open("Please login to book an appointment", "Close", {
-        duration: 3000,
-        panelClass: ['error-snackbar']
-      });
-      return;
-    }
-
-    if (this.credentialsService.userType !== AppUserType.client && this.credentialsService.userType !== AppUserType.both) {
-      this.snackBar.open("Only clients can book appointments with caregivers", "Close", {
-        duration: 3000,
-        panelClass: ['error-snackbar']
-      });
-      return;
-    }
-
-    if (!user || !user.userId) {
-      this.snackBar.open("Invalid caregiver selected", "Close", {
-        duration: 3000,
-        panelClass: ['error-snackbar']
-      });
-      return;
-    }
-
-    this.modalDialogService.open(BookAppointmentComponent, {
-      data: { user },
-      width: '750px',
-      disableClose: false,
-      autoFocus: false,
-    }).afterClosed().subscribe((result) => {
-      if (result && result.success) {
-        const { success, ...data } = result;
-        this.httpClient.post('/caregiver/book/appointment', { ...data }).subscribe({
-          next: (response: any) => {
-            if (response.status) {
-              this.router.navigate(['/client/checkout/booking-appointment/' + response.data.id]);
-            }
-          },
-          error: (error) => {
-            this.snackBar.open("Failed to book appointment. Please try again.", "Close", {
-              duration: 3000,
-              panelClass: ['error-snackbar']
-            });
-          }
-        });
-      }
-    });
+    this.bookAppointmentService.bookAppointmentHandler(isBookAppointment, user);
   }
 
 }

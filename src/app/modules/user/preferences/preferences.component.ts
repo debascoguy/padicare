@@ -1,5 +1,5 @@
 import { CredentialsService } from '@app/core/authentication/credentials.service';
-import { Component, TemplateRef, ViewChild, booleanAttribute } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -9,16 +9,16 @@ import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { AppUserType } from '@app/shared/enums/app.user.type.enum';
-import { RecaptchaFormsModule, RecaptchaModule } from 'ng-recaptcha';
-import { CaptchaService } from '@app/core/services/captcha.service';
 import { Router } from '@angular/router';
 import { LogService } from '@app/core/logger/LogService';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { firstValueFrom } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { isObjectDifferent } from '@app/core/services/utils';
+import { SnackBarParams } from '@app/shared/toasts/SnackBarParams';
+import { ToastsConfig } from '@app/shared/toasts/ToastsConfig';
+import { ToastsComponent } from '@app/shared/toasts/toasts.component';
 
 @Component({
   selector: 'app-preferences',
@@ -38,7 +38,7 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: './preferences.component.html',
   styleUrls: ['./preferences.component.scss']
 })
-export class PreferencesComponent {
+export class PreferencesComponent implements OnInit {
 
   preferenceForm = new FormGroup({
     acceptTermsAndConditions: new FormControl(false, [Validators.required]),
@@ -55,7 +55,7 @@ export class PreferencesComponent {
   notificationMessage: string = "User Preference Updated successfully!";
 
   showSuccessMessage = false;
-
+  isFormChanged: boolean = false;
   isLoading: boolean = false;
   isSubmitted: boolean = false;
 
@@ -68,6 +68,17 @@ export class PreferencesComponent {
   ) {
     this.preferenceForm.patchValue(this.currentUserPreference);
   }
+
+  ngOnInit(): void {
+    this.preferenceForm.valueChanges.subscribe(formValues => {
+      const userPreference = {
+        ...this.currentUserPreference,
+        ...formValues
+      }
+      this.isFormChanged = isObjectDifferent(userPreference, this.currentUserPreference);
+    });
+  }
+
 
   get currentUserPreference() {
     return this.credentialsService.userPreference;
@@ -95,7 +106,14 @@ export class PreferencesComponent {
 
     if (this.preferenceForm.invalid) {
       this.reset();
-      this.snackBar.open("Please fill in all required fields.", 'OK', { duration: 3000 });
+      this.snackBar.openFromComponent(ToastsComponent, {
+        ...ToastsConfig.defaultConfig,
+        data: {
+          type: "DANGER",
+          headerTitle: "Error",
+          message: "Please fill in all required fields.",
+        } as SnackBarParams
+      });
       return;
     }
 

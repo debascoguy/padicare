@@ -1,0 +1,116 @@
+<div class="container-fluid py-2">
+  <div class="row text-center">
+    <div class="col-md-4">
+      <div class="btn-group">
+        <div class="btn btn-primary" mwlCalendarPreviousView [view]="view" [(viewDate)]="viewDate"
+          (viewDateChange)="viewDateChangeHandler()">
+          Previous
+        </div>
+        <div class="btn btn-outline-secondary" mwlCalendarToday [(viewDate)]="viewDate">
+          Today
+        </div>
+        <div class="btn btn-primary" mwlCalendarNextView [view]="view" [(viewDate)]="viewDate"
+          (viewDateChange)="viewDateChangeHandler()">
+          Next
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <h3>{{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}</h3>
+    </div>
+    <div class="col-md-4">
+      <div class="btn-group">
+        <div class="btn btn-primary" (click)="setView(CalendarView.Month)" [class.active]="view === CalendarView.Month">
+          Month
+        </div>
+        <div class="btn btn-primary" (click)="setView(CalendarView.Week)" [class.active]="view === CalendarView.Week">
+          Week
+        </div>
+        <div class="btn btn-primary" (click)="setView(CalendarView.Day)" [class.active]="view === CalendarView.Day">
+          Day
+        </div>
+      </div>
+    </div>
+  </div>
+  <br />
+  <div [ngSwitch]="view">
+    <mwl-calendar-month-view *ngSwitchCase="CalendarView.Month" [viewDate]="viewDate" [events]="userEvents"
+      [refresh]="refresh" [activeDayIsOpen]="activeDayIsOpen" (dayClicked)="dayClicked($event.day)"
+      (eventClicked)="handleEvent('Clicked', $event.event)" (eventTimesChanged)="eventTimesChanged($event)">
+    </mwl-calendar-month-view>
+    <mwl-calendar-week-view *ngSwitchCase="CalendarView.Week" [viewDate]="viewDate" [events]="userEvents"
+      [refresh]="refresh" (eventClicked)="handleEvent('Clicked', $event.event)"
+      (eventTimesChanged)="eventTimesChanged($event)">
+    </mwl-calendar-week-view>
+    <mwl-calendar-day-view *ngSwitchCase="CalendarView.Day" [viewDate]="viewDate" [events]="userEvents" [refresh]="refresh"
+      (eventClicked)="handleEvent('Clicked', $event.event)" (eventTimesChanged)="eventTimesChanged($event)">
+    </mwl-calendar-day-view>
+  </div>
+
+  <ng-template #modalContent let-close="close">
+    <div class="modal-header d-flex justify-content-between align-items-center">
+      <h5 class="modal-title">{{ modalData.event.meta.summaryInfo.title | titlecase }}</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="close()">
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="row mt-1 mb-1">
+        <div class="col-3 col-md-3 col-xs-6">
+          Care Type
+        </div>
+        <div class="col-9 col-md-9 col-xs-6 fw-bold">
+          {{ modalData.event.meta.summaryInfo.careType | replaceString: "_" : " " | titlecase}}
+        </div>
+      </div>
+      <div class="row mt-1 mb-1">
+        <div class="col-3 col-md-3 col-xs-6">
+          Caregiver
+        </div>
+        <div class="col-9 col-md-9 col-xs-6 fw-bold">
+          {{ modalData.event.meta.summaryInfo.caregiverName }}
+        </div>
+      </div>
+      <div class="row mt-1 mb-1">
+        <div class="col-3 col-md-3 col-xs-6">
+          Service Address
+        </div>
+        <div class="col-9 col-md-9 col-xs-6 fw-bold">
+          {{ modalData.event.meta.summaryInfo.serviceAddressInfo }}
+        </div>
+      </div>
+      <div class="row mt-1 mb-1">
+        <div class="col-3 col-md-3 col-xs-6">
+          Start Date
+        </div>
+        <div class="col-9 col-md-9 col-xs-6 fw-bold">
+          {{ modalData.event.meta.summaryInfo.appointmentDate | date }}
+        </div>
+      </div>
+      <div class="row mt-1 mb-1">
+        <div class="col-3 col-md-3 col-xs-6">
+          Start Time
+        </div>
+        <div class="col-9 col-md-9 col-xs-6 fw-bold">
+          {{ modalData.event.meta.summaryInfo.serviceStartTime }}
+        </div>
+      </div>
+      <div class="row mt-1 mb-1">
+        <div class="col-3 col-md-3 col-xs-6">
+          End Time
+        </div>
+        <div class="col-9 col-md-9 col-xs-6 fw-bold">
+          {{ modalData.event.meta.summaryInfo.serviceEndTime }}
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline-primary me-2" (click)="close()">
+        OK
+      </button>
+      <button type="button" [class]="action.cssClass" *ngFor="let action of modalData.event.actions" (click)="close(); action.onClick({event: modalData.event, sourceEvent: $event})">
+        <span [innerHTML]="action.label"></span> {{ action.a11yLabel }}
+      </button>
+    </div>
+  </ng-template>
+
+</div>

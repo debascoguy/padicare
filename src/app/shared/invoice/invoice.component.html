@@ -1,0 +1,108 @@
+<div class="receipt-main">
+  <div class="card m-1">
+    <div class="card-body">
+
+      <div class="watermark">{{ invoice.status | uppercase }}</div>
+
+      <div class="row">
+        <div class="col-12 col-md-12">
+
+          <div class="row">
+            <div class="col-4">
+              <span class="ms-1 text-sm text-dark fs-3" style="font-weight: 900;">
+                <span style="color: #0F62FE;">PADI</span><span style="color: #F47CB4;">CARE</span>
+              </span>
+            </div>
+            <div class="col-4 text-center">
+              <h3><span class="badge badge-sm " [ngClass]="statusColors[invoice.status]">{{ invoice.status }}</span></h3>
+            </div>
+            <div class="col-4 text-end">
+              <p>+1 405-384-0807 <i class="fa fa-phone"></i></p>
+              <p>customer-support&#64;padicare.com <i class="fa fa-envelope-o"></i></p>
+              <p>Georgia, USA <i class="fa fa-location-arrow"></i></p>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-6">
+              <h5>{{ customer.firstName + " " + customer.lastName }} </h5>
+              <p><b>Mobile :</b> {{ customer.cellPhone || "" | phone }}</p>
+              <p><b>Email :</b> {{ customer.email }}</p>
+              <p><b>Address :</b>
+                {{ customerAddress.city + ", " + customerAddress.state + " " + customerAddress.zipcode }}
+              </p>
+            </div>
+            <div class="col-6 text-end">
+              <h4>INVOICE #: {{ invoice.invoiceNumber }}</h4>
+            </div>
+          </div>
+
+          <div class="row table-responsive p-0">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Description</th>
+                  <th>Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let invoiceslineItem of invoice.invoiceslineItems">
+                  <td class="col-md-9">{{ (invoiceslineItem.description + " X (" + invoiceslineItem.quantity + " " + invoiceslineItem.unit + ")") | titlecase }}</td>
+                  <td class="col-md-3">{{ invoiceslineItem.amount | currency: invoiceslineItem.currency }}</td>
+                </tr>
+                <tr>
+                  <td class="text-end">
+                    <p>
+                      <strong>Service Amount: </strong>
+                    </p>
+                    <p>
+                      <strong>Tax: </strong>
+                    </p>
+                    <p>
+                      <strong>Total Amount: </strong>
+                    </p>
+                  </td>
+                  <td>
+                    <p>
+                      <strong> {{ invoice.totalAmount | currency:  invoice.currency }} </strong>
+                    </p>
+                    <p>
+                      <strong> $0 </strong>
+                    </p>
+                    <p>
+                      <strong> {{ invoice.totalAmount | currency: invoice.currency }} </strong>
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+
+                  <td class="text-end">
+                    <h2><strong>Total: </strong></h2>
+                  </td>
+                  <td class="text-start text-danger">
+                    <h2><strong>{{ invoice.totalAmount | currency: invoice.currency }}</strong></h2>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="row">
+      <div class="col-xs-6 col-md-6 col-sm-12 text-start">
+        <p><b>Date :</b> {{ currentDate | date }}</p>
+        <h5 style="color: rgb(140, 140, 140);">Thanks for using Padicare!</h5>
+      </div>
+        <div class="col-xs-6 col-md-6 col-sm-12 text-end">
+          <span class="ms-1 text-sm text-dark fs-3" style="font-weight: 900;">
+                <span style="color: #0F62FE;">PADI</span><span style="color: #F47CB4;">CARE</span>
+            </span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>

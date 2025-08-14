@@ -1,32 +1,40 @@
-<footer [class]="footerType" [ngClass]="{'fixed-bottom': isFixed}">
-  <div class="row">
-    <div class="col-lg-3 col-md-3 col-sm-12">
-      <a class="navbar-brand ms-5" href="/">
-        <span class="fs-3" style="font-weight: 900;">
-          <span style="color: #0F62FE;">PADI</span><span style="color: #F47CB4;">CARE</span>
-        </span>
-      </a>
-    </div>
-    <div class="col-lg-6 col-md-6 col-sm-12 text-center mt-2">
-      <!-- General Menus -->
-      <p>PADICARE &copy; {{ currentYear }}. All rights reserved.</p>
-    </div>
-    <div class="col-lg-3 col-md-3 col-sm-12">
-      <button type="button" class="btn me-2" aria-label="YouTube Icon">
-        <i class="fa-brands fa-youtube" [ngClass]="getIconColor(footerType)"></i>
-      </button>
-      <button type="button" class="btn me-2" aria-label="Facebook Icon">
-        <i class="fa-brands fa-facebook-f" [ngClass]="getIconColor(footerType)"></i>
-      </button>
-      <button type="button" class="btn me-2" aria-label="Twitter Icon">
-        <i class="fa-brands fa-twitter" [ngClass]="getIconColor(footerType)"></i>
-      </button>
-      <button type="button" class="btn me-2" aria-label="Instagram Icon">
-        <i class="fa-brands fa-instagram" [ngClass]="getIconColor(footerType)"></i>
-      </button>
-      <button type="button" class="btn me-2" aria-label="LinkedIn Icon">
-        <i class="fa-brands fa-linkedin-in" [ngClass]="getIconColor(footerType)"></i>
-      </button>
+<footer class="footer bottom-2 py-2 w-100" [ngClass]="isFixed ? 'fixed-bottom' : 'position-absolute'">
+  <div class="container">
+    <div class="row align-items-center justify-content-lg-between">
+      <div class="col-12 col-md-6 my-auto">
+        <div class="copyright text-center text-sm text-white text-lg-start">
+          PADICARE &copy; {{ currentYear }}. All rights reserved
+        </div>
+      </div>
+      <div class="col-12 col-md-6">
+        <ul class="nav nav-footer justify-content-center justify-content-lg-end">
+          <li class="nav-item">
+            <a href="#" class="nav-link text-white" target="_blank" aria-label="YouTube Icon">
+              <i class="fa-brands fa-youtube" [ngClass]="getIconColor(footerType)"></i>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link text-white" target="_blank" aria-label="Facebook Icon">
+              <i class="fa-brands fa-facebook-f" [ngClass]="getIconColor(footerType)"></i>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link text-white" target="_blank" aria-label="Twitter Icon">
+              <i class="fa-brands fa-twitter" [ngClass]="getIconColor(footerType)"></i>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link pe-0 text-white" target="_blank" aria-label="Instagram Icon">
+              <i class="fa-brands fa-instagram" [ngClass]="getIconColor(footerType)"></i>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link pe-0 text-white" target="_blank" aria-label="LinkedIn Icon">
+              <i class="fa-brands fa-linkedin-in" [ngClass]="getIconColor(footerType)"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </footer>

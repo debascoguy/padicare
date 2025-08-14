@@ -1,0 +1,22 @@
+<mat-card>
+  <mat-card-header class="border-bottom pb-2">
+    <i class="material-symbols-rounded text-success me-2" *ngIf="data.type == 'SUCCESS'">
+      check
+    </i>
+    <i class="material-symbols-rounded text-warning me-2" *ngIf="data.type == 'WARNING'">
+      travel_explore
+    </i>
+    <i class="material-symbols-rounded text-danger me-2" *ngIf="data.type == 'DANGER'">
+      campaign
+    </i>
+    <i class="material-symbols-rounded text-info me-2" *ngIf="data.type == 'INFO'">
+      notifications
+    </i>
+    <span class="me-auto font-weight-bold text-dark">{{ data.headerTitle }} </span>
+    <small class="text-end text-dark" *ngIf="data.headerSecondaryLabel">{{ data.headerSecondaryLabel }}</small>
+    <i [class]="'fas fa-times text-md ms-3 cursor-pointer ' + className" aria-label="Close" (click)="close()"></i>
+  </mat-card-header>
+  <mat-card-content class="pt-2 toast-body text-dark">
+    {{ data.message }}
+  </mat-card-content>
+</mat-card>

@@ -6,7 +6,8 @@
           <span style="color: #0F62FE;">PADI</span><span style="color: #F47CB4;">CARE</span>
         </span>
       </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -25,12 +26,15 @@
               <a class="nav-link fw-bold" href="#">Our Product</a>
             </li>
             <li class="nav-item dropdown ms-2 me-2">
-              <a class="btn btn-outline-primary dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <a class="btn btn-outline-primary dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                data-bs-toggle="dropdown" aria-expanded="false">
                 Join Us
               </a>
               <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                 <li><a class="dropdown-item" href="/onboarding/client">User</a></li>
-                <li><hr class="dropdown-divider"></li>
+                <li>
+                  <hr class="dropdown-divider">
+                </li>
                 <li><a class="dropdown-item" href="/onboarding/caregiver">Caregiver</a></li>
               </ul>
             </li>
@@ -52,165 +56,193 @@
 </header>
 
 <header *ngIf="headerType == HeaderType.ONBOARDING || headerType == HeaderType.AUTH">
-  <nav class="navbar navbar-expand-sm navbar-light bg-light" [class.fixed-top]="isFixed">
-    <div class="container-fluid">
-      <a class="navbar-brand ms-5" href="javascript:void(0)" (click)="pageReload()">
+  <!-- Navbar -->
+  <nav [class.fixed-top]="isFixed"
+    class="navbar navbar-expand-lg blur border-radius-xl top-0 z-index-3 shadow position-absolute my-3 py-2 start-0 end-0 mx-4">
+    <div class="container-fluid ps-2 pe-0">
+      <a class="navbar-brand font-weight-bolder ms-lg-0 ms-3 ps-3" href="javascript:void(0)" (click)="pageReload()">
         <span class="fs-3" style="font-weight: 900;">
           <span style="color: #0F62FE;">PADI</span><span style="color: #F47CB4;">CARE</span>
         </span>
       </a>
-    </div>
-  </nav>
-</header>
-
-<div *ngIf="headerType == HeaderType.MODAL">
-  <div class="navbar navbar-expand-sm navbar-light bg-light" [class.fixed-top]="isFixed">
-    <div class="container-fluid">
-      <a class="navbar-brand ms-5" href="javascript:void(0)" (click)="pageReload()">
-        <span class="fs-3" style="font-weight: 900;">
-          <h4 class="fw-bold">{{ headerText }}</h4>
+      <button class="navbar-toggler shadow-none ms-2" type="button" data-bs-toggle="collapse"
+        data-bs-target="#navigation" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon mt-2">
+          <span class="navbar-toggler-bar bar1"></span>
+          <span class="navbar-toggler-bar bar2"></span>
+          <span class="navbar-toggler-bar bar3"></span>
         </span>
-      </a>
-    </div>
-  </div>
-</div>
-
-<header *ngIf="headerType == HeaderType.ADMIN || headerType == HeaderType.CAREGIVER || headerType == HeaderType.CLIENT || headerType == HeaderType.DASHBOARD">
-  <nav class="navbar navbar-expand-sm navbar-light header2" [class.fixed-top]="isFixed">
-
-    <div class="container-fluid">
-
-      <div class="ms-3">
-        <!-- <button mat-icon-button (click)="layoutApi.toggleSidebar('root')">
-          <mat-icon>menu</mat-icon>
-        </button> -->
-        <a class="navbar-brand ms-5" href="javascript:void(0)" (click)="pageReload()">
-          <span class="fs-3" style="font-weight: 900;">
-            <span style="color: #0F62FE;">PADI</span><span style="color: #F47CB4;">CARE</span>
-          </span>
-        </a>
-      </div>
-
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
       </button>
-
-      <div class="flex justify-content-end collapse navbar-collapse" id="navbarNavDropdown">
-        <ul class="navbar-nav link-light">
-          <li class="nav-item">
-            <app-profile-image size="SMALL" badgeColor=""></app-profile-image>
+      <div class="collapse navbar-collapse" id="navigation">
+        <ul class="navbar-nav mx-auto">
+          <!-- <li class="nav-item">
+            <a class="nav-link me-2" href="/onboarding/caregiver">
+              <i class="fa fa-user opacity-6 text-dark me-1"></i>
+              Caregiver Sign Up
+            </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link link-light" href="/user">Accounts</a>
+            <a class="nav-link me-2" href="/onboarding/client">
+              <i class="fas fa-user-circle opacity-6 text-dark me-1"></i>
+              Client Sign Up
+            </a>
+          </li> -->
+        </ul>
+        <ul class="navbar-nav d-lg-flex d-none">
+          <li class="nav-item d-flex align-items-center">
+            <a class="btn btn-outline-primary btn-sm mb-0 me-2" target="_blank" href="/onboarding/caregiver">
+              <i class="fa fa-user opacity-6 text-dark me-1"></i>
+              Caregiver Sign Up
+            </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link link-light" href="javascript:void();" (click)="pageReload()">Dependents</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link link-light" href="javascript:void();" (click)="pageReload()">Payments</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link link-light" href="javascript:void();" (click)="logout()">Logout</a>
-          </li>
-          <li class="nav-item">
-            <button type="button" mat-icon-button [matMenuTriggerFor]="appsMenu" matTooltip="Applications" class="btn btn-outline-light ms-1 me-1">
-              <mat-icon>apps</mat-icon>
-            </button>
-          </li>
-          <li class="nav-item">
-            <button mat-icon-button matTooltip="Notifications" class="btn  btn-outline-light ms-1 me-1"
-                matBadge="1" matBadgeHidden="false" matBadgeOverlap="false" matBadgeSize="small" matBadgePos="above after"
-                position="below-end">
-              <mat-icon>notifications</mat-icon>
-            </button>
+            <a class="btn btn-outline-primary btn-sm mb-0 me-2" target="_blank" href="/onboarding/client">
+              <i class="fas fa-user-circle opacity-6 text-dark me-1"></i>
+              Client Sign Up
+            </a>
           </li>
         </ul>
       </div>
-
     </div>
   </nav>
+  <!-- End Navbar -->
 </header>
 
 
-<mat-menu xPosition="before" #appsMenu="matMenu" class="max-h-[400px]">
-  <div class="w-80">
-    <a routerLink="/" mat-menu-item>
-      <div class="flex align-items-center gap-3 my-3">
-        <div class="w-14 h-14 border border-default border-neutral-400  rounded-xl flex-none flex align-items-center justify-center">
-          <!-- <img src="assets/applications/file-storage.svg" alt="File Storage" class="size-8 dark:hidden">
-          <img src="assets/applications/file-storage-dark.svg" alt="File Storage" class="size-8 hidden dark:block"> -->
+<header
+  *ngIf="headerType == HeaderType.ADMIN || headerType == HeaderType.CAREGIVER || headerType == HeaderType.CLIENT || headerType == HeaderType.DASHBOARD">
+
+  <!-- Start Navbar : navbar-expand-sm -->
+  <nav class="navbar navbar-main navbar-expand-lg px-0 mx-3 shadow-none border-radius-xl" id="navbarBlur"
+    data-scroll="true">
+    <div class="container-fluid py-1 px-3">
+
+      <nav aria-label="breadcrumb" *ngIf="breadcrumbs.length > 0">
+        <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
+          <li *ngFor="let breadcrumb of breadcrumbs"
+              [ngClass]="breadcrumb.active ? 'breadcrumb-item text-sm text-dark active' : 'breadcrumb-item text-sm'">
+            <a class="opacity-5 text-dark" [href]="breadcrumb.link" *ngIf="!breadcrumb.active">{{ breadcrumb.text }}</a>
+            <h6 *ngIf="breadcrumb.active">{{ breadcrumb.text }}</h6>
+          </li>
+        </ol>
+      </nav>
+
+      <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
+        <div class="ms-md-auto pe-md-3 d-flex align-items-center">
+          <!-- <div class="input-group input-group-outline">
+            <label class="form-label">Type here...</label>
+            <input type="text" class="form-control">
+          </div> -->
         </div>
-        <div class="-mt-0.5">
-          <div>File Storage</div>
-          <div class="text-xs text-neutral-500 dark:text-neutral-400">
-            Store, share, and access files across devices
-          </div>
-        </div>
+        <ul class="navbar-nav d-flex align-items-center  justify-content-end">
+          <li class="nav-item d-flex align-items-center" *ngIf="user?.userType == 'BOTH'">
+            <a class="btn btn-outline-primary btn-sm mb-0 me-3" href="javascript:void();" (click)="switch()">Switch to {{ credentials?.activePortal == 'CLIENT' ? 'Caregiver' : 'Client' }} Portal</a>
+          </li>
+          <li class="nav-item d-flex align-items-center">
+            <a class="btn btn-outline-primary btn-sm mb-0 me-3" href="javascript:void();" (click)="logout()">Log-out</a>
+          </li>
+          <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
+            <a href="javascript:;" class="nav-link text-body p-0" id="iconNavbarSidenav">
+              <div class="sidenav-toggler-inner">
+                <i class="sidenav-toggler-line"></i>
+                <i class="sidenav-toggler-line"></i>
+                <i class="sidenav-toggler-line"></i>
+              </div>
+            </a>
+          </li>
+          <li class="nav-item d-flex align-items-center">
+            <a href="/user" class="nav-link text-body font-weight-bold px-0">
+              <i class="material-symbols-rounded">account_circle</i>
+            </a>
+          </li>
+          <li class="nav-item px-3 d-flex align-items-center">
+            <a href="/user/settings" class="nav-link text-body p-0">
+              <i class="material-symbols-rounded fixed-plugin-button-nav">settings</i>
+            </a>
+          </li>
+          <li class="nav-item dropdown pe-3 d-flex align-items-center">
+            <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton" data-bs-toggle="dropdown"
+              aria-expanded="false">
+              <i class="material-symbols-rounded">notifications</i>
+            </a>
+            <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
+              <li class="mb-2">
+                <a class="dropdown-item border-radius-md" href="javascript:;">
+                  <div class="d-flex py-1">
+                    <div class="my-auto">
+                      <img src="../assets/img/team-2.jpg" class="avatar avatar-sm  me-3 ">
+                    </div>
+                    <div class="d-flex flex-column justify-content-center">
+                      <h6 class="text-sm font-weight-normal mb-1">
+                        <span class="font-weight-bold">New message</span> from Laur
+                      </h6>
+                      <p class="text-xs text-secondary mb-0">
+                        <i class="fa fa-clock me-1"></i>
+                        13 minutes ago
+                      </p>
+                    </div>
+                  </div>
+                </a>
+              </li>
+              <li class="mb-2">
+                <a class="dropdown-item border-radius-md" href="javascript:;">
+                  <div class="d-flex py-1">
+                    <div class="my-auto">
+                      <img src="../assets/img/small-logos/logo-spotify.svg"
+                        class="avatar avatar-sm bg-gradient-dark  me-3 ">
+                    </div>
+                    <div class="d-flex flex-column justify-content-center">
+                      <h6 class="text-sm font-weight-normal mb-1">
+                        <span class="font-weight-bold">New album</span> by Travis Scott
+                      </h6>
+                      <p class="text-xs text-secondary mb-0">
+                        <i class="fa fa-clock me-1"></i>
+                        1 day
+                      </p>
+                    </div>
+                  </div>
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item border-radius-md" href="javascript:;">
+                  <div class="d-flex py-1">
+                    <div class="avatar avatar-sm bg-gradient-secondary  me-3  my-auto">
+                      <svg width="12px" height="12px" viewBox="0 0 43 36" version="1.1"
+                        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                        <title>credit-card</title>
+                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                          <g transform="translate(-2169.000000, -745.000000)" fill="#FFFFFF" fill-rule="nonzero">
+                            <g transform="translate(1716.000000, 291.000000)">
+                              <g transform="translate(453.000000, 454.000000)">
+                                <path class="color-background"
+                                  d="M43,10.7482083 L43,3.58333333 C43,1.60354167 41.3964583,0 39.4166667,0 L3.58333333,0 C1.60354167,0 0,1.60354167 0,3.58333333 L0,10.7482083 L43,10.7482083 Z"
+                                  opacity="0.593633743"></path>
+                                <path class="color-background"
+                                  d="M0,16.125 L0,32.25 C0,34.2297917 1.60354167,35.8333333 3.58333333,35.8333333 L39.4166667,35.8333333 C41.3964583,35.8333333 43,34.2297917 43,32.25 L43,16.125 L0,16.125 Z M19.7083333,26.875 L7.16666667,26.875 L7.16666667,23.2916667 L19.7083333,23.2916667 L19.7083333,26.875 Z M35.8333333,26.875 L28.6666667,26.875 L28.6666667,23.2916667 L35.8333333,23.2916667 L35.8333333,26.875 Z">
+                                </path>
+                              </g>
+                            </g>
+                          </g>
+                        </g>
+                      </svg>
+                    </div>
+                    <div class="d-flex flex-column justify-content-center">
+                      <h6 class="text-sm font-weight-normal mb-1">
+                        Payment successfully completed
+                      </h6>
+                      <p class="text-xs text-secondary mb-0">
+                        <i class="fa fa-clock me-1"></i>
+                        2 days
+                      </p>
+                    </div>
+                  </div>
+                </a>
+              </li>
+            </ul>
+          </li>
+        </ul>
       </div>
-    </a>
-    <a routerLink="/" mat-menu-item>
-      <div class="flex align-items-center gap-3 my-3">
-        <div class="w-14 h-14 border border-default border-neutral-400  rounded-xl flex-none flex align-items-center justify-center">
-          <!-- <img src="assets/applications/sign.svg" alt="Sign" class="size-8 dark:hidden">
-          <img src="assets/applications/sign-dark.svg" alt="Sign" class="size-8 hidden dark:block"> -->
-        </div>
-        <div class="-mt-0.5">
-          <div>Sign</div>
-          <div class="text-xs text-neutral-500 dark:text-neutral-400">
-            Securely send any documents for electronic signature
-          </div>
-        </div>
-      </div>
-    </a>
-    <a routerLink="/" mat-menu-item>
-      <div class="flex align-items-center gap-3 my-3">
-        <div class="w-14 h-14 border border-default border-neutral-400  rounded-xl flex-none flex align-items-center justify-center">
-          <!-- <img src="assets/applications/backup.svg" alt="Backup" class="size-8 dark:hidden">
-          <img src="assets/applications/backup-dark.svg" alt="Backup" class="size-8 hidden dark:block"> -->
-        </div>
-        <div class="-mt-0.5">
-          <div>Backup</div>
-          <div class="text-xs text-neutral-500 dark:text-neutral-400">
-            Automatically back up all your devices
-          </div>
-        </div>
-      </div>
-    </a>
-    <div class="my-3">
-      <mat-divider/>
     </div>
-    <div class="text-base py-3 px-4">
-      See what other options there are
-    </div>
-    <a routerLink="/" mat-menu-item>
-      <div class="flex align-items-center gap-3 my-3">
-        <div class="w-14 h-14 border border-default border-neutral-400  rounded-xl flex-none flex align-items-center justify-center">
-          <!-- <img src="assets/applications/passwords.svg" alt="Passwords" class="size-8 dark:hidden">
-          <img src="assets/applications/passwords-dark.svg" alt="Passwords" class="size-8 hidden dark:block"> -->
-        </div>
-        <div class="-mt-0.5">
-          <div>Passwords</div>
-          <div class="text-xs text-neutral-500 dark:text-neutral-400">
-            Sync and save passwords across all your devices
-          </div>
-        </div>
-      </div>
-    </a>
-    <div class="my-3">
-      <mat-divider/>
-    </div>
-    <a routerLink="/" mat-menu-item>
-      <div class="flex align-items-center gap-3 my-3">
-        <div class="w-14 h-14 border border-default border-neutral-400  rounded-xl flex-none flex align-items-center justify-center">
-          <mat-icon class="font-icon !text-2xl !w-5 !h-8 relative -right-1">arrow_forward</mat-icon>
-        </div>
-        <div class="-mt-0.5">
-          <div>App Center</div>
-          <div class="text-xs text-neutral-500 dark:text-neutral-400">
-            Find apps in Elementar and connect them
-          </div>
-        </div>
-      </div>
-    </a>
-  </div>
-</mat-menu>
+  </nav>
+  <!-- End Navbar -->
+</header>

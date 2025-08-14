@@ -22,6 +22,42 @@ export const caregiverRoutes: Routes = [
       pageAuthorities: []
     } as RouteData,
   },
+  {
+    path: 'appointments',
+    loadComponent: () => import('./appointments/appointments.component').then(c => c.AppointmentsComponent),
+    data: {
+      title: 'Caregiver | Dashboard',
+      breadcrumbs: [
+        {
+          text: 'Dashboard',
+          link: "/caregiver/dashboard"
+        },
+        {
+          text: 'Appointments',
+          active: true
+        }
+      ],
+      pageAuthorities: []
+    } as RouteData,
+  },
+  {
+    path: 'billing',
+    loadComponent: () => import('../client/billing/billing.component').then(c => c.BillingComponent),
+    data: {
+      title: 'Caregiver | Dashboard',
+      breadcrumbs: [
+        {
+          text: 'Dashboard',
+          link: "/client/dashboard"
+        },
+        {
+          text: 'Billing',
+          active: true
+        }
+      ],
+      pageAuthorities: []
+    } as RouteData,
+  },
 ];
 
 @NgModule({

@@ -1,8 +1,19 @@
-<h3 mat-dialog-title class="m-2">Book Appointment With {{ caregiverName }}</h3>
+<h3 mat-dialog-title class="m-2">{{ isNew ? 'Book' : 'Edit' }} Appointment With {{ caregiverName }}</h3>
 <mat-dialog-content>
   <form [formGroup]="appointmentForm">
-    <div class="row">
-      <mat-form-field appearance="outline" class="col-lg-12 col-md-12 col-sm-12 mt-2 mb-2">
+
+    <div class="row" *ngIf="isEdit">
+      <div class="col-6 col-md-6">
+        <h6>Type of care: </h6>
+        <p>{{ data.bookingAppointment?.productName || "" | replaceString : '_' : ' ' | titlecase }}</p>
+      </div>
+      <div class="col-6 col-md-6" *ngIf="showAvailabilityControl">
+        <button type="button" class="btn btn-link" (click)="openAvailabilityModal()">Check Availability</button>
+      </div>
+    </div>
+
+    <div class="row" *ngIf="isNew">
+      <mat-form-field appearance="outline" class="col-lg-12 col-md-12 col-sm-12">
         <mat-label>What type of care do you want from {{ caregiverName }}</mat-label>
         <mat-select id="productName" formControlName="productName" (selectionChange)="updateCaregiverFee()">
           <mat-option *ngFor="let careType of data.user.caregiverCareTypes | orderBy: 'product_name' "
@@ -12,6 +23,9 @@
         </mat-select>
         <mat-error *ngIf="appointmentForm.get('productName')?.hasError('required')">Select care type</mat-error>
       </mat-form-field>
+      <a *ngIf="showAvailabilityControl" class="btn text-start" (click)="openAvailabilityModal()">
+        Check Availability
+      </a>
 
       <div class="col-lg-12 col-md-12 col-sm-12 mb-2"
         *ngIf="filteredCaregiverFees && filteredCaregiverFees.length == 1">
@@ -22,9 +36,10 @@
           selectedFee?.currency : 'symbol' }}
         </b>
       </div>
+
       <mat-form-field appearance="outline" class="col-lg-12 col-md-12 col-sm-12 mt-2 mb-2"
         *ngIf="filteredCaregiverFees && filteredCaregiverFees.length > 1">
-        <mat-label>Please mat-select the specific service type</mat-label>
+        <mat-label>Please select the specific service type</mat-label>
         <mat-select id="caregiverFeesId" formControlName="caregiverFeesId" (selectionChange)="onCaregiverFeeSelected()">
           <mat-option *ngFor="let caregiverFee of filteredCaregiverFees" [value]="caregiverFee.id">
             {{
@@ -38,8 +53,15 @@
         <mat-hint> Note: DAILY is: 8-Hours, WEEKLY is: 40-Hours, MONTHLY is: 160-Hours </mat-hint>
       </mat-form-field>
     </div>
+
     <div class="row">
-      <mat-form-field appearance="outline" class="col-lg-4 col-md-4 col-sm-12 mt-2 mb-2">
+
+      <div class="col-lg-4 col-md-4 col-sm-12 mt-2 mb-2" *ngIf="isEdit">
+        <h6>{{ quantityLabel }}</h6>
+        <p>{{ data.bookingAppointment?.quantity }}</p>
+      </div>
+
+      <mat-form-field appearance="outline" class="col-lg-4 col-md-4 col-sm-12 mt-2 mb-2" *ngIf="isNew">
         <mat-label>{{ quantityLabel }}</mat-label>
         <mat-select id="quantity" formControlName="quantity">
           <mat-option *ngFor="let quantity of quantityOptions" [value]="quantity">{{ quantity }}</mat-option>
@@ -72,11 +94,15 @@
       <div class="form-check form-switch p-0">
         <div class="d-inline-flex flex-row-reverse gap-1">
           <input class="form-check-input ms-0" type="checkbox" role="switch" id="enterServiceAddress"
-          name="enterServiceAddress" ngDefaultControl [(ngModel)]="isManuallyEnteringServiceAddress"
-          [ngModelOptions]="{standalone: true}" (click)="search()">
-          <label class="form-check-label" for="enterServiceAddress">Enter Service Address
-          <br><i>Toggle this switch if the service address is different from your primary user account address</i>
-        </label>
+            name="enterServiceAddress" ngDefaultControl [(ngModel)]="isManuallyEnteringServiceAddress"
+            [ngModelOptions]="{standalone: true}" (change)="search($event)">
+          <label class="form-check-label" for="enterServiceAddress">
+            {{ isNew ? 'Enter Service Address' : 'Change Service Address' }}
+            <br>
+            <i *ngIf="isNew">Toggle this switch if the service address is different from your primary user account
+              address</i>
+            <i *ngIf="isEdit">Toggle this switch to update the service address</i>
+          </label>
         </div>
       </div>
     </div>
@@ -99,7 +125,7 @@
 
       <mat-form-field appearance="outline" class="col-lg-4 col-md-4 col-sm-12 mt-2 mb-2">
         <mat-label>Zipcode</mat-label>
-        <input matInput type="text" formControlName="zipcode" (keyup)="search()">
+        <input matInput type="text" formControlName="zipcode" (keyup)="search($event)">
         <mat-error *ngIf="serviceAddress.get('zipcode')?.hasError('required')"> Enter a valid zip code
         </mat-error>
       </mat-form-field>
@@ -113,11 +139,11 @@
       <div class="form-check form-switch p-0">
         <div class="d-inline-flex flex-row-reverse gap-1">
           <input class="form-check-input ms-0" type="checkbox" role="switch" id="updateUserAddressWithServiceAddress"
-          name="updateUserAddressWithServiceAddress" ngDefaultControl [(ngModel)]="updateUserAddressWithServiceAddress"
-          [ngModelOptions]="{standalone: true}">
+            name="updateUserAddressWithServiceAddress" ngDefaultControl
+            [(ngModel)]="updateUserAddressWithServiceAddress" [ngModelOptions]="{standalone: true}">
           <label class="form-check-label" for="updateUserAddressWithServiceAddress">
             Update My User Account With This Service Address
-        </label>
+          </label>
         </div>
       </div>
     </div>
@@ -133,5 +159,45 @@
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-raised-button type="button" mat-dialog-close color="secondary" (click)="closeModal()">Cancel</button>
-  <button mat-raised-button type="button" color="success" (click)="bookAppointment()">Book Appointment</button>
+  <button mat-raised-button type="button" color="success" (click)="bookingAppointment()">{{ isNew ? 'Book Appointment' :
+    'Update Appointment' }}</button>
 </mat-dialog-actions>
+
+<ng-template #availabilityInfo let-close="close">
+  <div class="modal-header d-flex justify-content-between align-items-center">
+    <h5 class="modal-title">{{ caregiverName }} Earliest Availability</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="close()">
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row mt-1 mb-1">
+      <div class="col-12 col-md-12">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th scope="col"><small>Available Time</small></th>
+                  <th scope="col"><small>Hours</small></th>
+                  <th scope="col"><small>start Time</small></th>
+                  <th scope="col"><small>End Time</small></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let availability of caregiverAvailabilities">
+                  <td>{{ availability.available | date: 'medium' }}</td>
+                  <td>{{ availability.durationInHours }}</td>
+                  <td>{{ availability.startDate | date: 'medium' }}</td>
+                  <td>{{ availability.endDate | date: 'medium' }}</td>
+                </tr>
+              </tbody>
+            </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-primary me-2" (click)="close()">
+      OK
+    </button>
+  </div>
+</ng-template>

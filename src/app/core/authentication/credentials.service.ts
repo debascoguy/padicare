@@ -4,7 +4,7 @@ import { LoginContext } from '../models/login-context.model';
 import { SecuredLocalStorage } from '../services/SecuredLocalStorage';
 import { SecuredSessionStorage } from '../services/SecuredSessionStorage';
 import { AppUserType } from '@app/shared/enums/app.user.type.enum';
-
+import { isEmpty } from '../services/utils';
 
 const credentialsKey = 'credentials';
 const refreshTokenKey = "refreshToken"
@@ -73,8 +73,8 @@ export class CredentialsService {
     return !!this.credentials ? this.credentials?.userPreferences : {};
   }
 
-  get clientPreference(): any {
-    return !!this.credentials ? this.credentials?.clientPreferences : {};
+  get clientOrCaregiverPreferences(): any {
+    return !!this.credentials ? this.credentials?.clientOrCaregiverPreferences : {};
   }
 
   get userType(): AppUserType | null | undefined {
@@ -148,8 +148,19 @@ export class CredentialsService {
    * @param credentials The user credentials.
    */
   updateCredentials(credentials?: LoginContext) {
-    this.securedSessionStorage.setItem(credentialsKey, JSON.stringify(credentials));
-    this._credentials = credentials || null;
+    if (!credentials) {
+      return ;
+    }
+
+    const _credentials = { ...this.credentials };
+
+    Object.keys(credentials).forEach(field => {
+      if (!isEmpty(credentials[field])) {
+        _credentials[field] = credentials[field];
+      }
+    });
+
+    this.setCredentials(_credentials as LoginContext, false);
   }
 
   updateCredentialsField(field: string, value: any) {

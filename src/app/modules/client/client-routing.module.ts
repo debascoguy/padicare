@@ -23,6 +23,60 @@ export const clientRoutes: Routes = [
     } as RouteData,
   },
   {
+    path: 'find-caregiver',
+    loadComponent: () => import('../onboarding/search-caregiver/search-caregiver.component').then(c => c.SearchCaregiverComponent),
+    data: {
+      title: 'Caregiver | Dashboard',
+      breadcrumbs: [
+        {
+          text: 'Dashboard',
+          link: "/client/dashboard"
+        },
+        {
+          text: 'Find Caregiver',
+          active: true
+        }
+      ],
+      pageAuthorities: []
+    } as RouteData,
+  },
+  {
+    path: 'appointments',
+    loadComponent: () => import('./appointments/appointments.component').then(c => c.AppointmentsComponent),
+    data: {
+      title: 'Caregiver | Dashboard',
+      breadcrumbs: [
+        {
+          text: 'Dashboard',
+          link: "/client/dashboard"
+        },
+        {
+          text: 'Appointments',
+          active: true
+        }
+      ],
+      pageAuthorities: []
+    } as RouteData,
+  },
+  {
+    path: 'billing',
+    loadComponent: () => import('./billing/billing.component').then(c => c.BillingComponent),
+    data: {
+      title: 'Caregiver | Dashboard',
+      breadcrumbs: [
+        {
+          text: 'Dashboard',
+          link: "/client/dashboard"
+        },
+        {
+          text: 'Billing',
+          active: true
+        }
+      ],
+      pageAuthorities: []
+    } as RouteData,
+  },
+  {
     path: 'checkout/:checkoutEntity/:checkoutEntityId',
     loadComponent: () => import('../payments/checkout/checkout.component').then(c => c.CheckoutComponent),
     data: {

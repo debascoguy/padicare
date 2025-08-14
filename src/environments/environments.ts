@@ -1,5 +1,3 @@
-import { publish } from "rxjs";
-
 const process = {env: []} as any;
 
 export const environment = {
@@ -27,4 +25,6 @@ export const environment = {
     localStorage: process?.env?.["LOGGER_LOCAL_STORAGE"] === "true" || false,
     webApi: process?.env?.["LOGGER_WEB_API"] === "true" || false,
   },
+  appointmentServiceWindowInHours: process?.env?.["APPOINTMENT_SERVICE_WINDOW_IN_HOURS"] ? parseInt(process?.env?.["APPOINTMENT_SERVICE_WINDOW_IN_HOURS"]) : 12,
+  appointmentCancellationDeadlineInHours: process?.env?.["APPOINTMENT_CANCELLATION_DEADLINE_IN_HOURS"] ? parseInt(process?.env?.["APPOINTMENT_CANCELLATION_DEADLINE_IN_HOURS"]) : 24,
 };

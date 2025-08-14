@@ -1,0 +1,61 @@
+<div class="row">
+  <div class="col-12 col-md-12">
+
+    <mat-paginator *ngIf="userEvents.length > 0" #topPaginator [length]="userEvents.length" [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]="true" [pageIndex]="pageIndex"
+      (page)="pageChange($event)">
+    </mat-paginator>
+
+    <div class="table table-responsive">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Care</th>
+            <th>Caregiver</th>
+            <th>Service Address</th>
+            <th>Service Date <br>(Duration in hours)</th>
+            <th>Starts At</th>
+            <th>Ends At</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let event of userEvents | slice: startIndex : endIndex; let i = index">
+            <td>
+              {{ event.meta.summaryInfo.careType }}
+            </td>
+            <td>
+              {{ event.meta.summaryInfo.caregiverName }}
+            </td>
+            <td>
+              {{ event.meta.summaryInfo.serviceAddressInfo }}
+            </td>
+            <td>
+              {{ (event.meta.summaryInfo.appointmentDate | date) + " (" + (event.meta.summaryInfo.totalHours | number) + "
+              Hours)" }}
+            </td>
+            <td>
+              {{ event.meta.summaryInfo.serviceStartTime }}
+            </td>
+            <td>
+              {{ event.meta.summaryInfo.serviceEndTime }}
+            </td>
+            <td>
+              <button type="button" [class]="action.cssClass" *ngFor="let action of event.actions"
+                (click)="action.onClick({event: event, sourceEvent: $event})">
+                <span [innerHTML]="action.label"></span> {{ action.a11yLabel }}
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <mat-paginator *ngIf="userEvents.length > 0" #bottomPaginator [length]="userEvents.length"
+      [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]="true" [pageIndex]="pageIndex"
+      (page)="pageChange($event)">
+    </mat-paginator>
+
+  </div>
+</div>
