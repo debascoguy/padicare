@@ -9,7 +9,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { AppUserType } from '@app/shared/enums/app.user.type.enum';
 import { Router } from '@angular/router';
 import { LogService } from '@app/core/logger/LogService';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -64,7 +63,7 @@ export class PreferencesComponent implements OnInit {
     protected logger: LogService,
     protected router: Router,
     protected httpClient: HttpClient,
-    protected credentialsService: CredentialsService
+    public credentialsService: CredentialsService
   ) {
     this.preferenceForm.patchValue(this.currentUserPreference);
   }
@@ -79,17 +78,8 @@ export class PreferencesComponent implements OnInit {
     });
   }
 
-
   get currentUserPreference() {
     return this.credentialsService.userPreference;
-  }
-
-  get activePortal(): AppUserType | null | undefined {
-    return this.credentialsService.activePortal;
-  }
-
-  get AppUserType() {
-    return AppUserType;
   }
 
   reset() {

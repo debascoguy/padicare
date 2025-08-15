@@ -13,8 +13,8 @@
           You do not have access/permission to the requested resource/page.
         </p>
         <div class="flex gap-5 justify-center">
-          <a [routerLink]="dashboard()" mat-flat-button color="primary" class="me-2">Go to dashboard</a>
-          <a routerLink="/auth/login" mat-stroked-button class="ms-2">Sign In</a>
+          <a [routerLink]="credentialService.dashboard" mat-flat-button color="primary" class="me-2">Go to dashboard</a>
+          <a [routerLink]="credentialService.login" mat-stroked-button class="ms-2">Sign In</a>
         </div>
       </div>
     </div>

@@ -1,4 +1,3 @@
-import { CredentialsService } from './../../../core/authentication/credentials.service';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
@@ -22,6 +21,10 @@ import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { RecaptchaErrorParameters, RecaptchaFormsModule, RecaptchaModule } from 'ng-recaptcha';
 import { CaptchaService } from '@app/core/services/captcha.service';
+import { ToastsComponent } from '@app/shared/toasts/toasts.component';
+import { ToastsConfig } from '@app/shared/toasts/ToastsConfig';
+import { SnackBarParams } from '@app/shared/toasts/SnackBarParams';
+import { CredentialsService } from '@app/core/authentication/credentials.service';
 
 @Component({
   selector: 'app-client-account',
@@ -101,12 +104,6 @@ export class ClientAccountComponent {
     this.captchaService.setSubmitCallback(() => this.submit());
   }
 
-  // getClientPreferencePrimaryCareType() {
-  //   const clientPreference =  this.authenticationService.getCredentialsService().clientPreference;
-  //   const primaryCareType = clientPreference?.clientCareTypes?.filter((c: any) => c.category == CareCategoryEnum.Primary)?.[0];
-  //   return primaryCareType?.careType as keyof typeof SecondaryCareTypeEnums || 'PET_CARE';
-  // }
-
   get dayOfWeek() {
     return (this.step2Form.get('dayOfWeek') as FormArray).controls as FormControl[];
   }
@@ -164,11 +161,26 @@ export class ClientAccountComponent {
       if (response.status) {
         this.isSubmitted = false;
         this.credentialsService.updateCredentialsField('clientPreference', response.data);
-        this.router.navigate(['/onboarding/client/subscription']);
+        this.snackBar.openFromComponent(ToastsComponent, {
+          ...ToastsConfig.defaultConfig,
+          data: {
+            type: "SUCCESS",
+            headerTitle: "Account Created Successfully",
+            message: "Account Required: Email Verification Needed",
+          } as SnackBarParams
+        });
+        this.router.navigate(['/onboarding/client/complete']);
       }
     }).catch(error => {
       this.isSubmitted = false;
-      this.snackBar.open(error.error.message, 'close', { duration: 3000 });
+      this.snackBar.openFromComponent(ToastsComponent, {
+        ...ToastsConfig.defaultConfig,
+        data: {
+          type: "DANGER",
+          headerTitle: "Validation Error",
+          message: error.error.message,
+        } as SnackBarParams
+      });
     });
   }
 

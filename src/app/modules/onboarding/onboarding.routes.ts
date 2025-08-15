@@ -5,8 +5,8 @@ import { ClientComponent } from './client/client.component';
 import { ClientAccountComponent } from './client-account/client-account.component';
 import { SubscriptionComponent } from './subscription/subscription.component';
 import { SearchCaregiverComponent } from './search-caregiver/search-caregiver.component';
-import { ClientGetStartedComponent } from './client-get-started/client-get-started.component';
 import { VerifyEmailComponent } from './verify-email/verify-email.component';
+import { RegistrationCompleteComponent } from './registration-complete/registration-complete.component';
 
 export const onboardingRoutes: Routes = [
   {
@@ -55,8 +55,8 @@ export const onboardingRoutes: Routes = [
     } as RouteData,
   },
   {
-    path: 'client/subscription',
-    component: SubscriptionComponent,
+    path: 'client/complete',
+    component: RegistrationCompleteComponent,
     data: {
       title: 'Find Care',
       breadcrumbs: [
@@ -73,7 +73,7 @@ export const onboardingRoutes: Routes = [
           link: 'client/account'
         },
         {
-          text: 'Subscription',
+          text: 'Account Created',
           active: true
         },
       ],
@@ -100,36 +100,6 @@ export const onboardingRoutes: Routes = [
         },
         {
           text: 'Select Caregiver',
-          active: true
-        },
-      ],
-      pageAuthorities: []
-    } as RouteData,
-  },
-  {
-    path: 'client/get-started',
-    component: ClientGetStartedComponent,
-    data: {
-      title: 'Find Care',
-      breadcrumbs: [
-        {
-          text: 'Home',
-          link: '/'
-        },
-        {
-          text: 'Find Care',
-          link: 'client'
-        },
-        {
-          text: 'Client Account',
-          link: 'client/account'
-        },
-        {
-          text: 'Select Caregiver',
-          link: 'client/select-caregiver'
-        },
-        {
-          text: 'Get Started',
           active: true
         },
       ],
@@ -192,6 +162,24 @@ export const onboardingRoutes: Routes = [
         },
         {
           text: 'Verify Email',
+          active: true,
+        },
+      ],
+      pageAuthorities: []
+    } as RouteData,
+  },
+  {
+    path: 'verify/phone/:token',
+    component: VerifyEmailComponent,
+    data: {
+      title: 'Verify Phone',
+      breadcrumbs: [
+        {
+          text: 'Home',
+          link: '/'
+        },
+        {
+          text: 'Verify Phone',
           active: true,
         },
       ],

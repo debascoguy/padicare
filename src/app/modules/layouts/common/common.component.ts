@@ -47,11 +47,11 @@ export class CommonComponent {
       return HeaderType.ADMIN;
     }
 
-    if (this.credentialService.activePortal == AppUserType.careGiver) {
+    if (this.credentialService.isCaregiverSide) {
       return HeaderType.CAREGIVER;
     }
 
-    if (this.credentialService.activePortal == AppUserType.client) {
+    if (this.credentialService.isClientSide) {
       return HeaderType.CLIENT;
     }
 

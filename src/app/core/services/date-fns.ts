@@ -171,7 +171,7 @@ export function formatDateTime(date: Date, locale: string = 'en-US'): string {
   return `${formatDate(date, locale)} ${formatTime(date, locale)}`;
 }
 
-export function parseDate(dateString: string, locale: string = 'en-US'): Date {
+export function parseDate(dateString: Date | string, locale: string = 'en-US'): Date {
   return new Date(dateString);
 }
 
@@ -182,13 +182,13 @@ export function parseDateTime(dateTimeString: string, locale: string = 'en-US'):
   return new Date(date.getFullYear(), date.getMonth(), date.getDate(), time.getHours(), time.getMinutes());
 }
 
-export function isValidDateString(dateString: string, locale: string = 'en-US'): boolean {
-  const date = parseDate(dateString, locale);
-  return !isNaN(date.getTime());
-}
-
 export function isValidDate(date: Date): boolean {
   return date instanceof Date && !isNaN(date.getTime());
+}
+
+export function isValidDateString(dateString: string, locale: string = 'en-US'): boolean {
+  const date = parseDate(dateString, locale);
+  return isValidDate(date);
 }
 
 export function getDaysInMonth(date: Date): number {

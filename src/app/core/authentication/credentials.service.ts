@@ -49,6 +49,10 @@ export class CredentialsService {
     return this.isLoggedIn() ? this.hasAuthority('ADMIN') : false;
   }
 
+  isAccountEnabled() {
+    return this.isLoggedIn() && this.user.enabled;
+  }
+
   /**
    * Gets the user credentials.
    * @return The user credentials or null if the user is not authenticated.
@@ -63,6 +67,10 @@ export class CredentialsService {
 
   get user(): User {
     return !!this.credentials ? this.credentials.user : {} as User;
+  }
+
+  get isUserEnabled() {
+    return this.user.enabled;
   }
 
   get userAddress(): UserAddress {
@@ -108,6 +116,26 @@ export class CredentialsService {
       return this.credentials.activePortal;
     }
     return null;
+  }
+
+  get userBaseRoute() {
+    return this.activePortal?.toLowerCase() || null;
+  }
+
+  get dashboard() {
+    return "/" + this.userBaseRoute + "/dashboard";
+  }
+
+  get login() {
+    return "/auth/login";
+  }
+
+  get isClientSide() {
+    return this.activePortal == AppUserType.client;
+  }
+
+  get isCaregiverSide() {
+    return this.activePortal == AppUserType.careGiver;
   }
 
   get profileImage() {

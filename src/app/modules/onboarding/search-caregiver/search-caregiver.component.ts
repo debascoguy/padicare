@@ -11,7 +11,6 @@ import { RecaptchaModule, RecaptchaFormsModule } from 'ng-recaptcha';
 import { CredentialsService } from '@app/core/authentication/credentials.service';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { AppUserType } from '@app/shared/enums/app.user.type.enum';
 import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { EventEmitter } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
@@ -79,15 +78,6 @@ export class SearchCaregiverComponent {
     protected router: Router,
     protected bookAppointmentService: BookAppointmentService
   ) {
-
-    if (!this.credentialsService.isLoggedIn()) {
-      this.snackBar.open("Please login to book an appointment", "Close", {
-        duration: 3000,
-        panelClass: ['error-snackbar']
-      });
-      return;
-    }
-
     this.searchForm = new FormGroup({
       zipcode: new FormControl(this.credentialsService.userAddress.zipcode || '', [Validators.required, Validators.minLength(5)]),
       radius: new FormControl(this.credentialsService.userAddress.radius || 10, [
@@ -134,7 +124,7 @@ export class SearchCaregiverComponent {
     firstValueFrom(this.httpClient.post('/caregiver/search', searchRequest)).then((response: any) => {
       this.searchedResults = response.status ? response.data : [];
       this.isSearching = false;
-      if (this.credentialsService.activePortal == AppUserType.client) {
+      if (this.credentialsService.isClientSide) {
         this.findCaregiversCareTypes(this.searchedResults.map((user: UserSummary) => user.userId));
       }
     }).catch(error => {

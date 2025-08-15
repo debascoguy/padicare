@@ -1,11 +1,7 @@
 import { CredentialsService } from '@app/core/authentication/credentials.service';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { SearchCaregiverComponent } from '@app/modules/onboarding/search-caregiver/search-caregiver.component';
-import { MatDialog } from '@angular/material/dialog';
-import { Router } from '@angular/router';
 import { AppointmentsComponent } from '../appointments/appointments.component';
 
 @Component({
@@ -20,14 +16,7 @@ import { AppointmentsComponent } from '../appointments/appointments.component';
 })
 export class DashboardComponent implements OnInit {
 
-  constructor(
-    private httpClient: HttpClient,
-    protected credentialsService: CredentialsService,
-    protected snackBar: MatSnackBar,
-    protected modalDialogService: MatDialog,
-    protected router: Router
-  ) {
-
+  constructor(protected credentialsService: CredentialsService ) {
   }
 
   ngOnInit(): void {

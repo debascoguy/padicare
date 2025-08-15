@@ -32,6 +32,10 @@ import { firstValueFrom } from 'rxjs';
 import { AppUserType } from '@app/shared/enums/app.user.type.enum';
 import { RecaptchaErrorParameters, RecaptchaFormsModule, RecaptchaModule } from 'ng-recaptcha';
 import { CaptchaService } from '@app/core/services/captcha.service';
+import { now } from '@app/core/services/date-fns';
+import { ToastsComponent } from '@app/shared/toasts/toasts.component';
+import { ToastsConfig } from '@app/shared/toasts/ToastsConfig';
+import { SnackBarParams } from '@app/shared/toasts/SnackBarParams';
 
 @Component({
   selector: 'app-client',
@@ -123,7 +127,7 @@ export class ClientComponent implements OnInit, AfterViewInit {
     });
     this.step4Form = new FormGroup({
       //e.g: Init with First CareReceiver Date of birth
-      careReceiversDOB: new FormArray([new FormControl('', [Validators.required])]),
+      careReceiversDOB: new FormArray([new FormControl('', Validation.validateDate(undefined, now()))]),
     });
     this.step5Form = new FormGroup({
       otherCareTypes: new FormArray([]),
@@ -208,6 +212,7 @@ export class ClientComponent implements OnInit, AfterViewInit {
 
   initStep5Form() {
     const formArray = this.step5Form.get('otherCareTypes') as FormArray;
+    formArray.clear();
     this.otherCareReceiverValues.forEach((_) => {
       formArray.push(new FormControl(''));
     });
@@ -253,7 +258,7 @@ export class ClientComponent implements OnInit, AfterViewInit {
   }
 
   addCareReceivers() {
-    const control = new FormControl('', Validators.required);
+    const control = new FormControl('', Validation.validateDate(undefined, now()));
     this.careReceiversDOB.push(control);
   }
 
@@ -261,7 +266,14 @@ export class ClientComponent implements OnInit, AfterViewInit {
     if (this.careReceiversDOB.length > 1) {
       this.careReceiversDOB.removeAt(index);
     } else {
-      this.snackBar.open('At least 1 Care Receiver is Required!', 'close', { duration: 3000 });
+      this.snackBar.openFromComponent(ToastsComponent, {
+        ...ToastsConfig.defaultConfig,
+        data: {
+          type: "DANGER",
+          headerTitle: "Validation Error",
+          message: "At least 1 Care Receiver is Required!",
+        } as SnackBarParams
+      });
     }
   }
 
@@ -311,21 +323,38 @@ export class ClientComponent implements OnInit, AfterViewInit {
     firstValueFrom(this.authenticationService.registerClient(allData)).then((response: any) => {
       if (response.status) {
         this.showSuccessMessage = true;
-        this.snackBar.openFromTemplate(this.notificationTemplate, {
-          horizontalPosition: 'center',
-          verticalPosition: 'bottom',
-          duration: 2000
+        this.snackBar.openFromComponent(ToastsComponent, {
+          ...ToastsConfig.defaultConfig,
+          data: {
+            type: "SUCCESS",
+            headerTitle: "Account Created",
+            message: "Account created successfully!",
+          } as SnackBarParams
         }).afterDismissed().subscribe((_) => {
           this.isSubmitted = false;
           this.router.navigate(['/onboarding/client/account']);
         });
       } else {
         this.isSubmitted = false;
-        this.snackBar.open(response.message, 'close', { duration: 3000 });
+        this.snackBar.openFromComponent(ToastsComponent, {
+          ...ToastsConfig.defaultConfig,
+          data: {
+            type: "DANGER",
+            headerTitle: "Account Error",
+            message: response.message,
+          } as SnackBarParams
+        });
       }
     }).catch(error => {
       this.isSubmitted = false;
-      this.snackBar.open(error.error.message, 'close', { duration: 3000 });
+      this.snackBar.openFromComponent(ToastsComponent, {
+        ...ToastsConfig.defaultConfig,
+        data: {
+          type: "DANGER",
+          headerTitle: "Account Error",
+          message: error.error.message,
+        } as SnackBarParams
+      });
       this.logger.error(error.error);
     });
   }

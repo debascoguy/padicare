@@ -1,0 +1,28 @@
+<div class="position-absolute top-40 start-50 translate-middle text-center">
+  <div class="border border-secondary text-center rounded shadow-sm bg-light">
+
+    <div class="row">
+      <div class="col-md-12 col-lg-12 col-xl-12 mb-3 p-3">
+
+        <div class="alert alert-success text-white" role="alert">
+          <h3>Account Created and Email Verification Sent</h3>
+          <p>Your account has been created successfully.</p>
+        </div>
+
+        <p class="alert alert-warning text-white">
+          To activate the account for full access: Please check your email and verify email address.
+        </p>
+
+        <h5>You will be redirect to your dashboard in {{ countDownTotalInSeconds }} seconds</h5>
+
+        <p class="mt-1 mb-1 fw-bold"><small>If auto-redirect fails, use the Log-in button below</small></p>
+        <div class="d-flex justify-content-center mt-3 mb-3">
+          <a [href]="credentialsService.dashboard" class="btn btn-primary me-2">Log In</a>
+          <a href="/" class="btn btn-primary ms-2">Home</a>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>

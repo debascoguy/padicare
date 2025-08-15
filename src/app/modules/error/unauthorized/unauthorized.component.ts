@@ -17,19 +17,4 @@ export class UnauthorizedComponent {
 
   public credentialService: CredentialsService = inject(CredentialsService);
 
-  dashboard() {
-    if (!this.credentialService.isLoggedIn()) {
-      return null;
-    }
-
-    if (this.credentialService.activePortal == AppUserType.careGiver) {
-      return "/caregiver/dashboard"
-    }
-
-    if (this.credentialService.activePortal == AppUserType.client) {
-      return "/client/dashboard"
-    }
-
-    return null;
-  }
 }

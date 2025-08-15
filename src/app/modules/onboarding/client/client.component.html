@@ -11,12 +11,10 @@
       </div>
     </ng-template>
 
-    <div class="mt-2 mb-2 border-bottom" *ngIf="!showSuccessMessage">&nbsp;</div>
-
     <ng-template [ngTemplateOutlet]="notificationTemplate" *ngIf="showSuccessMessage"></ng-template>
 
 
-    <mat-stepper class="bg-white" [linear]="isLinear" #stepper>
+    <mat-stepper class="bg-white p-2" [linear]="isLinear" #stepper>
 
       @if (showStep0Form) {
       <mat-step [stepControl]="step0Form" [optional]="!showStep0Form">
@@ -68,23 +66,23 @@
           <span class="fs-6">Join Padicare to get access to trusted & verified caregivers.</span>
           <div class="mt-4 mb-3">
             <div class="d-grid gap-2 mb-4">
-              <input type="radio" name="careReadiness" formControlName="careReadiness" value="RIGHT_NOW" class="btn-check"
-                id="right-now">
+              <input type="radio" name="careReadiness" formControlName="careReadiness" value="RIGHT_NOW"
+                class="btn-check" id="right-now">
               <label class="btn btn-outline-dark" for="right-now">Right Now</label>
             </div>
             <div class="d-grid gap-2 mb-4">
-              <input type="radio" name="careReadiness" formControlName="careReadiness" value="WITHIN_A_WEEK" class="btn-check"
-                id="within-a-week">
+              <input type="radio" name="careReadiness" formControlName="careReadiness" value="WITHIN_A_WEEK"
+                class="btn-check" id="within-a-week">
               <label class="btn btn-outline-dark" for="within-a-week">Within a week</label>
             </div>
             <div class="d-grid gap-2 mb-4">
-              <input type="radio" name="careReadiness" formControlName="careReadiness" value="IN_1_2_MONTH" class="btn-check"
-                id="in-1-2-months">
+              <input type="radio" name="careReadiness" formControlName="careReadiness" value="IN_1_2_MONTH"
+                class="btn-check" id="in-1-2-months">
               <label class="btn btn-outline-dark" for="in-1-2-months">In 1-2 Months</label>
             </div>
             <div class="d-grid gap-2 mb-4">
-              <input type="radio" name="careReadiness" formControlName="careReadiness" value="JUST_BROWSING" class="btn-check"
-                id="just-browsing">
+              <input type="radio" name="careReadiness" formControlName="careReadiness" value="JUST_BROWSING"
+                class="btn-check" id="just-browsing">
               <label class="btn btn-outline-dark" for="just-browsing">Just Browsing</label>
             </div>
           </div>
@@ -104,7 +102,8 @@
               <input type="radio" name="secondaryCareType" formControlName="secondaryCareType" [value]="value"
                 class="btn-check" [id]="value">
               <label class="btn btn-outline-dark" [for]="value">
-                <span class="fs-6 fw-bold d-flex ms-2">{{value | replaceString: '_OR_' : ' / ' | replaceString: '_': ' '
+                <span class="fs-6 fw-bold d-flex ms-2">{{value | replaceString: '_OR_' : ' / ' | replaceString: '_':
+                  ' '
                   | titlecase }}</span>
                 <span class="d-flex ms-2">{{ secondaryCareTypeOptions[value] }}</span>
               </label>
@@ -130,6 +129,11 @@
                   <mat-hint>MM/DD/YYYY</mat-hint>
                   <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                   <mat-datepicker #picker multiple></mat-datepicker>
+                  <mat-error *ngIf="control?.invalid && (control?.dirty || control?.touched)">
+                    <span *ngIf="control?.errors?.['required']">Date of birth is required!</span>
+                    <span *ngIf="control?.errors?.['invalidDate']">Invalid date. Please enter/select a valid date</span>
+                    <span *ngIf="control?.errors?.['maxDate']">Date cannot be greater than today!</span>
+                  </mat-error>
                 </mat-form-field>
                 <div class="col-md-2 text-center">
                   <button mat-icon-button [attr.aria-label]="'Remove ' + careReceiverTitle"
@@ -158,7 +162,7 @@
             <div class="d-grid gap-2 mb-4 border" *ngFor="let control of otherCareTypes; let i = index">
               <mat-checkbox class="text-start" [formControl]="control" [value]="otherCareReceiverValues[i]">
                 {{otherCareReceiverValues[i] | replaceString:'_':' ' | titlecase }}
-                <i class="{{careReceiverOptions[otherCareReceiverValues[i]].icon}} ms-2 text-end"></i>
+                <i class="{{careReceiverOptions[otherCareReceiverValues[i]]?.icon}} ms-2 text-end"></i>
               </mat-checkbox>
             </div>
           </div>
@@ -199,7 +203,8 @@
                 <mat-icon>close</mat-icon>
               </button>
               <mat-error *ngIf="email?.invalid && (email?.dirty || email?.touched)">
-                <span *ngIf="email?.errors?.['uniqueEmail']">Email already exists. Please <a href='/auth/login'>login</a></span>
+                <span *ngIf="email?.errors?.['uniqueEmail']">Email already exists. Please <a
+                    href='/auth/login'>login</a></span>
                 <span *ngIf="email?.errors?.['email']">Not a valid email</span>
               </mat-error>
             </mat-form-field>
@@ -261,7 +266,8 @@
             <div class="col-md-12 mt-2 mb-1">
               <mat-checkbox formControlName="acceptNotifications" class="text-start">
                 I agree to receive notifications via email and/or SMS about my account activity,
-                including but not limited to new job opportunities, messages from clients, and other important updates.
+                including but not limited to new job opportunities, messages from clients, and other important
+                updates.
               </mat-checkbox>
             </div>
 
@@ -281,20 +287,23 @@
             <div class="col-md-12 mt-2 mb-1">
               <mat-checkbox formControlName="acceptSMS" class="text-start">
                 I agree to receive SMS notifications from Padicare about my account activity,
-                including but not limited to new opportunities, messages from caregivers, and other important updates.
+                including but not limited to new opportunities, messages from caregivers, and other important
+                updates.
               </mat-checkbox>
             </div>
 
             <div class="col-md-12 mt-2 mb-1">
               <mat-checkbox formControlName="acceptPhone" class="text-start">
                 I agree to receive Phone voice calls from Padicare about my account activity,
-                including but not limited to new opportunities, voice-calls from caregivers, and other important updates.
+                including but not limited to new opportunities, voice-calls from caregivers, and other important
+                updates.
               </mat-checkbox>
             </div>
 
             <div class="col-md-12 mt-2 mb-1">
               <mat-checkbox formControlName="visibility" class="text-start">
-                I agree to allow my basic user information such as (name, gender, etc.) and/or professional summary information to be visibility and/or searchable via the padicare plateform
+                I agree to allow my basic user information such as (name, gender, etc.) and/or professional summary
+                information to be visibility and/or searchable via the padicare plateform
               </mat-checkbox>
             </div>
 
@@ -307,17 +316,16 @@
 
             <div class="col-md-12">
               <small>
-                Upload a clear and legible copy of your identity document (e.g., driver's license, passport, etc.) to verify your identity.
+                Upload a clear and legible copy of your identity document (e.g., driver's license, passport, etc.)
+                to verify your identity.
               </small>
               <app-document-uploader (documentUploaded)="onFileUpload($event)"></app-document-uploader>
             </div>
 
-           <!-- Invisible recaptcha -->
-          <re-captcha #captchaRef="reCaptcha" errorMode="handled"
-            (resolved)="captchaService.resolved($event)"
-            (error)="captchaService.onError($event);
-            captchaRef.reset();"
-          />
+            <!-- Invisible recaptcha -->
+            <re-captcha #captchaRef="reCaptcha" errorMode="handled" (resolved)="captchaService.resolved($event)"
+              (error)="captchaService.onError($event);
+            captchaRef.reset();" />
 
           </div>
           <div class="d-grid gap-2 mt-2">

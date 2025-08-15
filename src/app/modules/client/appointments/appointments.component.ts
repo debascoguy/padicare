@@ -103,14 +103,7 @@ export class AppointmentsComponent implements OnInit {
     private dialog: MatDialog,
     public reloadComponent: ReloadComponent,
     protected router: Router
-  ) {
-    if (!this.credentialsService.isLoggedIn()) {
-      this.snackBar.open("Please login to proceed with Billing Page", "Close", {
-        duration: 3000,
-        panelClass: ['error-snackbar']
-      });
-    }
-  }
+  ) { }
 
   ngOnInit() {
     //Default to current month view
@@ -124,7 +117,7 @@ export class AppointmentsComponent implements OnInit {
   }
 
   bookAppointment() {
-    this.router.navigate(["/" + this.credentialsService.activePortal?.toLowerCase() + '/find-caregiver']);
+    this.router.navigate(["/" + this.credentialsService.userBaseRoute + '/find-caregiver']);
   }
 
   findAllUserAppointments(from: Date, to: Date) {

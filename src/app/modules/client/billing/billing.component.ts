@@ -76,18 +76,7 @@ export class BillingComponent implements OnInit {
     private datePipe: DatePipe,
     protected route: ActivatedRoute,
     private router: Router
-  ) {
-    if (!this.credentialsService.isLoggedIn()) {
-      this.snackBar.openFromComponent(ToastsComponent, {
-        ...ToastsConfig.defaultConfig,
-        data: {
-          type: "DANGER",
-          headerTitle: "Error",
-          message: "Please login to proceed with Billing Page",
-        } as SnackBarParams
-      });
-    }
-  }
+  ) { }
 
   async ngOnInit() {
     const sessionId = this.route.snapshot.queryParamMap.get('sessionId');

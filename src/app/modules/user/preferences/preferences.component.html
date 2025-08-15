@@ -13,11 +13,11 @@
   <div class="mb-3 text-start">
     <div class="mt-2 mb-1">
       <mat-checkbox formControlName="acceptNotifications" class="text-start">
-        <span *ngIf="activePortal == AppUserType.careGiver">
+        <span *ngIf="credentialsService.isCaregiverSide">
           I agree to receive notifications via email and/or SMS about my account activity,
           including but not limited to new job opportunities, messages from clients, and other important updates.
         </span>
-        <span *ngIf="activePortal == AppUserType.client">
+        <span *ngIf="credentialsService.isClientSide">
           I agree to receive notifications via email and/or SMS about my account activity,
           including but not limited to new job opportunities, messages from clients, and other important updates.
         </span>
@@ -26,10 +26,10 @@
 
     <div class="mt-2 mb-1">
       <mat-checkbox formControlName="acceptLocation" class="text-start">
-        <span *ngIf="activePortal == AppUserType.careGiver">
+        <span *ngIf="credentialsService.isCaregiverSide">
           I agree to share my location with Padicare to help me find clients in my area.
         </span>
-        <span *ngIf="activePortal == AppUserType.client">
+        <span *ngIf="credentialsService.isClientSide">
           I agree to share my location with Padicare to help me find caregivers in my area.
         </span>
       </mat-checkbox>
@@ -37,11 +37,11 @@
 
     <div class="mt-2 mb-1">
       <mat-checkbox formControlName="acceptEmail" class="text-start">
-        <span *ngIf="activePortal == AppUserType.careGiver">
+        <span *ngIf="credentialsService.isCaregiverSide">
           I agree to receive marketing emails from Padicare about new features, promotions,
           client communications and other relevant information.
         </span>
-        <span *ngIf="activePortal == AppUserType.client">
+        <span *ngIf="credentialsService.isClientSide">
           I agree to receive marketing emails from Padicare about new features, promotions,
           caregivers communications and other relevant information.
         </span>
@@ -50,11 +50,11 @@
 
     <div class="mt-2 mb-1">
       <mat-checkbox formControlName="acceptSMS" class="text-start">
-        <span *ngIf="activePortal == AppUserType.careGiver">
+        <span *ngIf="credentialsService.isCaregiverSide">
           I agree to receive SMS notifications from Padicare about my account activity,
           including but not limited to new job opportunities, messages from clients, and other important updates.
         </span>
-        <span *ngIf="activePortal == AppUserType.client">
+        <span *ngIf="credentialsService.isClientSide">
           I agree to receive SMS notifications from Padicare about my account activity,
           including but not limited to new opportunities, messages from caregivers, and other important updates.
         </span>
@@ -63,11 +63,11 @@
 
     <div class="mt-2 mb-1">
       <mat-checkbox formControlName="acceptPhone" class="text-start">
-        <span *ngIf="activePortal == AppUserType.careGiver">
+        <span *ngIf="credentialsService.isCaregiverSide">
           I agree to receive Phone voice calls from Padicare about my account activity,
           including but not limited to new job opportunities, voice-calls from clients, and other important updates.
         </span>
-        <span *ngIf="activePortal == AppUserType.client">
+        <span *ngIf="credentialsService.isClientSide">
           I agree to receive Phone voice calls from Padicare about my account activity,
           including but not limited to new opportunities, voice-calls from caregivers, and other important updates.
         </span>
@@ -76,11 +76,11 @@
 
     <div class="mt-2 mb-1">
       <mat-checkbox formControlName="visibility" class="text-start">
-        <span *ngIf="activePortal == AppUserType.careGiver">
+        <span *ngIf="credentialsService.isCaregiverSide">
           I agree to allow my basic user information such as (name, gender, etc.) and/or professional summary
           information to be visibility and/or searchable via the padicare plateform
         </span>
-        <span *ngIf="activePortal == AppUserType.client">
+        <span *ngIf="credentialsService.isClientSide">
           I agree to allow my basic user information such as (name, gender, etc.) to be visibility and/or searchable
           via the padicare plateform
         </span>

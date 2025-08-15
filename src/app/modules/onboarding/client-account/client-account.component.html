@@ -1,9 +1,7 @@
 <div class="position-absolute top-50 start-50 translate-middle text-center">
   <div class="border border-secondary text-center">
 
-    <div class="mt-2 mb-2 border-bottom">&nbsp;</div>
-
-    <mat-stepper class="bg-white" [linear]="true" #stepper>
+    <mat-stepper class="bg-white p-2" [linear]="true" #stepper>
 
       <mat-step [stepControl]="step1Form">
         <form [formGroup]="step1Form">
@@ -146,7 +144,7 @@
                   formControlName="additionalComments"></textarea>
               </mat-form-field>
             </div>
-             
+
             <!-- Invisible recaptcha -->
             <re-captcha #captchaRef="reCaptcha" errorMode="handled"
               (resolved)="captchaService.resolved($event)"

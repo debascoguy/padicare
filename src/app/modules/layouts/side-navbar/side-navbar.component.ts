@@ -23,12 +23,20 @@ export class SideNavbarComponent {
     return this.authenticationService.getCredentialsService().credentials;
   }
 
+  get isClientSide() {
+    return this.authenticationService.getCredentialsService().isClientSide;
+  }
+
+  get isCaregiverSide() {
+    return this.authenticationService.getCredentialsService().isCaregiverSide;
+  }
+
   get user() {
     return this.credentials?.user;
   }
 
-  get activePortalLowercase() {
-    return this.authenticationService.getCredentialsService().activePortal?.toLowerCase();
+  get userBaseRoute() {
+    return this.authenticationService.getCredentialsService().userBaseRoute;
   }
 
   pageReload() {
