@@ -4,7 +4,6 @@ import { CaregiverComponent } from './caregiver/caregiver.component';
 import { ClientComponent } from './client/client.component';
 import { ClientAccountComponent } from './client-account/client-account.component';
 import { SubscriptionComponent } from './subscription/subscription.component';
-import { SearchCaregiverComponent } from './search-caregiver/search-caregiver.component';
 import { VerifyEmailComponent } from './verify-email/verify-email.component';
 import { RegistrationCompleteComponent } from './registration-complete/registration-complete.component';
 
@@ -74,32 +73,6 @@ export const onboardingRoutes: Routes = [
         },
         {
           text: 'Account Created',
-          active: true
-        },
-      ],
-      pageAuthorities: []
-    } as RouteData,
-  },
-  {
-    path: 'client/select-caregiver',
-    component: SearchCaregiverComponent,
-    data: {
-      title: 'Find Care',
-      breadcrumbs: [
-        {
-          text: 'Home',
-          link: '/'
-        },
-        {
-          text: 'Find Care',
-          link: 'client'
-        },
-        {
-          text: 'Client Account',
-          link: 'client/account'
-        },
-        {
-          text: 'Select Caregiver',
           active: true
         },
       ],

@@ -1,13 +1,15 @@
 <div class="g-sidenav-show bg-gray-100">
 
-  <app-side-navbar class="sidenav navbar navbar-vertical navbar-expand-xs border-radius-lg fixed-start ms-2  bg-white my-2"></app-side-navbar>
+  <app-side-navbar
+    class="sidenav navbar navbar-vertical navbar-expand-xs border-radius-lg fixed-start ms-2  bg-white my-2"></app-side-navbar>
 
   <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
 
     <padicare-basic-headers [headerType]="HeaderType.DASHBOARD"></padicare-basic-headers>
 
     <div class="container-fluid px-2 px-md-4">
-      <div class="page-header min-height-300 border-radius-xl mt-4" style="background-image: url('https://images.unsplash.com/photo-1531512073830-ba890ca4eba2?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80');">
+      <div class="page-header min-height-300 border-radius-xl mt-4"
+        style="background-image: url('/assets/img/bg-rock.jpg');">
         <span class="mask  bg-gradient-dark  opacity-6"></span>
       </div>
       <div class="card card-body mx-2 mx-md-2 mt-n6">
@@ -23,7 +25,8 @@
                 {{ (user?.firstName + ' ' + user?.lastName) | titlecase}}
               </h5>
               <p class="mb-0 font-weight-normal text-sm">
-                {{ (user?.userType != 'BOTH' ? user?.userType : credentials?.activePortal ) | titlecase}} / {{ user?.email }}
+                {{ (user?.userType != 'BOTH' ? user?.userType : credentials?.activePortal ) | titlecase}} / {{
+                user?.email }}
               </p>
             </div>
           </div>
@@ -31,19 +34,25 @@
             <div class="nav-wrapper position-relative end-0">
               <ul class="nav nav-pills nav-fill p-1" role="tablist">
                 <li class="nav-item">
-                  <a class="nav-link mb-0 px-0 py-1 " [ngClass]="{'active': selectedTab == 'profile'}" data-bs-toggle="tab" href="javascript:;" (click)="switchTab('profile')" role="tab" [attr.aria-selected]="selectedTab == 'profile'">
+                  <a class="nav-link mb-0 px-0 py-1 " [ngClass]="{'active': selectedTab == 'profile'}"
+                    data-bs-toggle="tab" href="javascript:;" (click)="switchTab('profile')" role="tab"
+                    [attr.aria-selected]="selectedTab == 'profile'">
                     <i class="material-symbols-rounded text-lg position-relative">home</i>
                     <span class="ms-1">Profile</span>
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link mb-0 px-0 py-1 " [ngClass]="{'active': selectedTab == 'preferences'}" data-bs-toggle="tab" href="javascript:;" (click)="switchTab('preferences')" role="tab"  [attr.aria-selected]="selectedTab == 'preferences'">
+                  <a class="nav-link mb-0 px-0 py-1 " [ngClass]="{'active': selectedTab == 'preferences'}"
+                    data-bs-toggle="tab" href="javascript:;" (click)="switchTab('preferences')" role="tab"
+                    [attr.aria-selected]="selectedTab == 'preferences'">
                     <i class="material-symbols-rounded text-lg position-relative">settings</i>
                     <span class="ms-1">Preferences</span>
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link mb-0 px-0 py-1 " [ngClass]="{'active': selectedTab == 'change-password'}" data-bs-toggle="tab" href="javascript:;" (click)="switchTab('change-password')" role="tab"  [attr.aria-selected]="selectedTab == 'change-password'">
+                  <a class="nav-link mb-0 px-0 py-1 " [ngClass]="{'active': selectedTab == 'change-password'}"
+                    data-bs-toggle="tab" href="javascript:;" (click)="switchTab('change-password')" role="tab"
+                    [attr.aria-selected]="selectedTab == 'change-password'">
                     <i class="material-symbols-rounded text-lg position-relative">settings</i>
                     <span class="ms-1">Change Password</span>
                   </a>
@@ -52,6 +61,7 @@
             </div>
           </div>
         </div>
+
         <div class="row" *ngIf="selectedTab == 'profile'">
           <div class="row mb-3">
             <div class="col-12 col-xl-6">
@@ -63,7 +73,8 @@
                     </div>
                     <div class="col-md-4 text-end">
                       <a href="javascript:;" (click)="toggleEditingProfile(!isEditingUserProfile)">
-                        <i class="fas fa-user-edit text-secondary text-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit Profile"></i>
+                        <i class="fas fa-user-edit text-secondary text-sm" data-bs-toggle="tooltip"
+                          data-bs-placement="top" title="Edit Profile"></i>
                       </a>
                     </div>
                   </div>
@@ -84,56 +95,26 @@
 
                   <app-preferences></app-preferences>
 
-                  <!-- <h6 class="text-uppercase text-body text-xs font-weight-bolder">Account</h6>
-                  <ul class="list-group">
-                    <li class="list-group-item border-0 px-0">
-                      <div class="form-check form-switch ps-0">
-                        <input class="form-check-input ms-auto" type="checkbox" id="flexSwitchCheckDefault" checked>
-                        <label class="form-check-label text-body ms-3 text-truncate w-80 mb-0" for="flexSwitchCheckDefault">Email me when someone follows me</label>
-                      </div>
-                    </li>
-                    <li class="list-group-item border-0 px-0">
-                      <div class="form-check form-switch ps-0">
-                        <input class="form-check-input ms-auto" type="checkbox" id="flexSwitchCheckDefault1">
-                        <label class="form-check-label text-body ms-3 text-truncate w-80 mb-0" for="flexSwitchCheckDefault1">Email me when someone answers on my post</label>
-                      </div>
-                    </li>
-                    <li class="list-group-item border-0 px-0">
-                      <div class="form-check form-switch ps-0">
-                        <input class="form-check-input ms-auto" type="checkbox" id="flexSwitchCheckDefault2" checked>
-                        <label class="form-check-label text-body ms-3 text-truncate w-80 mb-0" for="flexSwitchCheckDefault2">Email me when someone mentions me</label>
-                      </div>
-                    </li>
-                  </ul>
-                  <h6 class="text-uppercase text-body text-xs font-weight-bolder mt-4">Application</h6>
-                  <ul class="list-group">
-                    <li class="list-group-item border-0 px-0">
-                      <div class="form-check form-switch ps-0">
-                        <input class="form-check-input ms-auto" type="checkbox" id="flexSwitchCheckDefault3">
-                        <label class="form-check-label text-body ms-3 text-truncate w-80 mb-0" for="flexSwitchCheckDefault3">New launches and projects</label>
-                      </div>
-                    </li>
-                    <li class="list-group-item border-0 px-0">
-                      <div class="form-check form-switch ps-0">
-                        <input class="form-check-input ms-auto" type="checkbox" id="flexSwitchCheckDefault4" checked>
-                        <label class="form-check-label text-body ms-3 text-truncate w-80 mb-0" for="flexSwitchCheckDefault4">Monthly product updates</label>
-                      </div>
-                    </li>
-                    <li class="list-group-item border-0 px-0 pb-0">
-                      <div class="form-check form-switch ps-0">
-                        <input class="form-check-input ms-auto" type="checkbox" id="flexSwitchCheckDefault5">
-                        <label class="form-check-label text-body ms-3 text-truncate w-80 mb-0" for="flexSwitchCheckDefault5">Subscribe to newsletter</label>
-                      </div>
-                    </li>
-                  </ul> -->
                 </div>
               </div>
             </div>
           </div>
         </div>
+
         <div class="row" *ngIf="selectedTab == 'preferences'">
 
+          <div class="row mb-3">
+            <div class="col-12 col-xl-12">
+
+              <app-client-preference *ngIf="credentialsService.isClientSide"></app-client-preference>
+
+              <app-caregiver-preference *ngIf="credentialsService.isCaregiverSide"></app-caregiver-preference>
+
+            </div>
+          </div>
+
         </div>
+
         <div class="row" *ngIf="selectedTab == 'change-password'">
           <div class="row mb-3">
             <div class="col-12 col-xl-12">
@@ -146,5 +127,6 @@
       </div>
     </div>
 
-    <padicare-basic-footers class="footer position-absolute bottom-2 py-2 w-100" [isFixed]="true"></padicare-basic-footers>
+    <padicare-basic-footers class="footer position-absolute bottom-2 py-2 w-100"
+      [isFixed]="true"></padicare-basic-footers>
   </main>

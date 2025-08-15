@@ -19,7 +19,7 @@ import { CaregiverQualities } from '../../../shared/enums/caregiver.qualities.en
 import { SecondaryCareTypeEnums } from '../../../shared/enums/secondary.care.type.enum';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
-import { RecaptchaErrorParameters, RecaptchaFormsModule, RecaptchaModule } from 'ng-recaptcha';
+import { RecaptchaFormsModule, RecaptchaModule } from 'ng-recaptcha';
 import { CaptchaService } from '@app/core/services/captcha.service';
 import { ToastsComponent } from '@app/shared/toasts/toasts.component';
 import { ToastsConfig } from '@app/shared/toasts/ToastsConfig';
@@ -182,18 +182,6 @@ export class ClientAccountComponent {
         } as SnackBarParams
       });
     });
-  }
-
-  public captchaResponse = "";
-  public resolved(captchaResponse: string | null): void {
-    this.captchaResponse = captchaResponse ? `${JSON.stringify(captchaResponse)}\n` : "";
-    console.log(captchaResponse);
-    this.submit();
-  }
-
-  public onError(errorDetails: RecaptchaErrorParameters): void {
-    this.captchaResponse = `ERROR; error details (if any) have been logged to console\n`;
-    console.log(`reCAPTCHA error encountered; details:`, errorDetails);
   }
 
 }

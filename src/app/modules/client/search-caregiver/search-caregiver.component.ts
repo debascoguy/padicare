@@ -16,6 +16,8 @@ import { EventEmitter } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { BookAppointmentService } from '@app/modules/client/book-appointment/book-appointment-service';
+import { AuthenticationService } from '@app/core/authentication/authentication.service';
+import { ApiResponse } from '@app/core/models/api-repsonse';
 
 @Component({
   selector: 'app-search-caregiver',
@@ -72,6 +74,7 @@ export class SearchCaregiverComponent {
 
   constructor(
     protected credentialsService: CredentialsService,
+    protected authenticationService: AuthenticationService,
     private httpClient: HttpClient,
     protected snackBar: MatSnackBar,
     protected modalDialogService: MatDialog,
@@ -84,12 +87,26 @@ export class SearchCaregiverComponent {
         Validators.required,
         Validators.min(2),
         Validators.max(30)
-      ])
+      ]),
+      payRangeFrom: new FormControl(20, [Validators.required]),
+      payRangeTo: new FormControl(100, [Validators.required])
     });
   }
 
   ngOnInit(): void {
-    this.search();
+    this.authenticationService.getClientPreferences().subscribe((response: ApiResponse) => {
+      if (response.status) {
+        const savedPreferences = response.data?.[0];
+        this.searchForm.get("payRangeFrom")?.setValue(savedPreferences.payRangeFrom);
+        this.searchForm.get("payRangeTo")?.setValue(savedPreferences.payRangeTo);
+        this.search();
+      } else {
+        this.search();
+      }
+    }, (error) => {
+      console.log(error);
+      this.search();
+    }).unsubscribe();
     this.searchForm.valueChanges.subscribe((_) => {
       this.search();
     })

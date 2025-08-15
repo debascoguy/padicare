@@ -1,7 +1,7 @@
 import { CredentialsService } from '@app/core/authentication/credentials.service';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { SearchCaregiverComponent } from '@app/modules/onboarding/search-caregiver/search-caregiver.component';
+import { SearchCaregiverComponent } from '@app/modules/client/search-caregiver/search-caregiver.component';
 import { AppointmentsComponent } from '../appointments/appointments.component';
 
 @Component({

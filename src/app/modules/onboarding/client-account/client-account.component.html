@@ -113,7 +113,7 @@
           <h4 class="fw-bold">Your ideal caregiver qualities?</h4>
           <div class="mt-4 mb-2 col-md-12">
             <div class="d-grid gap-2 mb-4 border" *ngFor="let control of caregiverQualities; let i = index">
-              <mat-checkbox class="text-start" [formControl]="control" [value]="CaregiverQualitiesEnum[i]">
+              <mat-checkbox class="text-start" [formControl]="control" value="true">
                 {{ CaregiverQualitiesEnum[i] }}
               </mat-checkbox>
             </div>

@@ -13,7 +13,7 @@ export interface ClientPreferences {
   timeOfDay?: SeasonOfDay[];
   specificTimeOfDay?: string | null; //HH:mm:ss
   isFlexibleSchedule?: boolean;
-  caregiverQualities?: CaregiverQualities[];
+  caregiverQualities?: CaregiverQualities[] | string[];
   payRangeFrom?: number;
   payRangeTo?: number;
   createdAt?: Date;

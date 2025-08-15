@@ -1,0 +1,79 @@
+<form [formGroup]="preferenceForm" (submit)="captchaRef.execute()">
+  <div class="row">
+    <div class="col-6 col-md-6">
+      <h4 class="fw-bold">When do you need care?</h4>
+      <mat-form-field class="mt-1 mb-1 me-2">
+        <mat-label>Estimated start date</mat-label>
+        <input matInput [matDatepicker]="careStartDatePicker" formControlName="careStartDate">
+        <mat-hint>MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle matIconSuffix [for]="careStartDatePicker"></mat-datepicker-toggle>
+        <mat-datepicker #careStartDatePicker></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field class="mt-1 mb-1 ms-2">
+        <mat-label>Estimated end date (Optional)</mat-label>
+        <input matInput [matDatepicker]="careEndDatePicker" formControlName="careEndDate">
+        <mat-hint>MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle matIconSuffix [for]="careEndDatePicker"></mat-datepicker-toggle>
+        <mat-datepicker #careEndDatePicker></mat-datepicker>
+      </mat-form-field>
+
+      <div class="text-start mt-1 mb-1">
+        <mat-checkbox class="col-md-12" formControlName="isFlexibleStartDate" value="true">
+          My start date is flexible
+        </mat-checkbox>
+      </div>
+    </div>
+    <div class="col-6 col-md-6">
+      <h4 class="fw-bold">What would you like to pay?</h4>
+      <small class="fs-6">The average range in your area is $20 - $60 per hour</small>
+      <div class="mt-1 mb-1">
+        <mat-slider style="width: 80%" min="0" max="1000" step="1" [displayWith]="formatLabel" discrete>
+          <input formControlName="payRangeFrom" matSliderStartThumb>
+          <input formControlName="payRangeTo" matSliderEndThumb>
+        </mat-slider>
+        Per hour
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-6 col-md-6">
+      <h4 class="fw-bold">Your ideal caregiver qualities?</h4>
+      <div class="mt-1 mb-1">
+        <div class="d-grid gap-2 mb-4 border" *ngFor="let control of caregiverQualities; let i = index">
+          <mat-checkbox class="text-start" [formControl]="control" value="true">
+            {{ CaregiverQualitiesEnum[i] }}
+          </mat-checkbox>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-md-6 mt-1 mb-1">
+      <h4 class="fw-bold">Tell us more...</h4>
+      <small class="fs-6">Provide job details, and we'll match you with the right caregiver.</small>
+      <div class="mt-1">
+        <h6 class="fw-bold">Examples:</h6>
+        <ul>
+          <li>Is there specific care your child requires?</li>
+          <li>What does their ideal day look like?</li>
+          <li>What are their hobbies/interests?</li>
+        </ul>
+      </div>
+      <div class="d-grid gap-2">
+        <mat-form-field>
+          <textarea matInput rows="4" placeholder="Your additional question and/or comment"
+            formControlName="additionalComments"></textarea>
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12 col-md-12 text-center">
+       <!-- Invisible recaptcha -->
+      <re-captcha #captchaRef="reCaptcha" errorMode="handled" (resolved)="captchaService.resolved($event)" (error)="captchaService.onError($event);
+              captchaRef.reset();" />
+      <div class="d-grid gap-2">
+        <button type="submit" class="btn btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+</form>

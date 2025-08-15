@@ -56,6 +56,36 @@ export class AuthenticationService {
     );
   }
 
+  getClientPreferences() {
+    const client = { id: this.credentialsService.user.id };
+    return this.httpClient.post("/client/preferences/find-by", { where: { client } }).pipe(
+      map((response: any) => {
+        if (response.status) {
+          this.credentialsService.updateCredentialsField("clientOrCaregiverPreferences", response.data?.[0]);
+        }
+        return response;
+      }),
+      catchError(error => {
+        return of(error);
+      })
+    );
+  }
+
+  getCaregiverPreferences() {
+    const caregiver = { id: this.credentialsService.user.id };
+    return this.httpClient.post("/caregiver/preferences", { where: { caregiver } }).pipe(
+      map((response: any) => {
+        if (response.status) {
+          this.credentialsService.updateCredentialsField("clientOrCaregiverPreferences", response.data?.[0]);
+        }
+        return response;
+      }),
+      catchError(error => {
+        return of(error);
+      })
+    );
+  }
+
   resetPassword(context: {email: string, resetPasswordUrl: string}): Observable<any> {
     return this.httpClient.post("/access/auth/reset-password", context);
   }

@@ -3,10 +3,12 @@ import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { LayoutModule } from '../layouts/layout.module';
 import { HeaderType } from '../layouts/headers/header.type.enum';
 import { CommonModule } from '@angular/common';
-import { AuthenticationService } from '@app/core/authentication/authentication.service';
 import { PreferencesComponent } from './preferences/preferences.component';
 import { ProfileComponent } from './profile/profile.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
+import { CredentialsService } from '@app/core/authentication/credentials.service';
+import { ClientPreferenceComponent } from './client-preference/client-preference.component';
+import { CaregiverPreferenceComponent } from './caregiver-preference/caregiver-preference.component';
 
 @Component({
   selector: 'app-user',
@@ -15,7 +17,9 @@ import { ChangePasswordComponent } from './change-password/change-password.compo
     LayoutModule,
     PreferencesComponent,
     ProfileComponent,
-    ChangePasswordComponent
+    ChangePasswordComponent,
+    ClientPreferenceComponent,
+    CaregiverPreferenceComponent
   ],
   templateUrl: './user.component.html',
   styleUrl: './user.component.scss'
@@ -33,7 +37,7 @@ export class UserComponent implements OnInit {
   }
 
   constructor(
-    protected authenticationService: AuthenticationService,
+    public credentialsService: CredentialsService,
     protected router: Router,
     protected route: ActivatedRoute
   ) { }
@@ -56,7 +60,7 @@ export class UserComponent implements OnInit {
   }
 
   get credentials() {
-    return this.authenticationService.getCredentialsService().credentials;
+    return this.credentialsService.credentials;
   }
 
   get user() {

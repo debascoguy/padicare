@@ -24,7 +24,7 @@ export const clientRoutes: Routes = [
   },
   {
     path: 'find-caregiver',
-    loadComponent: () => import('../onboarding/search-caregiver/search-caregiver.component').then(c => c.SearchCaregiverComponent),
+    loadComponent: () => import('./search-caregiver/search-caregiver.component').then(c => c.SearchCaregiverComponent),
     data: {
       title: 'Caregiver | Dashboard',
       breadcrumbs: [
