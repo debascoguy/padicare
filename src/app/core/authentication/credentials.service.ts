@@ -119,7 +119,7 @@ export class CredentialsService {
   }
 
   get userBaseRoute() {
-    return this.activePortal?.toLowerCase() || null;
+    return this.activePortal?.replaceAll("_", "").toLowerCase() || null;
   }
 
   get dashboard() {

@@ -48,3 +48,19 @@ export function isEmpty(value: any): boolean {
   return false;
 }
 
+export function findIntersection(array1: any[], array2: any[]) {
+  return array1.filter(item => array2.includes(item));
+}
+
+export function getCheckboxValues(fieldName: string, formValues: any = [], enumsArray: any = []) {
+  let result: any = {};
+  let validFormValues: any = [];
+  for (let i = 0; i < formValues.length; i++) {
+    if (formValues[i] == true) {
+      validFormValues.push(enumsArray[i]);
+    }
+  }
+  result[fieldName] = validFormValues;
+  return result;
+}
+

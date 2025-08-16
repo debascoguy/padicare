@@ -101,22 +101,40 @@ export const onboardingRoutes: Routes = [
     path: 'caregiver/subscription',
     component: SubscriptionComponent,
     data: {
-      title: 'Find Care',
+      title: 'Offer Caregiver',
       breadcrumbs: [
         {
           text: 'Home',
           link: '/'
         },
         {
-          text: 'Find Care',
+          text: 'Offer Caregiver',
           link: 'caregiver'
         },
         {
-          text: 'Caregiver Account',
-          link: 'caregiver/account'
+          text: 'Subscription',
+          active: true
+        },
+      ],
+      pageAuthorities: []
+    } as RouteData,
+  },
+  {
+    path: 'caregiver/complete',
+    component: RegistrationCompleteComponent,
+    data: {
+      title: 'Offer Caregiver',
+      breadcrumbs: [
+        {
+          text: 'Home',
+          link: '/'
         },
         {
-          text: 'Subscription',
+          text: 'Offer Caregiver',
+          link: 'caregiver'
+        },
+        {
+          text: 'Account Created',
           active: true
         },
       ],

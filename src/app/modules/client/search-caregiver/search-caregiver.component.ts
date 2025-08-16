@@ -1,4 +1,4 @@
-import { Component, Output, ViewChild } from '@angular/core';
+import { Component, Output, TemplateRef, ViewChild } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
 import { UserSummaryComponent } from '../../../shared/user-summary/user-summary.component';
@@ -18,6 +18,15 @@ import { Router } from '@angular/router';
 import { BookAppointmentService } from '@app/modules/client/book-appointment/book-appointment-service';
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
 import { ApiResponse } from '@app/core/models/api-repsonse';
+import { ClientPreferences } from '@app/core/models/login-context.model';
+import { findIntersection, isEmpty } from '@app/core/services/utils';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { CaregiverQualities } from '@app/shared/enums/caregiver.qualities.enum';
+import { MatIcon } from '@angular/material/icon';
+import { ProductsNameEnum } from '@app/shared/enums/products-name.enum';
+import { MatOption, MatSelect } from '@angular/material/select';
+import { ReplaceStringPipe } from '@app/core/pipes/replace.string.pipe';
+import { User } from '@app/core/models/user';
 
 @Component({
   selector: 'app-search-caregiver',
@@ -26,6 +35,8 @@ import { ApiResponse } from '@app/core/models/api-repsonse';
     MatFormField,
     MatLabel,
     MatInput,
+    MatSelect,
+    MatOption,
     MatError,
     MatProgressSpinner,
     FormsModule,
@@ -33,7 +44,9 @@ import { ApiResponse } from '@app/core/models/api-repsonse';
     RecaptchaModule,  //this is the recaptcha main module
     RecaptchaFormsModule, //this is the module for form incase form validation
     UserSummaryComponent,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatIcon,
+    ReplaceStringPipe
   ],
   providers: [
     MatSnackBar
@@ -44,6 +57,10 @@ import { ApiResponse } from '@app/core/models/api-repsonse';
 export class SearchCaregiverComponent {
 
   @Output() bookAppointmentAction = new EventEmitter<UserSummary>();
+
+  @ViewChild('compatibilityRatioModal', { static: true }) compatibilityRatioModal!: TemplateRef<any>;
+  compatibilityRatio: { label: string, status: boolean, percentage?: number }[] = [];
+  caregiverQualitiesOptions = { ...CaregiverQualities } as unknown as Record<string, string>;
 
   @ViewChild('topPaginator') topPaginator!: MatPaginator;
   @ViewChild('bottomPaginator') bottomPaginator!: MatPaginator;
@@ -79,7 +96,8 @@ export class SearchCaregiverComponent {
     protected snackBar: MatSnackBar,
     protected modalDialogService: MatDialog,
     protected router: Router,
-    protected bookAppointmentService: BookAppointmentService
+    protected bookAppointmentService: BookAppointmentService,
+    private modal: NgbModal
   ) {
     this.searchForm = new FormGroup({
       zipcode: new FormControl(this.credentialsService.userAddress.zipcode || '', [Validators.required, Validators.minLength(5)]),
@@ -88,8 +106,9 @@ export class SearchCaregiverComponent {
         Validators.min(2),
         Validators.max(30)
       ]),
-      payRangeFrom: new FormControl(20, [Validators.required]),
-      payRangeTo: new FormControl(100, [Validators.required])
+      payRangeFrom: new FormControl(20),
+      payRangeTo: new FormControl(100),
+      productNames: new FormControl('')
     });
   }
 
@@ -97,19 +116,19 @@ export class SearchCaregiverComponent {
     this.authenticationService.getClientPreferences().subscribe((response: ApiResponse) => {
       if (response.status) {
         const savedPreferences = response.data?.[0];
-        this.searchForm.get("payRangeFrom")?.setValue(savedPreferences.payRangeFrom);
-        this.searchForm.get("payRangeTo")?.setValue(savedPreferences.payRangeTo);
-        this.search();
-      } else {
-        this.search();
+        this.searchForm.patchValue({ payRangeFrom: savedPreferences.payRangeFrom, payRangeTo: savedPreferences.payRangeTo });
       }
     }, (error) => {
       console.log(error);
       this.search();
-    }).unsubscribe();
+    });
     this.searchForm.valueChanges.subscribe((_) => {
       this.search();
     })
+  }
+
+  get productNamesOptions() {
+    return Object.keys(ProductsNameEnum);
   }
 
   get searchedResultsCount(): number {
@@ -131,6 +150,9 @@ export class SearchCaregiverComponent {
 
     this.isSearching = true;
     const formValues = { ...this.searchForm.value, radius: parseInt(this.radius?.value + "") }
+    if (isEmpty(formValues["productNames"])) {
+      formValues["productNames"] = [];
+    }
     const address = this.credentialsService.userAddress;
     const searchRequest = this.zipcode?.value == address.zipcode ?
       {
@@ -140,10 +162,10 @@ export class SearchCaregiverComponent {
       } : formValues;
     firstValueFrom(this.httpClient.post('/caregiver/search', searchRequest)).then((response: any) => {
       this.searchedResults = response.status ? response.data : [];
+      const resultUserIds = this.searchedResults.map((user: UserSummary) => user.userId);
+      this.findCaregiversCareTypes(resultUserIds);
+      this.findClientFavorites(resultUserIds);
       this.isSearching = false;
-      if (this.credentialsService.isClientSide) {
-        this.findCaregiversCareTypes(this.searchedResults.map((user: UserSummary) => user.userId));
-      }
     }).catch(error => {
       this.isSearching = false;
       this.errorMessage = error.error.message;
@@ -173,12 +195,85 @@ export class SearchCaregiverComponent {
     });
   }
 
+  findClientFavorites(caregiversId: string[]) {
+    if (!caregiversId || caregiversId.length === 0) {
+      return;
+    }
+
+    const where  = { caregiver: caregiversId, favorite: true };
+    const relations = ['caregiver'];
+    const select = {
+      id: true,
+      favorite: true,
+      caregiver : {
+        id: true
+      }
+    };
+    firstValueFrom(this.httpClient.post<ApiResponse>('/client/favorites/find-by', { select, where, relations,  }))
+    .then((response: ApiResponse) => {
+      console.log(response)
+      if (response.status) {
+        Object.values(response.data).forEach((data: any) => {
+          this.searchedResults.forEach((user: UserSummary, index: number) => {
+            if (user.userId === data.caregiver.id) {
+              this.searchedResults[index].isFavorite = <boolean>data.favorite;
+            }
+          });
+        });
+      }
+      return response;
+    }).finally(() => {
+      this.calculateCompatibilityPercentage().sort((a, b) => {
+        if (a.isFavorite) {
+          return 1;
+        }
+        return (a.compatibilityPercentage || 0) - (b.compatibilityPercentage || 0);
+      })
+    }).catch(error => {
+      console.log(error);
+      this.errorMessage = error.error.message;
+      this.snackBar.open(error.error.message, 'close', { duration: 4000 });
+    });
+  }
+
+  calculateCompatibilityPercentage() {
+    const clientPreference = <ClientPreferences>this.credentialsService.clientOrCaregiverPreferences;
+    this.searchedResults.forEach((user: UserSummary) => {
+      const caregiverQualitiesArray = typeof user.caregiverQualities === 'string'
+        ? user.caregiverQualities.split(",")
+        : user.caregiverQualities;
+      const clientsNeededCaregiverQualitiesArray = clientPreference.caregiverQualities ?? [];
+      const commonalities = findIntersection(clientsNeededCaregiverQualitiesArray, caregiverQualitiesArray);
+      user.compatibilityPercentage = (commonalities.length / clientsNeededCaregiverQualitiesArray.length) * 100;
+    });
+    return this.searchedResults;
+  }
+
   isLikedHandler(isLiked: boolean, user: UserSummary) {
-    console.log("Is Liked: ", isLiked, user);
+    this.httpClient.post("/client/favorites", { caregiverId: user.userId, favorite: isLiked })
+      .subscribe(_ => { });
   }
 
   isReadMoreHandler(isReadMore: boolean, user: UserSummary) {
     console.log("Is Read More: ", isReadMore, user);
+  }
+
+  compatibilityRatioHandler(isClicked: boolean, caregiver: UserSummary) {
+    const clientPreference = <ClientPreferences>this.credentialsService.clientOrCaregiverPreferences;
+    const clientsNeededCaregiverQualitiesArray = clientPreference.caregiverQualities ?? [];
+    const caregiverQualitiesArray = typeof caregiver.caregiverQualities === 'string'
+      ? caregiver.caregiverQualities.split(",")
+      : caregiver.caregiverQualities;
+    this.compatibilityRatio = [];
+    clientsNeededCaregiverQualitiesArray.forEach(quality => {
+      this.compatibilityRatio.push({ label: quality, status: caregiverQualitiesArray.includes(quality) });
+    });
+    this.compatibilityRatio.push({ label: 'Compatibility Ratio', status: true, percentage: caregiver.compatibilityPercentage })
+    this.modal.open(this.compatibilityRatioModal, { size: 'md' });
+  }
+
+  getCaregiverQualityLabel(label: string): string {
+    return this.caregiverQualitiesOptions[label];
   }
 
   bookAppointmentHandler(isBookAppointment: boolean, user: UserSummary) {

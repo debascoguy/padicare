@@ -33,10 +33,19 @@
       </div>
     </div>
     <div class="col-md-1 ps-0">
-      <div class="mt-3">
-        <i class="fa-regular fa-heart" *ngIf="!liked" (click)="toggleLike()"></i>
-        <i class="fa-solid fa-heart text-danger" *ngIf="liked" (click)="toggleLike()"></i>
+      <div class="mt-3 d-inline-flex">
+        <i class="pt-1 fa-regular fa-heart" *ngIf="!user.isFavorite" (click)="toggleLike()"></i>
+        <i class="pt-1 fa-solid fa-heart text-danger" *ngIf="user.isFavorite" (click)="toggleLike()"></i>
+
+        <button type="button" *ngIf="user.compatibilityPercentage" class="btn button-secondary-outline p-0 ms-2"
+          (click)="isCompatibilityClicked()"
+          matTooltip="Compatibility Ratio / Percentage. Click for more info"
+          [matTooltipPosition]="'below'"
+          aria-label="Compatibility Ratio / Percentage. Click for more info">
+          {{ user.compatibilityPercentage }}%
+        </button>
       </div>
+
       <!-- <mat-icon class="mt-3 text-info-emphasis mat-clickable">favorite</mat-icon>
       <mat-icon class="mt-3 text-danger mat-clickable">favorite</mat-icon> -->
     </div>

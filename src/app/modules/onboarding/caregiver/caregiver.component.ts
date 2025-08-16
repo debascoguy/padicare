@@ -25,9 +25,16 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatCardModule } from '@angular/material/card';
 import { DocumentUploaderComponent } from '@app/shared/document-uploader/document-uploader.component';
 import { AppUserType } from '@app/shared/enums/app.user.type.enum';
-import { RecaptchaErrorParameters, RecaptchaFormsModule, RecaptchaModule } from 'ng-recaptcha';
+import { RecaptchaFormsModule, RecaptchaModule } from 'ng-recaptcha';
 import { CaptchaService } from '@app/core/services/captcha.service';
 import { ProductsNameEnum } from '@app/shared/enums/products-name.enum';
+import { ToastsComponent } from '@app/shared/toasts/toasts.component';
+import { ToastsConfig } from '@app/shared/toasts/ToastsConfig';
+import { SnackBarParams } from '@app/shared/toasts/SnackBarParams';
+import { CaregiverQualities } from '@app/shared/enums/caregiver.qualities.enum';
+import { getCheckboxValues } from '@app/core/services/utils';
+import { now, timeOfDay, isAM, isPM, getDateDiffInHours, addDays, toMysqlDateTime } from '@app/core/services/date-fns';
+import { MatTimepickerModule } from '@angular/material/timepicker';
 
 @Component({
   selector: 'app-caregiver',
@@ -47,6 +54,7 @@ import { ProductsNameEnum } from '@app/shared/enums/products-name.enum';
     MatCheckboxModule,
     MatProgressSpinnerModule,
     MatProgressBarModule,
+    MatTimepickerModule,
     DocumentUploaderComponent,
     ReplaceStringPipe,
     RecaptchaModule,  //this is the recaptcha main module
@@ -77,6 +85,8 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
   step3Form: FormGroup;
   step4Form: FormGroup;
   step4bForm: FormGroup;
+  step4cForm: FormGroup;
+  step4dForm: FormGroup;
   step5Form: FormGroup;
   step6Form: FormGroup;
 
@@ -142,6 +152,17 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
       professionalSummary: new FormControl('', [Validators.required]),
       chargePerHour: new FormArray([]),
       yearsOfExperience: new FormControl(1, Validators.required),
+    });
+
+    this.step4cForm = new FormGroup({
+      caregiverQualities: new FormArray(
+        Object.entries(CaregiverQualities).map(([key, value]) => new FormControl(''))
+      ),
+    });
+
+    this.step4dForm = new FormGroup({ // Default to night rest
+      dailyPtoFrom: new FormControl(timeOfDay(now(), 22, 0, 0, 0)), // default init to 10PM
+      dailyPtoTo: new FormControl(addDays(timeOfDay(now(), 6, 0, 0, 0), 1)) // default init to 6AM
     });
 
     this.step5Form = new FormGroup({
@@ -241,6 +262,14 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
       frequency: new FormControl('HOURLY', [Validators.required]),
     })
   }
+  
+  get caregiverQualities() {
+    return (this.step4cForm.get('caregiverQualities') as FormArray).controls as FormControl[];
+  }
+
+  get CaregiverQualitiesEnum() {
+    return Object.values(CaregiverQualities)
+  }
 
   get careReceiverValues() {
     return Object.keys(this.careReceiverOptions);
@@ -339,6 +368,33 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
     }
   }
 
+  morningRest() { // 6AM - 12PM
+    this.step4dForm.get("dailyPtoFrom")?.setValue(timeOfDay(now(), 6, 0, 0, 0));
+    this.step4dForm.get("dailyPtoTo")?.setValue(timeOfDay(now(), 12, 0, 0, 0));
+  }
+
+  afternoonRest() { // 12PM - 6PM
+    this.step4dForm.get("dailyPtoFrom")?.setValue(timeOfDay(now(), 12, 0, 0, 0));
+    this.step4dForm.get("dailyPtoTo")?.setValue(timeOfDay(now(), 18, 0, 0, 0));
+  }
+
+  nightRest() { // 10PM - 6AM (next day)
+    this.step4dForm.get("dailyPtoFrom")?.setValue(timeOfDay(now(), 22, 0, 0, 0));
+    this.step4dForm.get("dailyPtoTo")?.setValue(addDays(timeOfDay(now(), 6, 0, 0, 0), 1));
+  }
+
+  get isOvernightRest() {
+    const dailyPtoFrom = this.step4dForm.get("dailyPtoFrom")?.value || now();
+    const dailyPtoTo = this.step4dForm.get("dailyPtoTo")?.value || now();
+    return (isPM(dailyPtoFrom) && isAM(dailyPtoTo));
+  }
+
+  get isLongOvernightRest() {
+    const dailyPtoFrom = this.step4dForm.get("dailyPtoFrom")?.value || now();
+    const dailyPtoTo = this.step4dForm.get("dailyPtoTo")?.value || now();
+    return (isPM(dailyPtoFrom) && isAM(dailyPtoTo)) && getDateDiffInHours(dailyPtoFrom, addDays(dailyPtoTo, 1)) > 8;
+  }
+
   submit() {
     if (this.step6Form.invalid) {
       return;
@@ -352,6 +408,11 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
       ...{ otherCareTypes: this.otherCareTypeSelected },
       ...this.step4Form.value,
       ...this.step4bForm.value,
+      ...getCheckboxValues("caregiverQualities", this.step4cForm.value["caregiverQualities"], Object.keys(CaregiverQualities)),
+      ...{
+        dailyPtoFrom: toMysqlDateTime(this.step4dForm.value["dailyPtoFrom"]),
+        dailyPtoTo: toMysqlDateTime(this.step4dForm.value["dailyPtoTo"])
+      },
       ...this.step5Form.value,
       ...this.step6Form.value,
     };
@@ -365,35 +426,39 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
     firstValueFrom(this.authenticationService.registerCaregiver(allData)).then((response: any) => {
       if (response && response.status) {
         this.showSuccessMessage = true;
-        this.snackBar.openFromTemplate(this.notificationTemplate, {
-          horizontalPosition: 'center',
-          verticalPosition: 'bottom',
-          duration: 2000
-        }).afterDismissed().subscribe((_) => {
-          this.isSubmitted = false;
-          this.router.navigate(['/auth/login']);
+        this.snackBar.openFromComponent(ToastsComponent, {
+          ...ToastsConfig.defaultConfig,
+          data: {
+            type: "SUCCESS",
+            headerTitle: "Account Created",
+            message: "Account created successfully!",
+          } as SnackBarParams
         });
+        this.isSubmitted = false;
+        this.router.navigate(['/caregiver/complete']);
       } else {
         this.isSubmitted = false;
-        this.snackBar.open(response.message, 'close', { duration: 3000 });
+        this.snackBar.openFromComponent(ToastsComponent, {
+          ...ToastsConfig.defaultConfig,
+          data: {
+            type: "DANGER",
+            headerTitle: "Error",
+            message: response.message || "Unable to save caregiver details at this time. Please try again later!",
+          } as SnackBarParams
+        });
       }
     }).catch(error => {
       this.isSubmitted = false;
-      this.snackBar.open(error.error.message, 'close', { duration: 3000 });
+      this.snackBar.openFromComponent(ToastsComponent, {
+        ...ToastsConfig.defaultConfig,
+        data: {
+          type: "DANGER",
+          headerTitle: "Error",
+          message: error.error.message || error.message || "Unable to save caregiver details at this time. Please try again later!",
+        } as SnackBarParams
+      });
       this.logger.error(error.error);
     });
-  }
-
-  public captchaResponse = "";
-  public resolved(captchaResponse: string | null): void {
-    this.captchaResponse = captchaResponse ? `${JSON.stringify(captchaResponse)}\n` : "";
-    console.log(captchaResponse);
-    this.submit();
-  }
-
-  public onError(errorDetails: RecaptchaErrorParameters): void {
-    this.captchaResponse = `ERROR; error details (if any) have been logged to console\n`;
-    console.log(`reCAPTCHA error encountered; details:`, errorDetails);
   }
 
 }

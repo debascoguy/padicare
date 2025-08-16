@@ -66,9 +66,6 @@ import { SnackBarParams } from '@app/shared/toasts/SnackBarParams';
 })
 export class ClientComponent implements OnInit, AfterViewInit {
 
-  @ViewChild('notificationTemplate') notificationTemplate!: TemplateRef<any>;
-  notificationMessage: string = "Account created successfully!";
-
   @ViewChild('stepper') stepper!: MatStepper;
   isLinear: boolean = true;
 

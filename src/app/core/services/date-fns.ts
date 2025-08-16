@@ -4,12 +4,20 @@ export function now() {
   return new Date();
 }
 
+export function timeOfDay(date: Date, hour: number, minutes: number, seconds: number, ms: number = 0): Date {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate(), hour, minutes, seconds, ms);
+}
+
 export function startOfDay(date: Date): Date {
-  return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0);
+  return timeOfDay(date, 0, 0, 0, 0);
 }
 
 export function endOfDay(date: Date): Date {
-  return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 999);
+  return timeOfDay(date, 23, 59, 59, 999);
+}
+
+export function noonOfDay(date: Date): Date {
+  return timeOfDay(date, 12, 0, 0, 0);
 }
 
 export function toDate(dateString: string) {
@@ -141,6 +149,24 @@ export function isMorning(date: Date) {
 export function isAfternoon(date: Date) {
   const hourOfDay = date.getHours();
   return hourOfDay >= 12 && hourOfDay < 18; // from 12-noon, before 6PM
+}
+
+export function isAM(date: Date, locale = "en-US") {
+  const time = date.toLocaleTimeString(locale, {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  })
+  return time.includes("AM");
+}
+
+export function isPM(date: Date, locale = "en-US") {
+  const time = date.toLocaleTimeString(locale, {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  })
+  return time.includes("PM");
 }
 
 export function isGreaterThan(date1: Date, date2: Date): boolean {

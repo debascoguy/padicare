@@ -2,20 +2,7 @@
 
   <div class="border border-secondary text-center">
 
-    <ng-template #notificationTemplate>
-      <div class="alert alert-success" role="alert">
-        <div class="d-flex align-item-center">
-          <mat-icon class="m-2 text-success">check_circle</mat-icon>
-          <span class="p-2"> {{ notificationMessage }} </span>
-        </div>
-      </div>
-    </ng-template>
-
-    <div class="mt-2 mb-2 border-bottom" *ngIf="!showSuccessMessage">&nbsp;</div>
-
-    <ng-template [ngTemplateOutlet]="notificationTemplate" *ngIf="showSuccessMessage"></ng-template>
-
-    <mat-stepper class="bg-white" [linear]="isLinear" #stepper>
+    <mat-stepper class="bg-white p-2" [linear]="isLinear" #stepper>
 
       @if (showStep0Form) {
       <mat-step [stepControl]="step0Form" [optional]="!showStep0Form">
@@ -156,7 +143,8 @@
                 <mat-icon>close</mat-icon>
               </button>
               <mat-error *ngIf="email?.invalid && email?.errors">
-                <span *ngIf="email?.errors?.['uniqueEmail']">Email already exists. Please <a href='/auth/login'>login</a></span>
+                <span *ngIf="email?.errors?.['uniqueEmail']">Email already exists. Please <a
+                    href='/auth/login'>login</a></span>
                 <span *ngIf="email?.errors?.['email']">Not a valid email</span>
               </mat-error>
             </mat-form-field>
@@ -216,8 +204,10 @@
             <h5>Service Fee Per Hour For Your Service(s) as Caregiver:</h5>
             <div *ngFor="let chargePerHourFormGroup of chargePerHourFormGroups">
               <mat-form-field class="col-md-6 pe-1 mb-2" [formGroup]="chargePerHourFormGroup">
-                <mat-label>{{ (chargePerHourFormGroup.get('careType')?.value || '') | replaceString:'_':' ' | titlecase }} Fee</mat-label>
-                <button matPrefix mat-icon-button [attr.aria-label]="chargePerHourFormGroup.get('currency')?.value || 'USD'">
+                <mat-label>{{ (chargePerHourFormGroup.get('careType')?.value || '') | replaceString:'_':' ' | titlecase
+                  }} Fee</mat-label>
+                <button matPrefix mat-icon-button
+                  [attr.aria-label]="chargePerHourFormGroup.get('currency')?.value || 'USD'">
                   <mat-icon>attach_money</mat-icon>
                 </button>
                 <input matInput type="number" formControlName="amount">
@@ -241,6 +231,58 @@
             </mat-form-field>
           </div>
           <div class="d-grid gap-2 mt-2">
+            <button class="btn btn-primary" matStepperNext>Next</button>
+            <button class="btn btn-light" matStepperPrevious>Back</button>
+          </div>
+        </form>
+      </mat-step>
+
+      <mat-step [stepControl]="step4cForm">
+        <form [formGroup]="step4cForm">
+          <h4 class="fw-bold">Common Question From Client?</h4>
+          <div class="mt-4 mb-2 col-md-12">
+            <div class="d-grid gap-2 mb-4 border" *ngFor="let control of caregiverQualities; let i = index">
+              <mat-checkbox class="text-start" [formControl]="control" value="true">
+                {{ CaregiverQualitiesEnum[i] }}
+              </mat-checkbox>
+            </div>
+          </div>
+          <div class="d-grid gap-2">
+            <button class="btn btn-primary" matStepperNext>Next</button>
+            <button class="btn btn-light" matStepperPrevious>Back</button>
+          </div>
+        </form>
+      </mat-step>
+
+      <mat-step [stepControl]="step4dForm">
+        <form [formGroup]="step4dForm">
+          <h4 class="fw-bold">Preference Daily Rest / Daily Personal Time Off - (PTO)!</h4>
+          <span class="fs-6">The time of day that you will not be available to work</span>
+          <mat-form-field class="col-md-12 mt-2 mb-2">
+            <mat-label>Start Time For Daily PTO</mat-label>
+            <input matInput [matTimepicker]="dailyPtoFromPicker" formControlName="dailyPtoFrom">
+            <mat-timepicker-toggle matIconSuffix [for]="dailyPtoFromPicker" />
+            <mat-timepicker #dailyPtoFromPicker />
+          </mat-form-field>
+          <mat-form-field class="col-md-12 mt-2 mb-2">
+            <mat-label>End Time For Daily PTO</mat-label>
+            <input matInput [matTimepicker]="dailyPtoToPicker" formControlName="dailyPtoTo">
+            <mat-timepicker-toggle matIconSuffix [for]="dailyPtoToPicker" />
+            <mat-timepicker #dailyPtoToPicker />
+            <mat-hint *ngIf="isOvernightRest">(night rest detected)</mat-hint>
+            <mat-hint *ngIf="isLongOvernightRest">(long night rest detected)</mat-hint>
+            <mat-hint *ngIf="!isOvernightRest && !isLongOvernightRest">
+              Daily PTO end time can be the next day morning. e.g: Overnight Rest => 10PM to next day 6AM</mat-hint>
+          </mat-form-field>
+          <div class="col-md-12">
+            <span class="fw-bold">See Suggestions: </span>
+            <div class="btn-group">
+              <button class="btn btn-link" (click)="nightRest()">Night Rest</button>
+              <button class="btn btn-link" (click)="morningRest()">Morning Rest</button>
+              <button class="btn btn-link" (click)="afternoonRest()">Afternoon Rest</button>
+            </div>
+          </div>
+          <div class="d-grid gap-2">
             <button class="btn btn-primary" matStepperNext>Next</button>
             <button class="btn btn-light" matStepperPrevious>Back</button>
           </div>
@@ -282,14 +324,16 @@
 
             <div class="col-md-12 mt-2 mb-1">
               <mat-checkbox formControlName="visibility" class="text-start">
-                I agree to allow my basic user information such as (name, gender, etc.) to be visibility and/or searchable via the padicare plateform
+                I agree to allow my basic user information such as (name, gender, etc.) to be visibility and/or
+                searchable via the padicare plateform
               </mat-checkbox>
             </div>
 
             <div class="col-md-12 mt-2 mb-1">
               <mat-checkbox formControlName="acceptPhone" class="text-start">
                 I agree to receive Phone voice calls from Padicare about my account activity,
-                including but not limited to new job opportunities, voice-calls from clients, and other important updates.
+                including but not limited to new job opportunities, voice-calls from clients, and other important
+                updates.
               </mat-checkbox>
             </div>
 
@@ -302,7 +346,8 @@
 
             <div class="col-md-12">
               <small>
-                Upload a clear and legible copy of your identity document (e.g., driver's license, passport, etc.) to verify your identity.
+                Upload a clear and legible copy of your identity document (e.g., driver's license, passport, etc.) to
+                verify your identity.
               </small>
               <app-document-uploader (documentUploaded)="onFileUpload($event)"></app-document-uploader>
             </div>
@@ -329,13 +374,17 @@
                   I understand that this background check may include a review of my criminal history, credit history,
                   and other relevant information.
                 </li>
-                <li class="mt-1 mb-1">I understand that I have the right to dispute any inaccuracies in my background check report.</li>
-                <li class="mt-1 mb-1">I understand that Padicare may use the information obtained from this background check to determine my eligibility for employment or other opportunities with Padicare.</li>
+                <li class="mt-1 mb-1">I understand that I have the right to dispute any inaccuracies in my background
+                  check report.</li>
+                <li class="mt-1 mb-1">I understand that Padicare may use the information obtained from this background
+                  check to determine my eligibility for employment or other opportunities with Padicare.</li>
                 <li class="mt-1 mb-1">
-                  I understand that I have the right to request a copy of my background check report and to dispute any inaccuracies in the report.
+                  I understand that I have the right to request a copy of my background check report and to dispute any
+                  inaccuracies in the report.
                 </li>
                 <li class="mt-1 mb-1 fw-bold">
-                  An email will be sent to the email address provided - <u>{{ email?.value }}</u> - with a link to the background check authorization form.
+                  An email will be sent to the email address provided - <u>{{ email?.value }}</u> - with a link to the
+                  background check authorization form.
                 </li>
               </ul>
               <mat-checkbox formControlName="backgroundCheck" class="text-start">
@@ -345,11 +394,8 @@
           </div>
 
           <!-- Invisible recaptcha -->
-          <re-captcha #captchaRef="reCaptcha" errorMode="handled"
-            (resolved)="captchaService.resolved($event)"
-            (error)="captchaService.onError($event);
-            captchaRef.reset();"
-          />
+          <re-captcha #captchaRef="reCaptcha" errorMode="handled" (resolved)="captchaService.resolved($event)" (error)="captchaService.onError($event);
+            captchaRef.reset();" />
 
           <div class="d-grid gap-2">
             <button class="btn btn-primary" matStepperNext [disabled]="isSubmitted">

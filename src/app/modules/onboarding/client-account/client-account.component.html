@@ -34,68 +34,12 @@
           </div>
         </form>
       </mat-step>
-
-      <mat-step [stepControl]="step2Form">
-        <form [formGroup]="step2Form">
-          <h4 class="fw-bold">Which days?</h4>
-          <div class="mt-4 mb-2">
-            <div class="mt-2 mb-2">
-              <div class="d-inline-flex gap-2">
-                <div class="" *ngFor="let control of dayOfWeek; let i = index">
-                  <input type="checkbox" name="dayOfWeek{{i}}"
-                    class="btn-check"
-                    [value]="dayOfWeekShortEnum[i]"
-                    [formControl]="control"
-                    id="dayOfWeek{{i}}" autocomplete="off">
-                  <label class="btn btn-outline-secondary" for="dayOfWeek{{i}}">
-                    {{ dayOfWeekShortEnum[i] }}
-                  </label>
-                </div>
-              </div>
-            </div>
-            <div class="mt-2 mb-2">
-              <div class="d-inline-flex gap-2">
-                <div class="" *ngFor="let control of timeOfDay; let i = index">
-                  <input type="checkbox" name="timeOfDay{{i}}"
-                    class="btn-check"
-                    [value]="timeOfDayEnum[i]"
-                    [formControl]="control"
-                    id="timeOfDay{{i}}" autocomplete="off">
-                  <label class="btn btn-outline-secondary" for="timeOfDay{{i}}">
-                    {{ timeOfDayEnum[i] }}
-                  </label>
-                </div>
-              </div>
-            </div>
-            <div class="block mt-1 mb-2">
-              <a mat-button (click)="showSpecificTimePicker = !showSpecificTimePicker">
-                <mat-icon color="primary">add_circle</mat-icon>
-                <span class="fw-bold">Add specific times instead</span>
-              </a>
-            </div>
-            <mat-form-field class="mt-2 mb-2" *ngIf="showSpecificTimePicker">
-              <mat-label>Specific Time</mat-label>
-              <input matInput [matTimepicker]="specificTimePicker" formControlName="specificTimeOfDay">
-              <mat-timepicker-toggle matIconSuffix [for]="specificTimePicker"/>
-              <mat-timepicker #specificTimePicker/>
-            </mat-form-field>
-            <div class="text-start">
-              <mat-checkbox class="col-md-12" formControlName="isFlexibleSchedule" value="true">My schedule may vary</mat-checkbox>
-            </div>
-          </div>
-          <div class="d-grid gap-2">
-            <button class="btn btn-primary" matStepperNext>Next</button>
-            <button class="btn btn-light" matStepperPrevious>Back</button>
-          </div>
-        </form>
-      </mat-step>
-
       <mat-step [stepControl]="step3Form">
         <form [formGroup]="step3Form">
           <h4 class="fw-bold">What would you like to pay?</h4>
           <span class="fs-6">The average range in your area is $27 - $42</span>
           <div class="mt-4 mb-2 col-md-12">
-            <mat-slider min="0" max="1000"step="1" [displayWith]="formatLabel" discrete>
+            <mat-slider style="width: 80%" min="0" max="1000"step="1" [displayWith]="formatLabel" discrete>
               <input formControlName="payRangeFrom" matSliderStartThumb>
               <input formControlName="payRangeTo" matSliderEndThumb>
             </mat-slider>

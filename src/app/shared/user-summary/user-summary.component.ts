@@ -8,12 +8,14 @@ import { UserSummary } from './UserSummary';
 import { MatChipsModule } from '@angular/material/chips';
 import { ReplaceStringPipe } from '@app/core/pipes/replace.string.pipe';
 import { OrderCareTypesPipe } from '@app/core/pipes/order-care-types.pipe';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-user-summary',
   imports: [
     CommonModule,
     MatIconModule,
+    MatTooltipModule,
     ProfileImageComponent,
     StarRatingsComponent,
     TruncatePipe,
@@ -26,12 +28,12 @@ import { OrderCareTypesPipe } from '@app/core/pipes/order-care-types.pipe';
 })
 export class UserSummaryComponent {
 
-  liked: boolean = false;
   readMore: boolean = false;
 
   @Output() isLiked = new EventEmitter<boolean>();
   @Output() isReadMore = new EventEmitter<boolean>();
   @Output() isBookAppointment = new EventEmitter<boolean>();
+  @Output() isCompatibility = new EventEmitter<boolean>();
 
   @Input() user: UserSummary = {
 
@@ -58,17 +60,27 @@ export class UserSummaryComponent {
 
     userAddressState: 'NY',
     
-    yearsOfExperience: 10
+    yearsOfExperience: 10,
+
+    caregiverQualities: "CPR_OR_FIRST_AID_TRAINED,COMFORTABLE_WITH_PETS,COLLEGE_EDUCATED,HAS_A_RELAIABLE_CAR,NON_SMOKER",
+
+    compatibilityPercentage: 100,
+
+    isFavorite: false
   };
 
   toggleLike() {
-    this.liked = !this.liked;
-    this.isLiked.emit(this.liked);
+    this.user.isFavorite = this.user.isFavorite;
+    this.isLiked.emit(this.user.isFavorite);
   }
 
   toggleReadMore() {
     this.readMore = !this.readMore;
     this.isReadMore.emit(this.readMore);
+  }
+
+  isCompatibilityClicked() {
+    this.isCompatibility.emit(true);
   }
 
   bookAppointment() {

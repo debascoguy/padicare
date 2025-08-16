@@ -24,6 +24,12 @@ export interface UserSummary {
 
   professionalSummary: string;
 
+  caregiverQualities: string | string[];
+
+  compatibilityPercentage?: number;
+
+  isFavorite: boolean;
+
   reviewText: string;
 
   userRating: number;
