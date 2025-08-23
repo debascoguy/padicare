@@ -1,0 +1,73 @@
+<h3 mat-dialog-title>
+  <mat-icon *ngIf="data.event.meta.summaryInfo.icon">{{ data.event.meta.summaryInfo.icon }}</mat-icon>
+  <span *ngIf="data.event.meta.summaryInfo.title">{{ data.event.meta.summaryInfo.title | titlecase }}</span>
+</h3>
+
+<mat-dialog-content>
+  <div class="row mt-1 mb-1">
+    <div class="col-3 col-md-3 col-xs-6">
+      Care Type
+    </div>
+    <div class="col-9 col-md-9 col-xs-6 fw-bold">
+      {{ data.event.meta.summaryInfo.careType | replaceString: "_" : " " | titlecase}}
+    </div>
+  </div>
+  <div class="row mt-1 mb-1">
+    <div class="col-3 col-md-3 col-xs-6">
+      Caregiver
+    </div>
+    <div class="col-9 col-md-9 col-xs-6 fw-bold">
+      {{ data.event.meta.summaryInfo.caregiverName }}
+    </div>
+  </div>
+  <div class="row mt-1 mb-1">
+    <div class="col-3 col-md-3 col-xs-6">
+      Client
+    </div>
+    <div class="col-9 col-md-9 col-xs-6 fw-bold">
+      {{ data.event.meta.summaryInfo.clientName }}
+    </div>
+  </div>
+  <div class="row mt-1 mb-1">
+    <div class="col-3 col-md-3 col-xs-6">
+      Service Address
+    </div>
+    <div class="col-9 col-md-9 col-xs-6 fw-bold">
+      {{ data.event.meta.summaryInfo.serviceAddressInfo }}
+    </div>
+  </div>
+  <div class="row mt-1 mb-1">
+    <div class="col-3 col-md-3 col-xs-6">
+      Start Date
+    </div>
+    <div class="col-9 col-md-9 col-xs-6 fw-bold">
+      {{ data.event.meta.summaryInfo.appointmentDate | date }}
+    </div>
+  </div>
+  <div class="row mt-1 mb-1">
+    <div class="col-3 col-md-3 col-xs-6">
+      Start Time
+    </div>
+    <div class="col-9 col-md-9 col-xs-6 fw-bold">
+      {{ data.event.meta.summaryInfo.serviceStartTime }}
+    </div>
+  </div>
+  <div class="row mt-1 mb-1">
+    <div class="col-3 col-md-3 col-xs-6">
+      End Time
+    </div>
+    <div class="col-9 col-md-9 col-xs-6 fw-bold">
+      {{ data.event.meta.summaryInfo.serviceEndTime }}
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="center">
+  <button type="button" class="btn btn-outline-primary me-2" (click)="onClose()">
+    Ok
+  </button>
+  <button type="button" [class]="action.cssClass" *ngFor="let action of data.event.actions"
+    (click)="onClose(); action.onClick({event: data.event, sourceEvent: $event})">
+    <span [innerHTML]="action.label"></span> {{ action.a11yLabel }}
+  </button>
+</mat-dialog-actions>

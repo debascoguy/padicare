@@ -11,7 +11,7 @@
         <thead>
           <tr>
             <th>Care</th>
-            <th>Caregiver</th>
+            <th>{{ credentialsService.isClientSide ? 'Caregiver' : 'Client' }}</th>
             <th>Service Address</th>
             <th>Service Date <br>(Duration in hours)</th>
             <th>Starts At</th>
@@ -26,7 +26,7 @@
               {{ event.meta.summaryInfo.careType }}
             </td>
             <td>
-              {{ event.meta.summaryInfo.caregiverName }}
+              {{ credentialsService.isClientSide ?  event.meta.summaryInfo.caregiverName : event.meta.summaryInfo.clientName }}
             </td>
             <td>
               {{ event.meta.summaryInfo.serviceAddressInfo }}

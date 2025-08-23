@@ -4,6 +4,15 @@ export function now() {
   return new Date();
 }
 
+export function currentTime() {
+  return new Date();
+}
+
+export function currentDate() {
+  const date = now();
+  return startOfDay(date);
+}
+
 export function timeOfDay(date: Date, hour: number, minutes: number, seconds: number, ms: number = 0): Date {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate(), hour, minutes, seconds, ms);
 }
@@ -155,7 +164,7 @@ export function isAM(date: Date, locale = "en-US") {
   const time = date.toLocaleTimeString(locale, {
     hour: '2-digit',
     minute: '2-digit',
-    hour12: false,
+    hour12: true,
   })
   return time.includes("AM");
 }
@@ -164,7 +173,7 @@ export function isPM(date: Date, locale = "en-US") {
   const time = date.toLocaleTimeString(locale, {
     hour: '2-digit',
     minute: '2-digit',
-    hour12: false,
+    hour12: true,
   })
   return time.includes("PM");
 }

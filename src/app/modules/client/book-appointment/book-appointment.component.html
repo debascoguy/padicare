@@ -43,7 +43,7 @@
         <mat-select id="caregiverFeesId" formControlName="caregiverFeesId" (selectionChange)="onCaregiverFeeSelected()">
           <mat-option *ngFor="let caregiverFee of filteredCaregiverFees" [value]="caregiverFee.id">
             {{
-            (caregiverFee.frequency | replaceString : '_' : ' ' | titlecase)
+            (caregiverFee.unit | replaceString : '_' : ' ' | titlecase)
             + ' - ' +
             (caregiverFee.productName | replaceString : '_' : ' ' | titlecase) + ' - ' +
             (caregiverFee.amount | currency : caregiverFee.currency : 'symbol')
@@ -90,12 +90,12 @@
       </mat-form-field>
     </div>
 
-    <div class="row mb-4">
+    <div class="row mb-4" *ngIf="enableToggleServiceAddress">
       <div class="form-check form-switch p-0">
         <div class="d-inline-flex flex-row-reverse gap-1">
           <input class="form-check-input ms-0" type="checkbox" role="switch" id="enterServiceAddress"
             name="enterServiceAddress" ngDefaultControl [(ngModel)]="isManuallyEnteringServiceAddress"
-            [ngModelOptions]="{standalone: true}" (change)="search($event)">
+            [ngModelOptions]="{standalone: true}" (change)="search()">
           <label class="form-check-label" for="enterServiceAddress">
             {{ isNew ? 'Enter Service Address' : 'Change Service Address' }}
             <br>
@@ -125,7 +125,7 @@
 
       <mat-form-field appearance="outline" class="col-lg-4 col-md-4 col-sm-12 mt-2 mb-2">
         <mat-label>Zipcode</mat-label>
-        <input matInput type="text" formControlName="zipcode" (keyup)="search($event)">
+        <input matInput type="text" formControlName="zipcode" (keyup)="search()">
         <mat-error *ngIf="serviceAddress.get('zipcode')?.hasError('required')"> Enter a valid zip code
         </mat-error>
       </mat-form-field>

@@ -74,8 +74,8 @@ export class BookAppointmentService {
             ...ToastsConfig.defaultConfig,
             data: {
               type: "SUCCESS",
-              headerTitle: "Appointment Updated",
-              message: "Appointment Updated Successfully",
+              headerTitle: "Appointment",
+              message: "Appointment Created Successfully",
             } as SnackBarParams
           });
           successCallback(response);

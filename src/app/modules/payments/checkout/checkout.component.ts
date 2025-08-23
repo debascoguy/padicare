@@ -37,14 +37,7 @@ export class CheckoutComponent implements OnInit {
     private httpClient: HttpClient,
     protected snackBar: MatSnackBar,
     protected route: ActivatedRoute
-  ) {
-    if (!this.credentialsService.isLoggedIn()) {
-      this.snackBar.open("Please login to proceed with checkout", "Close", {
-        duration: 3000,
-        panelClass: ['error-snackbar']
-      });
-    }
-  }
+  ) { }
 
   ngOnInit(): void {
     this.checkoutEntity = this.route.snapshot.paramMap.get('checkoutEntity');

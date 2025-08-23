@@ -5,6 +5,11 @@ import { ImageOptions, jsPDF, jsPDFOptions } from 'jspdf';
 import moment from 'moment';
 import html2canvas from 'html2canvas';
 
+/**
+ * npm uninstall -g @angular/cli
+ * npm install -g @angular/cli@latest
+ * ng update @angular/cli@19 @angular/core@19
+ */
 @Component({
   selector: 'app-js-pdf-export',
   standalone: true,

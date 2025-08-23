@@ -15,6 +15,7 @@ import { User } from '@app/core/models/user';
 import { AppUserType } from '@app/shared/enums/app.user.type.enum';
 import { RecaptchaModule, RecaptchaFormsModule } from 'ng-recaptcha';
 import { CaptchaService } from '@app/core/services/captcha.service';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-signin',
@@ -28,6 +29,7 @@ import { CaptchaService } from '@app/core/services/captcha.service';
     MatCardContent,
     MatCardHeader,
     MatError,
+    MatIcon,
     FormsModule,
     ReactiveFormsModule,
     RecaptchaModule,  //this is the recaptcha main module
@@ -44,6 +46,7 @@ export class SigninComponent {
   loginForm: FormGroup;
   public isSubmitted = false;
   public loginError = false;
+  hidePassword: boolean = true;
 
   constructor(
     protected logger: LogService,

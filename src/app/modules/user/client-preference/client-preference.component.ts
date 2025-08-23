@@ -20,6 +20,7 @@ import { ApiResponse } from '@app/core/models/api-repsonse';
 import { ClientPreferences } from '@app/core/models/login-context.model';
 import { CaptchaService } from '@app/core/services/captcha.service';
 import { parseDate } from '@app/core/services/date-fns';
+import { getCheckboxValues } from '@app/core/services/utils';
 import { CaregiverQualities } from '@app/shared/enums/caregiver.qualities.enum';
 import { SnackBarParams } from '@app/shared/toasts/SnackBarParams';
 import { ToastsComponent } from '@app/shared/toasts/toasts.component';
@@ -87,7 +88,7 @@ export class ClientPreferenceComponent implements OnInit {
   ngOnInit(): void {
     this.authenticationService.getClientPreferences().subscribe((response: ApiResponse) => {
       if (response.status) {
-        this.patchForm(response.data?.[0]);
+        this.patchForm(response.data);
       }
     });
   }
@@ -130,18 +131,6 @@ export class ClientPreferenceComponent implements OnInit {
     return Object.keys(CaregiverQualities)
   }
 
-  getCheckboxValues(fieldName: string, formValues: any = [], enumsArray: any = []) {
-    let result: any = {};
-    let validFormValues: any = [];
-    for (let i = 0; i < formValues.length; i++) {
-      if (formValues[i] == true) {
-        validFormValues.push(enumsArray[i]);
-      }
-    }
-    result[fieldName] = validFormValues;
-    return result;
-  }
-
   formatLabel(value: number): string {
     return '$' + `${value}`;
   }
@@ -150,10 +139,8 @@ export class ClientPreferenceComponent implements OnInit {
     this.isSubmitted = true;
     const allData = {
       ...this.preferenceForm.value,
-      ...this.getCheckboxValues("caregiverQualities", this.preferenceForm.value["caregiverQualities"], Object.keys(CaregiverQualities)),
+      ...getCheckboxValues("caregiverQualities", this.preferenceForm.value["caregiverQualities"], Object.keys(CaregiverQualities)),
     };
-
-    console.log(allData);
 
     firstValueFrom(this.httpClient.post('/client/preferences', allData)).then((response: any) => {
       if (response.status) {

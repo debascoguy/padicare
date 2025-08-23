@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgbModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { CalendarEventTimesChangedEvent, CalendarView } from 'angular-calendar';
 import { CalendarEvent } from 'calendar-utils';
 import { colors } from './colors';
@@ -9,7 +9,6 @@ import { endOfDay, isSameDay, isSameMonth, startOfDay } from '../../core/service
 import { CalendarModule } from './CalendarModule';
 import { ViewChangeInfo } from './view-change-info';
 import { Subject } from 'rxjs';
-import { ReplaceStringPipe } from '@app/core/pipes/replace.string.pipe';
 
 
 @Component({
@@ -19,8 +18,7 @@ import { ReplaceStringPipe } from '@app/core/pipes/replace.string.pipe';
     FormsModule,
     ReactiveFormsModule,
     NgbModalModule,
-    CalendarModule,
-    ReplaceStringPipe
+    CalendarModule
   ],
   standalone: true,
   templateUrl: './calendar.component.html',
@@ -29,7 +27,13 @@ import { ReplaceStringPipe } from '@app/core/pipes/replace.string.pipe';
 })
 export class CalendarComponent {
 
-  @ViewChild('modalContent', { static: true }) modalContent!: TemplateRef<any>;
+  @Input() userEvents: CalendarEvent[] = [];
+
+  @Output() viewChange = new EventEmitter<ViewChangeInfo>();
+
+  @Output() isHandleEvent = new EventEmitter<{ action: string, calendarEvent: CalendarEvent }>();
+
+  @Output() isDraggingEvent = new EventEmitter<CalendarEventTimesChangedEvent>();
 
   view: CalendarView = CalendarView.Month; //Default view is Month
 
@@ -37,20 +41,11 @@ export class CalendarComponent {
 
   viewDate: Date = new Date();
 
-  @Output() viewChange = new EventEmitter<ViewChangeInfo>();
-
-  @Input() userEvents: CalendarEvent[] = [];
-
-  modalData!: {
-    action: string;
-    event: CalendarEvent;
-  };
-
   activeDayIsOpen: boolean = false;
 
   refresh = new Subject<void>();
 
-  constructor(private modal: NgbModal) { }
+  constructor() { }
 
   dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
     if (isSameMonth(date, this.viewDate)) {
@@ -66,35 +61,15 @@ export class CalendarComponent {
     }
   }
 
-  async eventTimesChanged({
-    event,
-    newStart,
-    newEnd,
-  }: CalendarEventTimesChangedEvent) {
-    const onDraggingEvent = event.meta.onDraggingEvent;
-    if (onDraggingEvent) {
-      const { status } = await onDraggingEvent(event, newStart, newEnd);
-      if (status) {
-        this.userEvents = this.userEvents.map((iEvent) => {
-          if (iEvent === event) {
-            return {
-              ...event,
-              start: newStart,
-              end: newEnd,
-            };
-          }
-          return iEvent;
-        });
-      }
-    }
+  async eventTimesChanged(calendarEventTimesChangedEvent: CalendarEventTimesChangedEvent) {
+    this.isDraggingEvent.emit(calendarEventTimesChangedEvent);
   }
 
-  handleEvent(action: string, event: CalendarEvent): void {
-    this.modalData = { event, action };
-    this.modal.open(this.modalContent, { size: 'lg' });
+  handleEvent(action: string, calendarEvent: CalendarEvent): void {
+    this.isHandleEvent.emit({action, calendarEvent });
   }
 
-  addEvent(): void {
+  addEventExample(): void {
     this.userEvents = [
       ...this.userEvents,
       {
@@ -111,20 +86,21 @@ export class CalendarComponent {
     ];
   }
 
-  deleteEvent(eventToDelete: CalendarEvent) {
+  deleteEventExample(eventToDelete: CalendarEvent) {
     this.userEvents = this.userEvents.filter((event) => event !== eventToDelete);
   }
 
   setView(view: CalendarView) {
     this.view = view;
-    const viewChangeInfo = new ViewChangeInfo();
-    viewChangeInfo.view = this.view;
-    viewChangeInfo.viewDate = this.viewDate;
-    this.viewChange.emit(viewChangeInfo);
+    this.emitViewChangeInfo();
   }
 
   viewDateChangeHandler() {
     this.activeDayIsOpen = false;
+    this.emitViewChangeInfo();
+  }
+
+  emitViewChangeInfo() {
     const viewChangeInfo = new ViewChangeInfo();
     viewChangeInfo.view = this.view;
     viewChangeInfo.viewDate = this.viewDate;

@@ -1,5 +1,9 @@
-import { Pipe, PipeTransform } from '@angular/core';
 
+import { Injectable, Pipe, PipeTransform } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root' // Makes the pipe injectable as a service
+})
 @Pipe({
   name: 'replaceString'
 })

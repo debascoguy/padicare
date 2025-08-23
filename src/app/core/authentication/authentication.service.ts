@@ -58,10 +58,10 @@ export class AuthenticationService {
 
   getClientPreferences() {
     const client = { id: this.credentialsService.user.id };
-    return this.httpClient.post("/client/preferences/find-by", { where: { client } }).pipe(
+    return this.httpClient.post("/client/preferences/find-one-by", { where: { client } }).pipe(
       map((response: any) => {
         if (response.status) {
-          this.credentialsService.updateCredentialsField("clientOrCaregiverPreferences", response.data?.[0]);
+          this.credentialsService.updateCredentialsField("clientOrCaregiverPreferences", response.data);
         }
         return response;
       }),
@@ -73,10 +73,10 @@ export class AuthenticationService {
 
   getCaregiverPreferences() {
     const caregiver = { id: this.credentialsService.user.id };
-    return this.httpClient.post("/caregiver/preferences", { where: { caregiver } }).pipe(
+    return this.httpClient.post("/caregiver/preferences/find-one-by", { where: { caregiver } }).pipe(
       map((response: any) => {
         if (response.status) {
-          this.credentialsService.updateCredentialsField("clientOrCaregiverPreferences", response.data?.[0]);
+          this.credentialsService.updateCredentialsField("clientOrCaregiverPreferences", response.data);
         }
         return response;
       }),

@@ -115,7 +115,7 @@ export class SearchCaregiverComponent {
   ngOnInit(): void {
     this.authenticationService.getClientPreferences().subscribe((response: ApiResponse) => {
       if (response.status) {
-        const savedPreferences = response.data?.[0];
+        const savedPreferences = response.data;
         this.searchForm.patchValue({ payRangeFrom: savedPreferences.payRangeFrom, payRangeTo: savedPreferences.payRangeTo });
       }
     }, (error) => {
@@ -211,7 +211,6 @@ export class SearchCaregiverComponent {
     };
     firstValueFrom(this.httpClient.post<ApiResponse>('/client/favorites/find-by', { select, where, relations,  }))
     .then((response: ApiResponse) => {
-      console.log(response)
       if (response.status) {
         Object.values(response.data).forEach((data: any) => {
           this.searchedResults.forEach((user: UserSummary, index: number) => {

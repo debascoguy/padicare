@@ -21,7 +21,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import * as zipcodes from 'zipcodes';
-import { debounceTime, firstValueFrom, fromEvent, map } from 'rxjs';
+import { debounceTime, firstValueFrom, fromEvent, map, of } from 'rxjs';
 import { timeToDate } from '@app/core/services/date-fns';
 import { UserAddress } from '@app/core/models/user';
 import { Availability } from './availability';
@@ -100,6 +100,8 @@ export class bookingAppointmentComponent implements OnInit {
 
   quantityOptions: number[] = Array.from({ length: 160 }, (_, i) => i + 1);
 
+  enableToggleServiceAddress: boolean = true;
+
   constructor(
     private httpClient: HttpClient,
     public credentialsService: CredentialsService,
@@ -123,17 +125,19 @@ export class bookingAppointmentComponent implements OnInit {
   }
 
   ngOnInit() {
+    if (this.isNew) {
+      this.patchAddress(this.credentialsService.userAddress || {}).subscribe((_) => {
+        if (this.serviceAddress?.invalid) {
+          this.isManuallyEnteringServiceAddress = true;
+          this.enableToggleServiceAddress = false;
+        }
+      });
+    }
     this.patchAppointmentForm();
     this.dialogRef.afterOpened().subscribe(() => {
       this.findAllActiveCaregiverFees();
       this.findAllCaregiverAvailability();
-      if (this.isNew) {
-        this.appointmentForm.reset();
-        // set serviceAddress to default to userAddress. User can override this on the interface.
-        this.onManuallyEnteringServiceAddress();
-      }
     });
-
   }
 
   openAvailabilityModal(): void {
@@ -168,7 +172,7 @@ export class bookingAppointmentComponent implements OnInit {
     return !this.data.isEdit;
   }
 
-  search(event: Event) {
+  search() {
     if (this.serviceAddress?.get("zipcode")?.invalid) {
       return;
     }
@@ -197,16 +201,16 @@ export class bookingAppointmentComponent implements OnInit {
   }
 
   get quantityLabel() {
-    if (this.selectedFee?.frequency == FeeFrequencyEnum.HOURLY) {
+    if (this.selectedFee?.unit == FeeFrequencyEnum.HOURLY) {
       this.quantityOptions = Array.from({ length: 24 }, (_, i) => i + 1);
       return "Total Hours";
-    } else if (this.selectedFee?.frequency == FeeFrequencyEnum.DAILY) {
+    } else if (this.selectedFee?.unit == FeeFrequencyEnum.DAILY) {
       this.quantityOptions = Array.from({ length: 7 }, (_, i) => i + 1);
       return "Total Days";
-    } else if (this.selectedFee?.frequency == FeeFrequencyEnum.WEEKLY) {
+    } else if (this.selectedFee?.unit == FeeFrequencyEnum.WEEKLY) {
       this.quantityOptions = Array.from({ length: 53 }, (_, i) => i + 1);
       return "Total Weeks";
-    } else if (this.selectedFee?.frequency == FeeFrequencyEnum.MONTHLY) {
+    } else if (this.selectedFee?.unit == FeeFrequencyEnum.MONTHLY) {
       this.quantityOptions = Array.from({ length: 12 }, (_, i) => i + 1);
       return "Total Months";
     } else {
@@ -282,7 +286,9 @@ export class bookingAppointmentComponent implements OnInit {
   }
 
   findAllActiveCaregiverFees() {
-    this.httpClient.get<ApiResponse>(`/caregiver/fees/find-all/active/by/${this.data.user.userId}`).subscribe({
+    const caregiver = { id: this.data.user.userId };
+    const where = { caregiver, isDeleted: false };
+    this.httpClient.post<ApiResponse>(`/caregiver/fees/find-by`, { where }).subscribe({
       next: (response: any) => {
         if (response.status) {
           this.allActiveCaregiverFees = response.data as CaregiverFees[];
@@ -349,11 +355,7 @@ export class bookingAppointmentComponent implements OnInit {
   onManuallyEnteringServiceAddress() {
     const defaultAddress = this.isNew ? this.credentialsService.userAddress : this.data.bookingAppointment?.serviceAddress;
     if (this.isManuallyEnteringServiceAddress) { // Toggle ON
-      if (this.isNew) {
-        this.serviceAddress?.reset();
-      } else {
-        this.patchAddress(defaultAddress || {});
-      }
+      this.serviceAddress?.reset();
     } else { // Toggle OFF
       this.patchAddress(defaultAddress || {});
     }
@@ -366,6 +368,8 @@ export class bookingAppointmentComponent implements OnInit {
       this.serviceAddress?.get("id")?.setValue(id);
     }
     this.serviceAddress?.updateValueAndValidity();
+    this.search();
+    return of(true);
   }
 
   bookingAppointment() {

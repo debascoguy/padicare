@@ -1,1 +1,88 @@
-<p>caregiver-preference works!</p>
+<form [formGroup]="preferenceForm" (submit)="captchaRef.execute()">
+  <div class="row">
+    <div class="col-6 col-md-6">
+      <h5 class="fw-bold">Service Fee Per Hour For Your Service(s) as Caregiver:</h5>
+      <span class="fs-6">Up to 2 decimal places only. e.g: 20.00, 19.99, etc.</span>
+      <div class="mt-2 mb-2" *ngFor="let chargePerHourFormGroup of chargePerHourFormGroups">
+        <mat-form-field class="col-md-12 pe-1 mb-2" [formGroup]="chargePerHourFormGroup">
+          <mat-label>{{ (chargePerHourFormGroup.get('careType')?.value || '') | replaceString:'_':' ' | titlecase
+            }} Fee</mat-label>
+          <button matPrefix mat-icon-button [attr.aria-label]="chargePerHourFormGroup.get('currency')?.value || 'USD'">
+            <mat-icon>attach_money</mat-icon>
+          </button>
+          <input matInput type="number" formControlName="amount">
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="col-6 col-md-6">
+      <h5 class="fw-bold">Preference Daily Rest / Daily Personal Time Off - (PTO)!</h5>
+      <span class="fs-6">The time of day that you will not be available to work</span>
+      <mat-form-field class="col-md-12 mt-2 mb-2">
+        <mat-label>Start Time For Daily PTO</mat-label>
+        <input matInput [matTimepicker]="dailyPtoFromPicker" formControlName="dailyPtoFrom">
+        <mat-timepicker-toggle matIconSuffix [for]="dailyPtoFromPicker" />
+        <mat-timepicker #dailyPtoFromPicker />
+      </mat-form-field>
+      <mat-form-field class="col-md-12 mt-2 mb-2">
+        <mat-label>End Time For Daily PTO</mat-label>
+        <input matInput [matTimepicker]="dailyPtoToPicker" formControlName="dailyPtoTo">
+        <mat-timepicker-toggle matIconSuffix [for]="dailyPtoToPicker" />
+        <mat-timepicker #dailyPtoToPicker />
+        <mat-hint *ngIf="!isOvernightRest">
+          Daily PTO end time can be the next day morning. e.g: Overnight Rest => 10PM to next day 6AM
+        </mat-hint>
+        <mat-hint *ngIf="isOvernightRest"> Daily PTO end time can be the next day morning. e.g: Overnight Rest =>
+          10PM to next day 6AM (night rest detected)
+        </mat-hint>
+      </mat-form-field>
+      <div class="d-flex">
+        <span class="fw-bold mt-2">See Suggestions: </span>
+        <div class="btn-group">
+          <button class="btn btn-link" (click)="nightRest()">Night Rest</button>
+          <button class="btn btn-link" (click)="morningRest()">Morning Rest</button>
+          <button class="btn btn-link" (click)="afternoonRest()">Afternoon Rest</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-6 col-md-6">
+      <h5 class="fw-bold">Professional Summary</h5>
+      <mat-form-field class="col-md-12 mb-2">
+        <mat-label>Years of Experiences</mat-label>
+        <input matInput type="number" formControlName="yearsOfExperience">
+        <button matSuffix mat-icon-button aria-label="Clear" *ngIf="preferenceForm.get('yearsOfExperience')?.valid"
+          (click)="preferenceForm.get('yearsOfExperience')?.setValue('')">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+
+      <mat-form-field class="col-md-12 mb-2">
+        <mat-label>Professional Summary</mat-label>
+        <textarea matInput type="text" formControlName="professionalSummary" rows="7"></textarea>
+      </mat-form-field>
+    </div>
+    <div class="col-6 col-md-6">
+      <h5 class="fw-bold">Common Question From Client For Caregiver?</h5>
+      <div class="mb-2">
+        <div class="d-grid gap-2 mb-4 border" *ngFor="let control of caregiverQualities; let i = index">
+          <mat-checkbox class="text-start" [formControl]="control" value="true">
+            {{ CaregiverQualitiesEnum[i] }}
+          </mat-checkbox>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12 col-md-12 text-center">
+      <!-- Invisible recaptcha -->
+      <re-captcha #captchaRef="reCaptcha" errorMode="handled" (resolved)="captchaService.resolved($event)" (error)="captchaService.onError($event);
+              captchaRef.reset();" />
+      <div class="d-grid gap-2">
+        <button type="submit" class="btn btn-primary" [disabled]="isSubmitted">Save</button>
+      </div>
+    </div>
+  </div>
+</form>

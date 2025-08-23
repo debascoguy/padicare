@@ -1,6 +1,9 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import { Injectable, Pipe, PipeTransform } from '@angular/core';
 import { UserAddress } from '../models/user';
 
+@Injectable({
+  providedIn: 'root' // Makes the pipe injectable as a service
+})
 @Pipe({
   name: 'address'
 })

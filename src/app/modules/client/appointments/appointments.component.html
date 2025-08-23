@@ -23,7 +23,10 @@
 
         <div class="card-body">
 
-          <app-calendar *ngIf="viewType == 'CALENDAR_VIEW' || viewType == 'BOTH_VIEW'" [userEvents]="userEvents"
+          <app-calendar *ngIf="viewType == 'CALENDAR_VIEW' || viewType == 'BOTH_VIEW'" 
+            [userEvents]="userEvents"
+            (isDraggingEvent)="onDraggableEvent($event)"
+            (isHandleEvent)="onHandleEvent({ action: $event.action, calendarEvent: $event.calendarEvent })"
             (viewChange)="viewChangeHandler($event)">
           </app-calendar>
 
@@ -37,4 +40,5 @@
       </div>
     </div>
   </div>
+
 </div>

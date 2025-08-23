@@ -35,6 +35,7 @@ import { CaregiverQualities } from '@app/shared/enums/caregiver.qualities.enum';
 import { getCheckboxValues } from '@app/core/services/utils';
 import { now, timeOfDay, isAM, isPM, getDateDiffInHours, addDays, toMysqlDateTime } from '@app/core/services/date-fns';
 import { MatTimepickerModule } from '@angular/material/timepicker';
+import { FeeFrequencyEnum } from '@app/shared/enums/fee-frequency.enum';
 
 @Component({
   selector: 'app-caregiver',
@@ -75,8 +76,6 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
   isLinear: boolean = true;
 
   hidePassword: boolean = true;
-
-  showSuccessMessage = false;
   isSubmitted: boolean = false;
 
   step0Form: FormGroup;
@@ -259,7 +258,7 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
       careType: new FormControl(careTypeValue, [Validators.required]),
       amount: new FormControl('', [Validators.required]),
       currency: new FormControl('USD', [Validators.required]),
-      frequency: new FormControl('HOURLY', [Validators.required]),
+      unit: new FormControl(FeeFrequencyEnum.HOURLY, [Validators.required]),
     })
   }
   
@@ -386,13 +385,7 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
   get isOvernightRest() {
     const dailyPtoFrom = this.step4dForm.get("dailyPtoFrom")?.value || now();
     const dailyPtoTo = this.step4dForm.get("dailyPtoTo")?.value || now();
-    return (isPM(dailyPtoFrom) && isAM(dailyPtoTo));
-  }
-
-  get isLongOvernightRest() {
-    const dailyPtoFrom = this.step4dForm.get("dailyPtoFrom")?.value || now();
-    const dailyPtoTo = this.step4dForm.get("dailyPtoTo")?.value || now();
-    return (isPM(dailyPtoFrom) && isAM(dailyPtoTo)) && getDateDiffInHours(dailyPtoFrom, addDays(dailyPtoTo, 1)) > 8;
+    return (isPM(new Date(dailyPtoFrom)) && isAM(new Date(dailyPtoTo)));
   }
 
   submit() {
@@ -410,8 +403,8 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
       ...this.step4bForm.value,
       ...getCheckboxValues("caregiverQualities", this.step4cForm.value["caregiverQualities"], Object.keys(CaregiverQualities)),
       ...{
-        dailyPtoFrom: toMysqlDateTime(this.step4dForm.value["dailyPtoFrom"]),
-        dailyPtoTo: toMysqlDateTime(this.step4dForm.value["dailyPtoTo"])
+        dailyPtoFrom: toMysqlDateTime(new Date(this.step4dForm.value["dailyPtoFrom"])),
+        dailyPtoTo: toMysqlDateTime(new Date(this.step4dForm.value["dailyPtoTo"]))
       },
       ...this.step5Form.value,
       ...this.step6Form.value,
@@ -425,7 +418,6 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
 
     firstValueFrom(this.authenticationService.registerCaregiver(allData)).then((response: any) => {
       if (response && response.status) {
-        this.showSuccessMessage = true;
         this.snackBar.openFromComponent(ToastsComponent, {
           ...ToastsConfig.defaultConfig,
           data: {

@@ -26,11 +26,13 @@ export interface CaregiverPreferences {
   id?: string;
   yearsOfExperience?: number;
   professionalSummary?: string;
+  dailyPtoFrom?: Date;
+  dailyPtoTo?: Date;
   createdAt?: Date;
   updatedAt?: Date;
   isDeleted?: boolean;
   caregiverId?: string;
-  [key: string]: any;
+  caregiverQualities?: CaregiverQualities[] | string[];
 }
 
 export interface UserPreference {

@@ -3,6 +3,7 @@ import { Component, Input, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { CredentialsService } from '@app/core/authentication/credentials.service';
 import { CalendarEvent } from 'angular-calendar';
 import { Subject } from 'rxjs';
 
@@ -45,4 +46,5 @@ export class AppointmentsTableViewComponent {
     }
   }
 
+  constructor(public credentialsService: CredentialsService){}
 }

@@ -3,7 +3,6 @@ import { RouteData } from '../../core/models/navigation.model';
 import { CaregiverComponent } from './caregiver/caregiver.component';
 import { ClientComponent } from './client/client.component';
 import { ClientAccountComponent } from './client-account/client-account.component';
-import { SubscriptionComponent } from './subscription/subscription.component';
 import { VerifyEmailComponent } from './verify-email/verify-email.component';
 import { RegistrationCompleteComponent } from './registration-complete/registration-complete.component';
 
@@ -92,28 +91,6 @@ export const onboardingRoutes: Routes = [
         {
           text: 'Offer Care',
           active: true,
-        },
-      ],
-      pageAuthorities: []
-    } as RouteData,
-  },
-  {
-    path: 'caregiver/subscription',
-    component: SubscriptionComponent,
-    data: {
-      title: 'Offer Caregiver',
-      breadcrumbs: [
-        {
-          text: 'Home',
-          link: '/'
-        },
-        {
-          text: 'Offer Caregiver',
-          link: 'caregiver'
-        },
-        {
-          text: 'Subscription',
-          active: true
         },
       ],
       pageAuthorities: []

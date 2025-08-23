@@ -239,7 +239,7 @@
 
       <mat-step [stepControl]="step4cForm">
         <form [formGroup]="step4cForm">
-          <h4 class="fw-bold">Common Question From Client?</h4>
+          <h4 class="fw-bold">Common Question From Client For Caregiver?</h4>
           <div class="mt-4 mb-2 col-md-12">
             <div class="d-grid gap-2 mb-4 border" *ngFor="let control of caregiverQualities; let i = index">
               <mat-checkbox class="text-start" [formControl]="control" value="true">
@@ -269,10 +269,12 @@
             <input matInput [matTimepicker]="dailyPtoToPicker" formControlName="dailyPtoTo">
             <mat-timepicker-toggle matIconSuffix [for]="dailyPtoToPicker" />
             <mat-timepicker #dailyPtoToPicker />
-            <mat-hint *ngIf="isOvernightRest">(night rest detected)</mat-hint>
-            <mat-hint *ngIf="isLongOvernightRest">(long night rest detected)</mat-hint>
-            <mat-hint *ngIf="!isOvernightRest && !isLongOvernightRest">
-              Daily PTO end time can be the next day morning. e.g: Overnight Rest => 10PM to next day 6AM</mat-hint>
+            <mat-hint *ngIf="!isOvernightRest">
+              Daily PTO end time can be the next day morning. e.g: Overnight Rest => 10PM to next day 6AM
+            </mat-hint>
+            <mat-hint *ngIf="isOvernightRest"> Daily PTO end time can be the next day morning. e.g: Overnight Rest =>
+              10PM to next day 6AM (night rest detected)
+            </mat-hint>
           </mat-form-field>
           <div class="col-md-12">
             <span class="fw-bold">See Suggestions: </span>

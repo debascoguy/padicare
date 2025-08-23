@@ -9,6 +9,7 @@ import { ChangePasswordComponent } from './change-password/change-password.compo
 import { CredentialsService } from '@app/core/authentication/credentials.service';
 import { ClientPreferenceComponent } from './client-preference/client-preference.component';
 import { CaregiverPreferenceComponent } from './caregiver-preference/caregiver-preference.component';
+import { ReplaceStringPipe } from '@app/core/pipes/replace.string.pipe';
 
 @Component({
   selector: 'app-user',
@@ -19,7 +20,8 @@ import { CaregiverPreferenceComponent } from './caregiver-preference/caregiver-p
     ProfileComponent,
     ChangePasswordComponent,
     ClientPreferenceComponent,
-    CaregiverPreferenceComponent
+    CaregiverPreferenceComponent,
+    ReplaceStringPipe
   ],
   templateUrl: './user.component.html',
   styleUrl: './user.component.scss'
