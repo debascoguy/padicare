@@ -39,7 +39,7 @@ export class CheckoutCompleteComponent implements OnInit {
       });
       return;
     }
-    
+
     // Check for redirect status: This is typically used to determine if the payment was successful or not
     this.redirectStatus = this.route.snapshot.queryParamMap.get('redirect_status') || null;
     if (this.redirectStatus && this.redirectStatus !== 'succeeded') {
@@ -55,7 +55,7 @@ export class CheckoutCompleteComponent implements OnInit {
   }
 
   markPaymentAsComplete(sessionId: string) {
-    this.httpClient.get<ApiResponse>('/payments/checkout/complete/' + sessionId).subscribe({
+    this.httpClient.get<ApiResponse>('/payments/payment-intent/checkout/' + sessionId).subscribe({
       next: (response) => {
         if (response.status) {
           this.snackBar.open("Checkout completed successfully!", "Close", {

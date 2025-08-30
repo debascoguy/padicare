@@ -11,6 +11,7 @@ import { CredentialsService } from '@app/core/authentication/credentials.service
 import { ApiResponse } from '@app/core/models/api-repsonse';
 import { endOfMonth, isGreaterThan, now } from '@app/core/services/date-fns';
 import { ReloadComponent } from '@app/core/services/reload-component';
+import { AlertsComponent } from '@app/shared/alerts/alerts.component';
 import { ConfirmDialogData } from '@app/shared/confirm-dialog/confirm-dialog-data';
 import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component';
 import { SnackBarParams } from '@app/shared/toasts/SnackBarParams';
@@ -26,7 +27,8 @@ import { firstValueFrom, forkJoin } from 'rxjs';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    MatRadioModule
+    MatRadioModule,
+    AlertsComponent
   ],
   providers: [
     MatSnackBar,

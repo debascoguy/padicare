@@ -1,0 +1,7 @@
+
+<div [class]="alertClass" role="alert">
+  <span class="alert-text text-sm" [innerHTML]="message"></span>
+  <button type="button" class="btn-close text-lg py-3 opacity-10" data-bs-dismiss="alert" aria-label="Close" *ngIf="isDismissible">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>

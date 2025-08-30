@@ -74,7 +74,7 @@ export class CheckoutComponent implements OnInit {
 
   async createCheckOutPaymentIntent(request: any) {
     this.stripe = await loadStripe(this.publishableKey);
-    firstValueFrom(this.httpClient.post<any>("/payments/checkout/create-payment-intent", request))
+    firstValueFrom(this.httpClient.post<any>("/payments/payment-intent", request))
       .then((response: ApiResponse) => {
         if (response.status) {
           if (this.stripe) {
