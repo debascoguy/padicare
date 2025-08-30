@@ -106,8 +106,8 @@ export class SearchCaregiverComponent {
         Validators.min(2),
         Validators.max(30)
       ]),
-      payRangeFrom: new FormControl(20),
-      payRangeTo: new FormControl(100),
+      payRangeFrom: new FormControl(0),
+      payRangeTo: new FormControl(1000),
       productNames: new FormControl('')
     });
   }
@@ -116,7 +116,8 @@ export class SearchCaregiverComponent {
     this.authenticationService.getClientPreferences().subscribe((response: ApiResponse) => {
       if (response.status) {
         const savedPreferences = response.data;
-        this.searchForm.patchValue({ payRangeFrom: savedPreferences.payRangeFrom, payRangeTo: savedPreferences.payRangeTo });
+        // This will auto-trigger the search.
+        this.searchForm.patchValue({ payRangeFrom: savedPreferences.payRangeFrom || 0, payRangeTo: savedPreferences.payRangeTo || 1000 });
       }
     }, (error) => {
       console.log(error);
@@ -144,6 +145,7 @@ export class SearchCaregiverComponent {
   }
 
   search() {
+    console.log(this.searchForm.value, this.searchForm.valid);
     if (this.searchForm.invalid) {
       return;
     }
@@ -160,6 +162,7 @@ export class SearchCaregiverComponent {
         latitude: parseFloat(address.latitude + ""),
         longitude: parseFloat(address.longitude + "")
       } : formValues;
+      console.log(formValues);
     firstValueFrom(this.httpClient.post('/caregiver/search', searchRequest)).then((response: any) => {
       this.searchedResults = response.status ? response.data : [];
       const resultUserIds = this.searchedResults.map((user: UserSummary) => user.userId);

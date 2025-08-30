@@ -219,7 +219,7 @@ export class BookAppointmentService {
         const { success, ...data } = result;
         this.saveBookAppointment(
           data,
-          (response: any) => this.router.navigate(['/client/checkout/booking-appointment/' + response.data.id])
+          (response: any) => this.router.navigate(['/client/invoice/' + response.data.id])
         );
       }
     });

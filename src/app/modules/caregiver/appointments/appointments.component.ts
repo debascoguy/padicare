@@ -19,6 +19,7 @@ import { BookAppointmentService } from '@app/modules/client/book-appointment/boo
 import { ViewChangeInfo } from '@app/shared/calendar/view-change-info';
 import { AppointmentService } from '@app/modules/client/appointments/appointment.service';
 import { AppointmentsTableViewComponent } from '@app/modules/client/appointments/appointments-table-view/appointments-table-view.component';
+import { AppointmentStatus } from '@app/modules/client/appointments/appointment.status.enum';
 
 @Component({
   selector: 'app-caregiver-appointments',
@@ -119,11 +120,11 @@ export class AppointmentsComponent {
   }
 
   onAcceptAppointment(calendarEvent: CalendarEvent) {
-
+    this.appointmentService.onAcceptOrRejectAppointment(calendarEvent, AppointmentStatus.ACCEPTED);
   }
 
   onRejectAppointment(calendarEvent: CalendarEvent) {
-
+    this.appointmentService.onAcceptOrRejectAppointment(calendarEvent, AppointmentStatus.REJECTED);
   }
 
 }

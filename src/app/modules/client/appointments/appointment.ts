@@ -1,6 +1,7 @@
 import { User, UserAddress } from "@app/core/models/user";
 import { ProductsNameEnum } from "@app/shared/enums/products-name.enum";
 import { CaregiverFees } from "@app/shared/types/caregiver-fees";
+import { AppointmentStatus } from "./appointment.status.enum";
 
 export interface BookAppointment {
 
@@ -16,6 +17,10 @@ export interface BookAppointment {
 
     caregiver: User;
 
+    client: User;
+
+    status: AppointmentStatus;
+
     quantity: number;
 
     additionalNotes: string;
@@ -25,8 +30,8 @@ export interface BookAppointment {
     createdBy: User;
 
     isActive: boolean;
-    
+
     createdAt: Date;
-    
+
     updatedAt: Date;
 }

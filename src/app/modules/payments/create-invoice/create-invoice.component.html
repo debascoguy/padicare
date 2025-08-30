@@ -1,0 +1,21 @@
+<div class="row">
+  <div class="col-md-12">
+
+    <app-payment-methods [isSelectPaymentMethod]="true" (selectedPaymentMethod)="getSelectedPaymentMethod($event)">
+    </app-payment-methods>
+
+  </div>
+</div>
+
+<div class="row mt-4 mb-4">
+  <div class="col-6 d-grid gap-2">
+    <button type="button" class="btn btn-secondary" matButton="filled" matFab extended>Cancel Appointment</button>
+  </div>
+  <div class="col-6 d-grid gap-2">
+    <button type="button" class="btn btn-success" matButton="filled" matFab extended (click)="createInvoice()"
+      [disabled]="!canCreateInvoice">
+      <!-- <mat-icon class="mt-2">favorite</mat-icon> -->
+      Schedule Appointment
+    </button>
+  </div>
+</div>

@@ -1,6 +1,6 @@
 <h3 mat-dialog-title>
   <mat-icon *ngIf="data.icon">{{ data.icon }}</mat-icon>
-  <span *ngIf="data.title">{{ data.title }}</span>
+  <span *ngIf="data.title" class="ms-2">{{ data.title }}</span>
 </h3>
 
 <mat-dialog-content>
@@ -8,7 +8,7 @@
   <p *ngIf="data.message">{{ data.message }}</p>
 </mat-dialog-content>
 
-<mat-dialog-actions align="center">
+<mat-dialog-actions align="center" class="mb-2">
   <button mat-raised-button type="button" color="secondary" (click)="onCancel()" *ngIf="data.showCancelButton">
     {{ data.cancelButtonText || 'Cancel'}}
   </button>

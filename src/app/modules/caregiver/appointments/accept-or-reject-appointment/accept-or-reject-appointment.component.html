@@ -1,0 +1,36 @@
+<h3 mat-dialog-title class="m-3">
+  <mat-icon style="color: #4CAF50;" class="pt-1" *ngIf="data.status=='ACCEPTED'">check_box_outline</mat-icon>
+  <mat-icon style="color: #dc3545;" class="pt-1" *ngIf="data.status=='REJECTED'">event_busy_outline</mat-icon>
+  <span class="ms-2">
+    <span [ngClass]="data.status=='ACCEPTED' ? 'text-success' : 'text-danger'">{{ data.status=='ACCEPTED' ? 'Accepting' : 'Rejecting' }}</span>
+    {{ data.careType }} Appointment
+  </span>
+</h3>
+
+<mat-dialog-content>
+  <p>
+    <span [ngClass]="data.status=='ACCEPTED' ? 'text-success' : 'text-danger'">{{ data.status=='ACCEPTED' ? 'Accepting' : 'Rejecting' }}</span>
+    {{ data.careType }} appointment with {{ data.clientName }} at
+    <br><small>{{ data.serviceAddressInfo }}</small>
+  </p>
+  <form action="" [formGroup]="form" class="row">
+    <mat-form-field class="col-12 col-md-12">
+    <mat-label>{{label}}</mat-label>
+    <textarea matInput [placeholder]="placeholder" formControlName="acceptanceRejectionNote"></textarea>
+  </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="center" class="mb-2">
+  <button mat-raised-button type="button" color="danger" class="btn btn-outline-danger me-2" (click)="rejectAppointment()" *ngIf="data.status=='REJECTED'">
+    <i class="fa-solid fa-ban"></i>
+    Reject Appointment
+  </button>
+  <button mat-raised-button type="button" color="primary" class="btn btn-outline-success me-2" (click)="acceptAppointment()" *ngIf="data.status=='ACCEPTED'">
+    <i class="fa-solid fa-check-circle"></i>
+    Accept Appointment
+  </button>
+  <button mat-raised-button type="button" color="secondary" class="btn btn-outline-primary me-1" (click)="onCancel()">
+    Cancel
+  </button>
+</mat-dialog-actions>

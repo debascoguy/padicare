@@ -77,6 +77,24 @@ export const clientRoutes: Routes = [
     } as RouteData,
   },
   {
+    path: 'invoice/:appointmentId',
+    loadComponent: () => import('../payments/create-invoice/create-invoice.component').then(c => c.CreateInvoiceComponent),
+    data: {
+      title: 'Client | Invoice',
+      breadcrumbs: [
+        {
+          text: 'Dashboard',
+          link: '/client/dashboard'
+        },
+        {
+          text: 'Appointment Invoice',
+          active: true
+        }
+      ],
+      pageAuthorities: []
+    } as RouteData,
+  },
+  {
     path: 'checkout/:checkoutEntity/:checkoutEntityId',
     loadComponent: () => import('../payments/checkout/checkout.component').then(c => c.CheckoutComponent),
     data: {

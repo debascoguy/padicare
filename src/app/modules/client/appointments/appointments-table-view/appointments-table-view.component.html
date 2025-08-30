@@ -11,6 +11,7 @@
         <thead>
           <tr>
             <th>Care</th>
+            <th>Status</th>
             <th>{{ credentialsService.isClientSide ? 'Caregiver' : 'Client' }}</th>
             <th>Service Address</th>
             <th>Service Date <br>(Duration in hours)</th>
@@ -26,13 +27,18 @@
               {{ event.meta.summaryInfo.careType }}
             </td>
             <td>
-              {{ credentialsService.isClientSide ?  event.meta.summaryInfo.caregiverName : event.meta.summaryInfo.clientName }}
+              {{ event.meta.summaryInfo.status | titlecase }}
             </td>
             <td>
+              {{ credentialsService.isClientSide ? event.meta.summaryInfo.caregiverName :
+              event.meta.summaryInfo.clientName }}
+            </td>
+            <td class="text-wrap">
               {{ event.meta.summaryInfo.serviceAddressInfo }}
             </td>
             <td>
-              {{ (event.meta.summaryInfo.appointmentDate | date) + " (" + (event.meta.summaryInfo.totalHours | number) + "
+              {{ (event.meta.summaryInfo.appointmentDate | date) + " (" + (event.meta.summaryInfo.totalHours | number) +
+              "
               Hours)" }}
             </td>
             <td>
@@ -52,8 +58,8 @@
       </table>
     </div>
 
-    <mat-paginator *ngIf="userEvents.length > 0" #bottomPaginator [length]="userEvents.length"
-      [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]="true" [pageIndex]="pageIndex"
+    <mat-paginator *ngIf="userEvents.length > 0" #bottomPaginator [length]="userEvents.length" [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]="true" [pageIndex]="pageIndex"
       (page)="pageChange($event)">
     </mat-paginator>
 

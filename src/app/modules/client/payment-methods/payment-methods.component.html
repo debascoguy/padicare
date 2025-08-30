@@ -4,9 +4,9 @@
     <div #paymentElementRef></div>
 
     <div class="d-grid gap-2">
-      <button type="button" class="btn btn-success-outline" matButton="outlined" (click)="savePaymentMethod()"
+      <button type="button" class="btn btn-success" matButton="filled" matFab (click)="savePaymentMethod()"
         [disabled]="isProcessing">Add Payment Method</button>
-      <button type="button" class="btn btn-secondary-outline" matButton="outlined"
+      <button type="button" class="btn btn-secondary" matButton="filled" matFab
         (click)="cancelAddCard()">Cancel</button>
     </div>
   </div>
@@ -45,22 +45,96 @@
       </div>
 
       <div class="card-body p-3">
-        <div class="row">
+
+        <div class="row" *ngIf="!isSelectPaymentMethod">
           <div class="col-md-6 mb-2 mt-2" *ngFor="let paymentMethod of paymentMethods">
             <div class="card card-body border card-plain border-radius-lg d-flex align-items-center flex-row">
               <img class="w-10 me-3 mb-0" [src]="'/assets/img/logos/' + paymentMethod.card.brand + '.png'" alt="logo">
               <h6 class="mb-0">
                 ****&nbsp;&nbsp;&nbsp;****&nbsp;&nbsp;&nbsp;****&nbsp;&nbsp;&nbsp;{{paymentMethod.card.last4}}
                 <br>
-                <small
-                  class="text-start text-secondary">{{paymentMethod.card.exp_month}}/{{paymentMethod.card.exp_year}}</small>
+                <div class="row" *ngIf="paymentMethod.isEdit">
+                  <input type="text" class="col-2 form-control-sm" size="2" maxlength="2" placeholder="mm"
+                    [value]="paymentMethod.card.exp_month" [(ngModel)]="paymentMethod.card.exp_month" />
+                  <span class="col-1 ps-2 pe-2"> / </span>
+                  <input type="text" class="col-3 form-control-sm input-sm" size="4" maxlength="4" placeholder="yyyy"
+                    [value]="paymentMethod.card.exp_year" [(ngModel)]="paymentMethod.card.exp_year" />
+                  <a href="javascript:void;" class="col-6 mt-2" (click)="updateCard(paymentMethod)">Update</a>
+                </div>
+                <small class="text-start text-secondary" *ngIf="!paymentMethod.isEdit">
+                  {{paymentMethod.card.exp_month}}/{{paymentMethod.card.exp_year}}
+                </small>
+                <small class="fw-bold ps-2 text-danger" *ngIf="!paymentMethod.isEdit">
+                  <i *ngIf="isCardExpired(paymentMethod.card.exp_month, paymentMethod.card.exp_year)">
+                    Expired
+                  </i>
+                </small>
               </h6>
-              <i class="material-symbols-rounded ms-auto text-dark cursor-pointer" data-bs-toggle="tooltip"
-                data-bs-placement="top" title="Edit Card"
-                (click)="editCard(paymentMethod.card.customer, paymentMethod.card.id)">edit</i>
+              <span class="ms-auto text-dark cursor-pointer">
+
+                <button class="btn btn-link" *ngIf="!isCustomerDefaultPaymentMethod(paymentMethod.id)"
+                  (click)="setAsDefaultPaymentMethod(paymentMethod)">Set As Default</button>
+                <span class="fw-bold pe-2" *ngIf="isCustomerDefaultPaymentMethod(paymentMethod.id)">(Default)</span>
+
+                <i class="material-symbols-rounded pe-2 text-dark cursor-pointer" data-bs-toggle="tooltip"
+                  data-bs-placement="top" title="Edit Card" (click)="editCard(paymentMethod)">edit</i>
+
+                <i class="material-symbols-rounded ps-2 text-dark cursor-pointer" data-bs-toggle="tooltip"
+                  data-bs-placement="top" title="Delete Card" (click)="deleteCard(paymentMethod)">delete</i>
+
+              </span>
             </div>
           </div>
         </div>
+
+
+        <div class="row" *ngIf="isSelectPaymentMethod">
+          <mat-radio-group aria-label="Select a payment method" [(ngModel)]="paymentMethodId"
+            (change)="onSelectPaymentMethod($event)">
+            <mat-radio-button class="col-md-4 mb-2 mt-2" *ngFor="let paymentMethod of paymentMethods"
+              [value]="paymentMethod.id">
+              <div
+                class="card card-body border card-plain border-radius-lg d-flex align-items-center flex-row selectable-payment-method">
+                <img class="w-10 me-3 mb-0" [src]="'/assets/img/logos/' + paymentMethod.card.brand + '.png'" alt="logo">
+                <h6 class="mb-0">
+                  ****&nbsp;&nbsp;&nbsp;****&nbsp;&nbsp;&nbsp;****&nbsp;&nbsp;&nbsp;{{paymentMethod.card.last4}}
+                  <br>
+                  <div class="row" *ngIf="paymentMethod.isEdit">
+                    <input type="text" class="col-2 form-control-sm" size="2" maxlength="2" placeholder="mm"
+                      [value]="paymentMethod.card.exp_month" [(ngModel)]="paymentMethod.card.exp_month" />
+                    <span class="col-1 ps-2 pe-2"> / </span>
+                    <input type="text" class="col-3 form-control-sm input-sm" size="4" maxlength="4" placeholder="yyyy"
+                      [value]="paymentMethod.card.exp_year" [(ngModel)]="paymentMethod.card.exp_year" />
+                    <a href="javascript:void;" class="col-6 mt-2" (click)="updateCard(paymentMethod)">Update</a>
+                  </div>
+                  <small class="text-start text-secondary" *ngIf="!paymentMethod.isEdit">
+                    {{paymentMethod.card.exp_month}}/{{paymentMethod.card.exp_year}}
+                  </small>
+                  <small class="fw-bold ps-2 text-danger" *ngIf="!paymentMethod.isEdit">
+                    <i *ngIf="isCardExpired(paymentMethod.card.exp_month, paymentMethod.card.exp_year)">
+                      Expired
+                    </i>
+                  </small>
+                </h6>
+
+                <span class="ms-auto text-dark cursor-pointer">
+
+                  <a href="javascript:void;" class="pe-2" *ngIf="!isCustomerDefaultPaymentMethod(paymentMethod.id)"
+                    (click)="setAsDefaultPaymentMethod(paymentMethod)">Set As Default</a>
+                  <span class="fw-bold pe-2" *ngIf="isCustomerDefaultPaymentMethod(paymentMethod.id)">(Default)</span>
+
+                  <i class="material-symbols-rounded pe-2 text-dark cursor-pointer" data-bs-toggle="tooltip"
+                    data-bs-placement="top" title="Edit Card" (click)="editCard(paymentMethod)">edit</i>
+
+                  <i class="material-symbols-rounded ps-2 text-dark cursor-pointer" data-bs-toggle="tooltip"
+                    data-bs-placement="top" title="Delete Card" (click)="deleteCard(paymentMethod)">delete</i>
+
+                </span>
+              </div>
+            </mat-radio-button>
+          </mat-radio-group>
+        </div>
+
       </div>
     </div>
   </div>

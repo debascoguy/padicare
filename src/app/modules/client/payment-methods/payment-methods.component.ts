@@ -1,22 +1,32 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { provideNativeDateAdapter } from '@angular/material/core';
+import { MatDialog } from '@angular/material/dialog';
+import { MatRadioChange, MatRadioModule } from '@angular/material/radio';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CredentialsService } from '@app/core/authentication/credentials.service';
 import { ApiResponse } from '@app/core/models/api-repsonse';
+import { endOfMonth, isGreaterThan, now } from '@app/core/services/date-fns';
+import { ReloadComponent } from '@app/core/services/reload-component';
+import { ConfirmDialogData } from '@app/shared/confirm-dialog/confirm-dialog-data';
+import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component';
 import { SnackBarParams } from '@app/shared/toasts/SnackBarParams';
 import { ToastsComponent } from '@app/shared/toasts/toasts.component';
 import { ToastsConfig } from '@app/shared/toasts/ToastsConfig';
 import { environment } from '@env/environments';
 import { loadStripe, Stripe } from '@stripe/stripe-js';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-payment-methods',
   imports: [
-    CommonModule
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatRadioModule
   ],
   providers: [
     MatSnackBar,
@@ -26,7 +36,7 @@ import { firstValueFrom } from 'rxjs';
   templateUrl: './payment-methods.component.html',
   styleUrl: './payment-methods.component.scss'
 })
-export class PaymentMethodsComponent {
+export class PaymentMethodsComponent implements AfterViewInit {
 
   @ViewChild('paymentElementRef') paymentElementRef!: ElementRef;
   private elements: any;
@@ -47,23 +57,30 @@ export class PaymentMethodsComponent {
     'amex': 'American Express',
   }
 
+  customerInfo: any;
+  @Input() isSelectPaymentMethod: boolean = false;
+  @Output() selectedPaymentMethod = new EventEmitter<any>();
+  paymentMethodId = "";
+
+
   constructor(
     private httpClient: HttpClient,
     public credentialsService: CredentialsService,
     protected snackBar: MatSnackBar,
     protected route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialog,
+    protected reloadComponent: ReloadComponent
   ) {
-    this.findAllUserPaymentMethods();
+    this.findAllCustomerInfoAndPaymentMethods();
     this.initStripe();
   }
 
-  async ngOnInit() {
+  ngAfterViewInit() {
     const sessionId = this.route.snapshot.queryParamMap.get('sessionId');
     const setup_intent = this.route.snapshot.queryParamMap.get('setup_intent') || '';
     if (setup_intent == sessionId) {
-      //Hide other query params
-      this.router.navigate([location.href + '?sessionId=' + sessionId], { replaceUrl: true });
+      this.reloadComponent.removeQueryParams({ sessionId: sessionId });
     }
     if (sessionId) {
       this.showSuccess = true;
@@ -72,8 +89,10 @@ export class PaymentMethodsComponent {
         data: {
           type: "SUCCESS",
           headerTitle: "Payment Method",
-          message: "Payment method completed successfully!",
+          message: "Payment method saved successfully!",
         } as SnackBarParams
+      }).afterDismissed().subscribe((_) => {
+        this.showSuccess = false;
       });
     }
   }
@@ -82,12 +101,13 @@ export class PaymentMethodsComponent {
     this.stripe = await loadStripe(this.publishableKey);
   }
 
-  findAllUserPaymentMethods() {
-    this.httpClient.get<ApiResponse>(`/payments/billing/payment-methods`).subscribe({
-      next: (response: any) => {
-        if (response.status) {
-          this.paymentMethods = response.data?.filter((method: any) => method.type === 'card') || [];
-        }
+  findAllCustomerInfoAndPaymentMethods() {
+    const customerInfo = this.httpClient.get<ApiResponse>("/payments/billing/customer-info");
+    const customerPaymentMethods = this.httpClient.get<ApiResponse>(`/payments/payment-methods`);
+    forkJoin([customerInfo, customerPaymentMethods]).subscribe({
+      next: ([customerInfoResponse, customerPaymentMethodsResponse]) => {
+        this.customerInfo = customerInfoResponse.data;
+        this.paymentMethods = customerPaymentMethodsResponse.data?.filter((method: any) => method.type === 'card') || [];
       },
       error: (err) => {
         this.snackBar.openFromComponent(ToastsComponent, {
@@ -95,22 +115,16 @@ export class PaymentMethodsComponent {
           data: {
             type: "DANGER",
             headerTitle: "Error",
-            message: "Failed to fetch payment methods",
+            message: err.message || "Failed to fetch payment methods",
           } as SnackBarParams
         });
       }
     });
   }
 
-  async setUpIntent(paymentMethodId: string | null) {
+  async setUpIntent() {
     this.showAddCard = true;
-    const url = paymentMethodId ?
-      `/payments/billing/payment-methods/edit-setup-intent/${paymentMethodId}` :
-      `/payments/billing/payment-methods/new-setup-intent`;
-    if (paymentMethodId) {
-      this.isEditing = true;
-    }
-    firstValueFrom(this.httpClient.get<ApiResponse>(url))
+    firstValueFrom(this.httpClient.get<ApiResponse>("/payments/payment-methods/new-setup-intent"))
       .then((response: ApiResponse) => {
         if (response.status) {
           if (this.stripe) {
@@ -147,7 +161,7 @@ export class PaymentMethodsComponent {
   }
 
   async addCardToCustomer() {
-    this.setUpIntent(null);
+    this.setUpIntent();
   }
 
   cancelAddCard() {
@@ -156,6 +170,21 @@ export class PaymentMethodsComponent {
     if (this.elements) {
       this.elements.clear();
     }
+  }
+
+  isCustomerDefaultPaymentMethod(paymentMethodId: string) {
+    if (this.customerInfo?.invoice_settings?.default_payment_method == paymentMethodId) {
+      return true;
+    }
+    if (this.customerInfo?.default_source == paymentMethodId) {
+      return true;
+    }
+    return false;
+  }
+
+  isCardExpired(exp_month: number, exp_year: number) {
+    const date = endOfMonth(new Date(exp_year, exp_month, 1, 23, 59, 59, 999));
+    return isGreaterThan(now(), date);
   }
 
   async savePaymentMethod() {
@@ -171,21 +200,6 @@ export class PaymentMethodsComponent {
       return;
     }
 
-    if (this.isEditing) {
-      this.showSuccess = true;
-      this.snackBar.openFromComponent(ToastsComponent, {
-        ...ToastsConfig.defaultConfig,
-        data: {
-          type: "SUCCESS",
-          headerTitle: "Payment Method",
-          message: "Payment method updated successfully!",
-        } as SnackBarParams
-      });
-      this.isEditing = false;
-      this.cancelAddCard();
-      return;
-    }
-
     this.isProcessing = true;
     const result = await this.stripe?.confirmSetup({
       elements: this.elements,
@@ -194,6 +208,8 @@ export class PaymentMethodsComponent {
       },
     });
 
+    this.isProcessing = false;
+    this.showAddCard = false;
     if (result?.error) {
       this.snackBar.openFromComponent(ToastsComponent, {
         ...ToastsConfig.defaultConfig,
@@ -205,12 +221,122 @@ export class PaymentMethodsComponent {
       });
       return;
     }
-    this.isProcessing = false;
-    this.showAddCard = false;
   }
 
-  editCard(customerId: string, paymentMethodId: string) {
-    this.setUpIntent(paymentMethodId);
+  setAsDefaultPaymentMethod(paymentMethod: any) {
+    const { id, customer } = paymentMethod;
+    const data = {
+      customerId: customer,
+      paymentMethodId: id
+    };
+    this.httpClient.patch<ApiResponse>("/payments/payment-methods/default", data).subscribe({
+      next: (response: ApiResponse) => {
+        if (response.status) {
+          this.snackBar.openFromComponent(
+            ToastsComponent,
+            ToastsConfig.getSuccessConfig("Payment Method", "Default Payment Method Updated")
+          );
+          this.customerInfo = response.data;
+        } else {
+          this.snackBar.openFromComponent(
+            ToastsComponent,
+            ToastsConfig.getErrorConfig(response, "Payment Method Error", "Updating Default Payment Method Failed!")
+          );
+        }
+      }, error: (err) => {
+        this.snackBar.openFromComponent(
+          ToastsComponent,
+          ToastsConfig.getErrorConfig(err, "Payment Method Error", "Updating Default Payment Method Failed!")
+        );
+      }
+    });
   }
 
+  editCard(paymentMethod: any) {
+    paymentMethod.isEdit = true;
+  }
+
+  updateCard(paymentMethod: any) {
+    paymentMethod.isEdit = false;
+    const { id: paymentMethodId, card, customer: customerId } = paymentMethod;
+    const { exp_month, exp_year } = card;
+    const data = {
+      customerId,
+      paymentMethodId,
+      expirationMonth: parseInt(exp_month),
+      expirationYear: parseInt(exp_year)
+    }
+    this.httpClient.patch<ApiResponse>("/payments/payment-methods", data).subscribe({
+      next: (response: ApiResponse) => {
+        if (response.status) {
+          this.snackBar.openFromComponent(
+            ToastsComponent,
+            ToastsConfig.getSuccessConfig("Payment Method", "Card Expiration Month/Year Updated")
+          );
+          paymentMethod = response.data;
+        } else {
+          this.snackBar.openFromComponent(
+            ToastsComponent,
+            ToastsConfig.getErrorConfig(response, "Payment Method Error", "Updating Payment Method Failed!")
+          );
+        }
+      }, error: (err) => {
+        this.snackBar.openFromComponent(
+          ToastsComponent,
+          ToastsConfig.getErrorConfig(err, "Payment Method Error", "Updating Payment Method Failed!")
+        );
+      }
+    });
+  }
+
+  deleteCard(paymentMethod: any) {
+    const { id, card, customer } = paymentMethod;
+    const data = {
+      customerId: customer,
+      paymentMethodId: id
+    };
+    this.dialog.open(ConfirmDialogComponent, {
+      width: '500px',
+      height: '220px',
+      data: {
+        icon: 'delete',
+        title: 'Delete Payment Card',
+        message: `Are you sure you want to permanently delete this card? Once deleted, it cannot be added. Use the edit button to update month / year`,
+        showCancelButton: true,
+        showConfirmButton: true,
+        confirmButtonText: 'Delete',
+        cancelButtonText: 'No, Cancel Delete Request'
+      } as ConfirmDialogData
+    }).afterClosed().subscribe((confirmed: boolean) => {
+      if (confirmed) {
+        this.httpClient.post<ApiResponse>("/payments/payment-methods", data).subscribe({
+          next: (response: ApiResponse) => {
+            if (response.status) {
+              this.snackBar.openFromComponent(
+                ToastsComponent,
+                ToastsConfig.getSuccessConfig("Payment Method", "Card Expiration Month/Year Updated")
+              );
+              this.paymentMethods = this.paymentMethods.filter((pm: { id: string; }) => pm.id != paymentMethod.id);
+            } else {
+              this.snackBar.openFromComponent(
+                ToastsComponent,
+                ToastsConfig.getErrorConfig(response, "Payment Method Error", "Updating Payment Method Failed!")
+              );
+            }
+          }, error: (err) => {
+            this.snackBar.openFromComponent(
+              ToastsComponent,
+              ToastsConfig.getErrorConfig(err, "Payment Method Error", "Updating Payment Method Failed!")
+            );
+          }
+        });
+      } else {
+        console.log('Delete action cancelled');
+      }
+    });
+  }
+
+  onSelectPaymentMethod(event: MatRadioChange) {
+    this.selectedPaymentMethod.emit(event.value);
+  }
 }

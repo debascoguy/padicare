@@ -8,7 +8,7 @@ import { MatCard, MatCardContent, MatCardHeader } from '@angular/material/card';
 import { LogService } from '@app/core/logger/LogService';
 import { CommonModule } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
 import { firstValueFrom } from 'rxjs';
 import { User } from '@app/core/models/user';
@@ -52,6 +52,7 @@ export class SigninComponent {
     protected logger: LogService,
     protected snackBar: MatSnackBar,
     protected router: Router,
+    private route: ActivatedRoute,
     protected authenticationService: AuthenticationService,
     public captchaService: CaptchaService
   ) {
@@ -72,6 +73,11 @@ export class SigninComponent {
     if (this.loginForm.valid) {
       firstValueFrom(this.authenticationService.login(this.loginForm.value, true)).then((response: any) => {
         if (response.status) {
+          const redirectUrl = this.route.snapshot.queryParams['redirect'];
+          if (redirectUrl) {
+            this.router.navigateByUrl(redirectUrl);
+            return ;
+          }
           const user = response.data.user as User;
           switch (user.userType) {
             case AppUserType.client:

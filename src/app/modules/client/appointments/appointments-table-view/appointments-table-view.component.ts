@@ -6,6 +6,7 @@ import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/p
 import { CredentialsService } from '@app/core/authentication/credentials.service';
 import { CalendarEvent } from 'angular-calendar';
 import { Subject } from 'rxjs';
+import { AppointmentStatus } from '../appointment.status.enum';
 
 @Component({
   selector: 'app-appointments-table-view',

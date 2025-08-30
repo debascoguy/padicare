@@ -1,3 +1,4 @@
+import { FormGroup } from "@angular/forms";
 
 export const toCamelCase = (str: string) => str.replace(/[-_]+(.)?/g, (match, char) => {
   return char ? char.toUpperCase() : '';
@@ -62,5 +63,15 @@ export function getCheckboxValues(fieldName: string, formValues: any = [], enums
   }
   result[fieldName] = validFormValues;
   return result;
+}
+
+export function isPartiallyChecked(form: FormGroup, allCheckBoxFields: string[]) {
+  const checked = allCheckBoxFields.filter(field => form.get(field)?.value);
+  return checked.length > 0 && checked.length != allCheckBoxFields.length;
+}
+
+export function isAllChecked(form: FormGroup, allCheckBoxFields: string[]) {
+  const checked = allCheckBoxFields.filter(field => form.get(field)?.value);
+  return checked.length > 0 && checked.length == allCheckBoxFields.length;
 }
 

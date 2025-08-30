@@ -9,11 +9,13 @@ import { ApiResponse } from '@app/core/models/api-repsonse';
 import { loadStripe, Stripe, StripeElements } from '@stripe/stripe-js';
 import { environment } from '@env/environments';
 import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-checkout',
   imports: [
-    CommonModule
+    CommonModule,
+    MatButtonModule
   ],
   templateUrl: './checkout.component.html',
   styleUrl: './checkout.component.scss'

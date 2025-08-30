@@ -36,6 +36,7 @@ import { now } from '@app/core/services/date-fns';
 import { ToastsComponent } from '@app/shared/toasts/toasts.component';
 import { ToastsConfig } from '@app/shared/toasts/ToastsConfig';
 import { SnackBarParams } from '@app/shared/toasts/SnackBarParams';
+import { isAllChecked, isPartiallyChecked } from '@app/core/services/utils';
 
 @Component({
   selector: 'app-client',
@@ -93,6 +94,16 @@ export class ClientComponent implements OnInit, AfterViewInit {
     "PET_CARE": { label: "Pet", icon: "fa-solid fa-paw" },
     "HOUSE_KEEPING": { label: "House", icon: "fa-solid fa-house-chimney-crack" }
   };
+
+  agreementFields: string[] = [
+    "acceptTermsAndConditions",
+    "acceptNotifications",
+    "acceptLocation",
+    "acceptEmail",
+    "acceptSMS",
+    "acceptPhone",
+    "visibility"
+  ];
 
   constructor(
     protected snackBar: MatSnackBar,
@@ -172,6 +183,20 @@ export class ClientComponent implements OnInit, AfterViewInit {
           this.email?.setErrors({ email: true });
         });
     });
+  }
+
+  selectAllHandler(isChecked: boolean) {
+    this.agreementFields.forEach(field => {
+      this.step7Form.get(field)?.setValue(isChecked);
+    });
+  }
+
+  partiallyChecked() {
+    return isPartiallyChecked(this.step7Form, this.agreementFields);
+  }
+
+  checked() {
+    return isAllChecked(this.step7Form, this.agreementFields);
   }
 
   get email() {

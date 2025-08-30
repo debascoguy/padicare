@@ -1,0 +1,9 @@
+/* For input fields or other focusable elements */
+.selectable-payment-method:focus {
+  border-color: rgb(69, 69, 245); /* Change border color to blue when the input is focused */
+}
+
+/* For buttons or other clickable elements when actively pressed */
+.selectable-payment-method:active {
+  border-color: green; /* Change border color to green while the button is pressed */
+}

@@ -32,7 +32,7 @@ import { ToastsComponent } from '@app/shared/toasts/toasts.component';
 import { ToastsConfig } from '@app/shared/toasts/ToastsConfig';
 import { SnackBarParams } from '@app/shared/toasts/SnackBarParams';
 import { CaregiverQualities } from '@app/shared/enums/caregiver.qualities.enum';
-import { getCheckboxValues } from '@app/core/services/utils';
+import { getCheckboxValues, isAllChecked, isPartiallyChecked } from '@app/core/services/utils';
 import { now, timeOfDay, isAM, isPM, getDateDiffInHours, addDays, toMysqlDateTime } from '@app/core/services/date-fns';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { FeeFrequencyEnum } from '@app/shared/enums/fee-frequency.enum';
@@ -104,6 +104,16 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
     "PET_CARE": { label: "Pet", icon: "fa-solid fa-paw" },
     "HOUSE_KEEPING": { label: "House", icon: "fa-solid fa-house-chimney-crack" }
   };
+
+  agreementFields: string[] = [
+    "acceptTermsAndConditions",
+    "acceptNotifications",
+    "acceptLocation",
+    "acceptEmail",
+    "acceptSMS",
+    "acceptPhone",
+    "visibility"
+  ];
 
   constructor(
     protected snackBar: MatSnackBar,
@@ -224,8 +234,8 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
     this.email?.valueChanges.subscribe((value) => {
       firstValueFrom(this.authenticationService.validateEmail(AppUserType.careGiver, value))
         .then((response: any) => {
-          if (response.status && response.status == true) {
-            this.email?.setErrors({ uniqueEmail: false });
+          if (response.status) {
+            // this.email?.setErrors({ uniqueEmail: response.status });
           }
         }).catch(error => {
           this.email?.setErrors({ email: true });
@@ -261,7 +271,21 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
       unit: new FormControl(FeeFrequencyEnum.HOURLY, [Validators.required]),
     })
   }
-  
+
+  selectAllHandler(isChecked: boolean) {
+    this.agreementFields.forEach(field => {
+      this.step5Form.get(field)?.setValue(isChecked);
+    });
+  }
+
+  partiallyChecked() {
+    return isPartiallyChecked(this.step5Form, this.agreementFields);
+  }
+
+  checked() {
+    return isAllChecked(this.step5Form, this.agreementFields);
+  }
+
   get caregiverQualities() {
     return (this.step4cForm.get('caregiverQualities') as FormArray).controls as FormControl[];
   }
@@ -417,6 +441,7 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
     delete allData['confirmPassword'];
 
     firstValueFrom(this.authenticationService.registerCaregiver(allData)).then((response: any) => {
+      this.isSubmitted = false;
       if (response && response.status) {
         this.snackBar.openFromComponent(ToastsComponent, {
           ...ToastsConfig.defaultConfig,
@@ -426,10 +451,8 @@ export class CaregiverComponent implements OnInit, AfterViewInit {
             message: "Account created successfully!",
           } as SnackBarParams
         });
-        this.isSubmitted = false;
-        this.router.navigate(['/caregiver/complete']);
+        this.router.navigate(['/onboarding/caregiver/complete']);
       } else {
-        this.isSubmitted = false;
         this.snackBar.openFromComponent(ToastsComponent, {
           ...ToastsConfig.defaultConfig,
           data: {

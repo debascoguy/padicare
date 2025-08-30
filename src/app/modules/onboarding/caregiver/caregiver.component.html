@@ -164,7 +164,7 @@
               <button type="button" *ngIf="step4Form.get('password')?.invalid" matSuffix mat-icon-button
                 (click)="hidePassword = !hidePassword" [attr.aria-label]="'Hide password'"
                 [attr.aria-pressed]="hidePassword">
-                <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+                <mat-icon>{{ hidePassword ? 'visibility' : 'visibility_off'}}</mat-icon>
               </button>
               <button type="button" *ngIf="step4Form.get('password')?.valid" matSuffix mat-icon-button
                 (click)="hidePassword = !hidePassword" aria-label="Password is Good">
@@ -179,7 +179,7 @@
               <button type="button" *ngIf="step4Form.get('confirmPassword')?.invalid" matSuffix mat-icon-button
                 (click)="hidePassword = !hidePassword" [attr.aria-label]="'Hide password'"
                 [attr.aria-pressed]="hidePassword">
-                <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+                <mat-icon>{{ hidePassword ? 'visibility' : 'visibility_off'}}</mat-icon>
               </button>
               <button type="button" *ngIf="step4Form.get('confirmPassword')?.valid" matSuffix mat-icon-button
                 (click)="hidePassword = !hidePassword" aria-label="Password is Good">
@@ -343,6 +343,16 @@
               <mat-checkbox formControlName="acceptTermsAndConditions" class="text-start">
                 I agree to the <a href="/terms-and-conditions" target="_blank">Terms and Conditions</a> and
                 <a href="/privacy-policy" target="_blank">Privacy Policy</a>
+              </mat-checkbox>
+            </div>
+
+            <div class="col-md-12 mt-2 mb-1">
+              <mat-checkbox class="text-start"
+                [checked]="checked()"
+                [indeterminate]="partiallyChecked()"
+                (change)="selectAllHandler($event.checked)"
+              >
+                Select All
               </mat-checkbox>
             </div>
 
