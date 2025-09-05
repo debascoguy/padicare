@@ -6,7 +6,11 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "start:docker": "ng serve --host 0.0.0.0 --port 4200 --poll 500",
+    "build:docker:dev": "ng build --configuration development",
+    "build:docker:test": "ng build --configuration development",
+    "build:docker:prod": "ng build --configuration production"
   },
   "keywords": [
     "Padicare",

@@ -1,0 +1,40 @@
+FROM node:20-alpine
+
+WORKDIR /usr/app
+
+COPY ./package*.json ./
+
+# Install some dependencies
+RUN npm install
+
+# Install Angular CLI
+RUN npm install -g @angular/cli
+
+# Set some environments
+ENV GENERATE_SOURCEMAP=false
+
+ENV NODE_OPTIONS="--max_old_space_size=3072"
+
+# Copy every other content in current working directory into our image container after installing dependencies.
+COPY ./ ./
+
+CMD ["npm", "run", "build:docker:prod"]
+
+# docker cp angular-frontend:/usr/app/dist/oneCCApp/ ./html
+#
+# STEPS in multiple lines
+# docker build -o dist -t  angular-frontend -f Dockerfile.test . &&  /
+# echo "checking old html folder" || return;  /
+# [ -d $(pwd)/../test.271call.com/html-old ] && rm -rf $(pwd)/../test.271call.com/html-old && \
+# echo "removed old html folder"; \
+# echo "checking existing html folder"; \
+# [ -d $(pwd)/../test.271call.com/html ] &&  mv $(pwd)/../test.271call.com/html $(pwd)/../test.271call.com/html-old \
+# && echo "renamed existing html folder"; \
+# echo "checking the newly created html folder"; \
+# [ -d $(pwd)/dist ] &&  mv $(pwd)/dist $(pwd)/../test.271call.com/html &&
+# echo "moved newly created dist folder as html folder into the test folder" \
+# echo "give the newly html excution permission" \
+# && chmod 755 $(pwd)/../test.271call.com/html
+
+# SAME STEPS in a single line
+# docker build -o dist -t  angular-frontend -f Dockerfile.test . && echo "checking old html folder" || return; [ -d $(pwd)/../test.271call.com/html-old ] && rm -rf $(pwd)/../test.271call.com/html-old && echo "removed old html folder"; echo "checking existing dist folder"; [ -d $(pwd)/../test.271call.com/html ] &&  mv $(pwd)/../test.271call.com/html $(pwd)/../test.271call.com/html-old && echo "renamed existing html folder"; echo "checking the newly created html folder"; [ -d $(pwd)/dist ] &&  mv $(pwd)/dist $(pwd)/../test.271call.com/html && echo "moved newly created dist folder as html folder into the test folder" &&  echo "give the newly html excution permission" && chmod 755 $(pwd)/../test.271call.com/html

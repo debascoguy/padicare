@@ -1,0 +1,12 @@
+**/.vscode
+**/composer.lock
+**/composer.phar
+**/angular
+**/android
+**/ios
+**/node_modules
+**/dist
+**/.git
+.eslintrc.js
+.priettierrc
+.gitignore
