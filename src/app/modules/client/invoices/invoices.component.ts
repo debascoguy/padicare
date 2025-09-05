@@ -58,7 +58,7 @@ export class InvoicesComponent {
   }
 
   findAllUserInvoices() {
-    this.httpClient.get<ApiResponse>(`/payments/billing/invoices`).subscribe({
+    this.httpClient.get<ApiResponse>(`/payments/invoices`).subscribe({
       next: (response: any) => {
         if (response.status) {
           this.invoiceLists = response.data;
@@ -80,7 +80,7 @@ export class InvoicesComponent {
 
   downloadPdf(invoice: Invoice) {
     this.showInvoice = true;
-    this.httpClient.get<ApiResponse>(`/payments/billing/invoices/${invoice.id}`).subscribe({
+    this.httpClient.get<ApiResponse>(`/payments/invoices/${invoice.id}`).subscribe({
       next: async (response: ApiResponse) => {
         if (response.status) {
           this.selectedInvoice = response.data;
