@@ -8,14 +8,14 @@ WORKDIR /usr/app
 COPY ./package*.json ./
 
 # Install some dependencies
-RUN npm install
+RUN npm install --force
 
 # Install Angular CLI
 RUN npm install -g @angular/cli
 
 ENV GENERATE_SOURCEMAP=false
 
-ENV NODE_OPTIONS="--max_old_space_size=3072"
+# ENV NODE_OPTIONS="--max_old_space_size=3072"
 
 # Copy every other content in current working directory into our image container after installing dependencies.
 COPY ./ ./
