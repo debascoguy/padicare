@@ -41,24 +41,6 @@ export const caregiverRoutes: Routes = [
     } as RouteData,
   },
   {
-    path: 'check/:action/:appointmentId', // action = in | out
-    loadComponent: () => import('./checkin/checkin.component').then(c => c.CheckinComponent),
-    data: {
-      title: 'Caregiver | Dashboard',
-      breadcrumbs: [
-        {
-          text: 'Dashboard',
-          link: "/caregiver/dashboard"
-        },
-        {
-          text: 'Appointments',
-          active: true
-        }
-      ],
-      pageAuthorities: []
-    } as RouteData,
-  },
-  {
     path: 'payout',
     loadComponent: () => import('./payout/payout.component').then(c => c.PayoutComponent),
     data: {
