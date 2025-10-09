@@ -43,6 +43,7 @@ export class AppointmentsComponent implements OnInit {
 
   calendarEventActions: CalendarEventAction[] = [
     {
+      id: 'ACCEPT',
       label: '<i class="fas fa-fw fa-pencil-alt"></i>',
       a11yLabel: 'Edit',
       cssClass: 'btn btn-outline-warning me-2',
@@ -51,6 +52,7 @@ export class AppointmentsComponent implements OnInit {
       },
     },
     {
+      id: 'DELETE',
       label: '<i class="fas fa-fw fa-trash-alt"></i>',
       a11yLabel: 'Delete',
       cssClass: 'btn btn-outline-danger me-1',

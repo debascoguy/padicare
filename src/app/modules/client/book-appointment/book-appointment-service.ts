@@ -140,7 +140,6 @@ export class BookAppointmentService {
     });
   }
 
-
   changeBookAppointmentHandler(bookingAppointment: BookAppointment, successCallback: Function) {
     if (!bookingAppointment) {
       this.snackBar.openFromComponent(ToastsComponent, {
@@ -178,7 +177,6 @@ export class BookAppointmentService {
       }
     });
   }
-
 
   bookAppointmentHandler(isBookAppointment: boolean, user: UserSummary) {
     if (!isBookAppointment) {
@@ -225,4 +223,21 @@ export class BookAppointmentService {
     });
   }
 
+  checkInOrCheckOutHandler(action: 'in' | 'out', appointmentId: string, successCallback: Function) {
+    firstValueFrom(this.httpClient.get<ApiResponse>(`/caregiver/book/appointment/check-${action}/${appointmentId}`))
+      .then((response: ApiResponse) => {
+        if (response.status) {
+          this.snackBar.openFromComponent(
+            ToastsComponent,
+            ToastsConfig.getSuccessConfig("Appointment", action == 'in' ? "Checked In Successfully" : "Checked Out Successfully")
+          );
+          successCallback();
+        } else {
+          this.snackBar.openFromComponent(
+            ToastsComponent,
+            ToastsConfig.getErrorConfig(response, "Error", "Error " + (action == 'in' ? 'Checking In' : 'Checking Out') + " Appointment")
+          );
+        }
+      });
+  }
 }

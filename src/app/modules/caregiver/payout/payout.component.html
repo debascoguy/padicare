@@ -1,0 +1,105 @@
+<div class="container-fluid py-2">
+  <div class="row">
+    <div class="col-md-12">
+      <h5 class="text-center">Your Current Balance: {{ caregiverAccounts.available | currency:
+        caregiverAccounts.currency : 'symbol':'1.2-2' }}</h5>
+      <hr />
+
+      <mat-stepper [linear]="isLinear" #stepper>
+        <mat-step [stepControl]="payoutStep1" errorMessage="Amount is required.">
+          <form [formGroup]="payoutStep1" class="mt-2 mb-2">
+            <ng-template matStepLabel>Cash Out Amount</ng-template>
+            <mat-form-field class="mt-2 col-12 col-md-12" appearance="fill">
+              <mat-label>Amount</mat-label>
+              <input matInput placeholder="Amount" formControlName="amount" required>
+            </mat-form-field>
+            <div class="d-grid gap-2">
+              <button class="btn btn-primary" matStepperNext>Next</button>
+            </div>
+          </form>
+        </mat-step>
+        <mat-step [stepControl]="payoutStep2" errorMessage="Payment Method is required.">
+          <form [formGroup]="payoutStep2">
+            <ng-template matStepLabel>Select Payment Method</ng-template>
+            <div class="mt-2 col-12">
+              <app-payment-methods [title]="'Payout Methods'" [isSelectPaymentMethod]="true"
+                (selectedPaymentMethod)="getSelectedPaymentMethod($event)"
+                (selectedPaymentMethodDetails)="getSelectedPaymentMethodDetails($event)">
+              </app-payment-methods>
+              <div class="flex gap-3 text-center mt-2">
+                <button class="btn btn-secondary me-2 col-4 col-md-4" mat-stroked-button
+                  matStepperPrevious>Back</button>
+                <button class="btn btn-primary ms-2 col-4 col-md-4" matButton matStepperNext>Next</button>
+              </div>
+            </div>
+          </form>
+        </mat-step>
+        <mat-step [stepControl]="payoutStep3" errorMessage="Cash Out Description is required.">
+          <form [formGroup]="payoutStep3">
+            <ng-template matStepLabel>Review & Confirm</ng-template>
+
+            <app-alerts *ngIf="isProcessing" type="INFO"
+              message="Processing your cash out request. Please wait..."></app-alerts>
+
+            <app-alerts *ngIf="showError" type="ERROR"
+              message="An error occurred while processing your cash out. Please try again."></app-alerts>
+
+            <app-alerts *ngIf="showSuccess" type="SUCCESS"
+              message="Your cash out request has been successfully processed."></app-alerts>
+
+            <div class="mt-2 col-12 col-md-12" *ngIf="!showPayout">
+              <p><strong>Amount:</strong> {{ payoutStep1.controls['amount'].value | currency:
+                payoutStep1.controls['currency'].value || 'USD' : 'symbol':'1.2-2' }}</p>
+              <p>
+                <strong>Payment Method: </strong>
+                <span *ngIf="paymentMethodDetails">
+                  <span *ngIf="paymentMethodDetails.type === 'card'">
+                    Card ending in {{ paymentMethodDetails.card.last4 }} ({{ paymentMethodDetails.card.brand | titlecase
+                    }})
+                  </span>
+                  <span *ngIf="paymentMethodDetails.type !== 'card'">
+                    {{ paymentMethodDetails.type | titlecase }} ({{ paymentMethodDetails.email ||
+                    paymentMethodDetails.account_holder_name || 'N/A' }})
+                  </span>
+                </span>
+              </p>
+              <p *ngIf="!paymentMethodDetails">No payment method selected.</p>
+              <mat-form-field class="mt-2 col-12" appearance="fill">
+                <mat-label>Cash Out Description</mat-label>
+                <input matInput placeholder="Cash Out Description" formControlName="statement_descriptor" required>
+              </mat-form-field>
+              <div class="flex gap-3 text-center mt-2">
+                <button class="btn btn-secondary me-2 col-3 col-md-3" mat-stroked-button
+                  matStepperPrevious>Back</button>
+                <button class="btn btn-success col-3 me-2 col-md-3" matButton (click)="payoutSetup()"
+                  [disabled]="isProcessing">Confirm
+                  & Cash Out</button>
+                <button class="btn btn-danger  col-3 col-md-3" mat-stroked-button
+                  (click)="stepper.reset()">Cancel</button>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-12" *ngIf="showPayout">
+
+              <div #paymentElementRef></div>
+
+              <div class="d-grid gap-2">
+                <button type="button" class="btn btn-success" matButton="filled" matFab (click)="cashOut()"
+                  [disabled]="isProcessing">Cash Out</button>
+                <button type="button" class="btn btn-secondary" matButton="filled" matFab
+                  (click)="cancelPayout()">Cancel</button>
+              </div>
+            </div>
+
+          </form>
+        </mat-step>
+      </mat-stepper>
+
+    </div>
+  </div>
+
+  <div class="mt-2 mb-2">&nbsp;</div>
+
+  <app-invoices></app-invoices>
+
+</div>

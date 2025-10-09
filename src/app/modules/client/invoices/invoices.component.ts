@@ -36,6 +36,7 @@ export class InvoicesComponent {
   showInvoice: boolean = false;
   selectedInvoice: Invoice = {} as Invoice;
   invoiceLists: Invoice[] = [];
+  searchTerm: string = '';
 
   statusColors: { [key: string]: string } = {
     CREATED: 'bg-gradient-secondary',
@@ -57,8 +58,12 @@ export class InvoicesComponent {
     this.findAllUserInvoices();
   }
 
-  findAllUserInvoices() {
-    this.httpClient.get<ApiResponse>(`/payments/invoices`).subscribe({
+  findAllUserInvoices(limit: number = 50, offset: number = 0) {
+    const url = `/payments/invoices?userType=${this.credentialsService.activePortal}&limit=${limit}&offset=${offset}`;
+    if (this.searchTerm) {
+      url.concat(`&searchTerm=${this.searchTerm}`);
+    }
+    this.httpClient.get<ApiResponse>(url).subscribe({
       next: (response: any) => {
         if (response.status) {
           this.invoiceLists = response.data;

@@ -60,8 +60,11 @@ export class PaymentMethodsComponent implements AfterViewInit {
   }
 
   customerInfo: any;
+  @Input() title: string = "Payment Methods";
+  @Input() description: string = "Manage your payment methods. You can add, edit, or delete your payment methods as needed."
   @Input() isSelectPaymentMethod: boolean = false;
   @Output() selectedPaymentMethod = new EventEmitter<any>();
+  @Output() selectedPaymentMethodDetails = new EventEmitter<any>();
   paymentMethodId = "";
 
 
@@ -90,8 +93,8 @@ export class PaymentMethodsComponent implements AfterViewInit {
         ...ToastsConfig.defaultConfig,
         data: {
           type: "SUCCESS",
-          headerTitle: "Payment Method",
-          message: "Payment method saved successfully!",
+          headerTitle: this.title,
+          message: this.title + " saved successfully!",
         } as SnackBarParams
       }).afterDismissed().subscribe((_) => {
         this.showSuccess = false;
@@ -117,7 +120,7 @@ export class PaymentMethodsComponent implements AfterViewInit {
           data: {
             type: "DANGER",
             headerTitle: "Error",
-            message: err.message || "Failed to fetch payment methods",
+            message: err.message || "Failed to fetch " + this.title + ". Please try again.",
           } as SnackBarParams
         });
       }
@@ -142,8 +145,8 @@ export class PaymentMethodsComponent implements AfterViewInit {
             ...ToastsConfig.defaultConfig,
             data: {
               type: "DANGER",
-              headerTitle: "Payment Method Error",
-              message: response.message || 'Failed to create/edit payment method',
+              headerTitle: this.title + " Error",
+              message: response.message || 'Failed to create/edit ' + this.title + '!',
             } as SnackBarParams
           });
         }
@@ -155,8 +158,8 @@ export class PaymentMethodsComponent implements AfterViewInit {
           ...ToastsConfig.defaultConfig,
           data: {
             type: "DANGER",
-            headerTitle: "Payment Method Error",
-            message: "Failed to creating or editing payment method for adding payment method!",
+            headerTitle: this.title + " Error",
+            message: "Failed to create or edit " + this.title + "!",
           } as SnackBarParams
         });
       });
@@ -195,7 +198,7 @@ export class PaymentMethodsComponent implements AfterViewInit {
         ...ToastsConfig.defaultConfig,
         data: {
           type: "DANGER",
-          headerTitle: "Payment Method Error",
+          headerTitle: this.title + " Error",
           message: "Stripe is not initialized properly!",
         } as SnackBarParams
       });
@@ -236,19 +239,19 @@ export class PaymentMethodsComponent implements AfterViewInit {
         if (response.status) {
           this.snackBar.openFromComponent(
             ToastsComponent,
-            ToastsConfig.getSuccessConfig("Payment Method", "Default Payment Method Updated")
+            ToastsConfig.getSuccessConfig(this.title, "Default " + this.title + " Updated")
           );
           this.customerInfo = response.data;
         } else {
           this.snackBar.openFromComponent(
             ToastsComponent,
-            ToastsConfig.getErrorConfig(response, "Payment Method Error", "Updating Default Payment Method Failed!")
+            ToastsConfig.getErrorConfig(response, this.title + " Error", "Updating Default " + this.title + " Failed!")
           );
         }
       }, error: (err) => {
         this.snackBar.openFromComponent(
           ToastsComponent,
-          ToastsConfig.getErrorConfig(err, "Payment Method Error", "Updating Default Payment Method Failed!")
+          ToastsConfig.getErrorConfig(err, this.title + " Error", "Updating Default " + this.title + " Failed!")
         );
       }
     });
@@ -273,19 +276,19 @@ export class PaymentMethodsComponent implements AfterViewInit {
         if (response.status) {
           this.snackBar.openFromComponent(
             ToastsComponent,
-            ToastsConfig.getSuccessConfig("Payment Method", "Card Expiration Month/Year Updated")
+            ToastsConfig.getSuccessConfig(this.title, "Card Expiration Month/Year Updated")
           );
           paymentMethod = response.data;
         } else {
           this.snackBar.openFromComponent(
             ToastsComponent,
-            ToastsConfig.getErrorConfig(response, "Payment Method Error", "Updating Payment Method Failed!")
+            ToastsConfig.getErrorConfig(response, this.title + " Error", "Updating " + this.title + " Failed!")
           );
         }
       }, error: (err) => {
         this.snackBar.openFromComponent(
           ToastsComponent,
-          ToastsConfig.getErrorConfig(err, "Payment Method Error", "Updating Payment Method Failed!")
+          ToastsConfig.getErrorConfig(err, this.title + " Error", "Updating " + this.title + " Failed!")
         );
       }
     });
@@ -316,19 +319,19 @@ export class PaymentMethodsComponent implements AfterViewInit {
             if (response.status) {
               this.snackBar.openFromComponent(
                 ToastsComponent,
-                ToastsConfig.getSuccessConfig("Payment Method", "Card Expiration Month/Year Updated")
+                ToastsConfig.getSuccessConfig(this.title, "Card Expiration Month/Year Updated")
               );
               this.paymentMethods = this.paymentMethods.filter((pm: { id: string; }) => pm.id != paymentMethod.id);
             } else {
               this.snackBar.openFromComponent(
                 ToastsComponent,
-                ToastsConfig.getErrorConfig(response, "Payment Method Error", "Updating Payment Method Failed!")
+                ToastsConfig.getErrorConfig(response, this.title + " Error", "Updating " + this.title + " Failed!")
               );
             }
           }, error: (err) => {
             this.snackBar.openFromComponent(
               ToastsComponent,
-              ToastsConfig.getErrorConfig(err, "Payment Method Error", "Updating Payment Method Failed!")
+              ToastsConfig.getErrorConfig(err, this.title + " Error", "Updating " + this.title + " Failed!")
             );
           }
         });
@@ -340,5 +343,6 @@ export class PaymentMethodsComponent implements AfterViewInit {
 
   onSelectPaymentMethod(event: MatRadioChange) {
     this.selectedPaymentMethod.emit(event.value);
+    this.selectedPaymentMethodDetails.emit(this.paymentMethods.find((pm: { id: string; }) => pm.id == event.value));
   }
 }

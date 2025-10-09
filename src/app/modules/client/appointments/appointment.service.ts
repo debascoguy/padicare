@@ -7,7 +7,7 @@ import { CredentialsService } from "@app/core/authentication/credentials.service
 import { ApiResponse } from "@app/core/models/api-repsonse";
 import { AddressPipe } from "@app/core/pipes/address.pipe";
 import { ReplaceStringPipe } from "@app/core/pipes/replace.string.pipe";
-import { toMysqlDateTime, addHours, endOfDay, getFirstDayOfMonth, getFirstDayOfWeek, getLastDayOfMonth, getLastDayOfWeek, startOfDay, getDateDiffInHours, now, toSimpleTime } from "@app/core/services/date-fns";
+import { toMysqlDateTime, addHours, endOfDay, getFirstDayOfMonth, getFirstDayOfWeek, getLastDayOfMonth, getLastDayOfWeek, startOfDay, getDateDiffInHours, now, toSimpleTime, isGreaterThan, isLessThan, addMinutes } from "@app/core/services/date-fns";
 import { ReloadComponent } from "@app/core/services/reload-component";
 import { EventColor, CalendarEvent } from "calendar-utils";
 import { BookAppointmentService } from "../book-appointment/book-appointment-service";
@@ -91,9 +91,11 @@ export class AppointmentService {
 
   isActionable(status: AppointmentStatus) {
     return status == AppointmentStatus.NEW ||
-    status == AppointmentStatus.SCHEDULED ||
-    status == AppointmentStatus.CAREGIVER_NO_SHOW ||
-    status == AppointmentStatus.CLIENT_NO_SHOW;
+      status == AppointmentStatus.SCHEDULED ||
+      status == AppointmentStatus.CHECKED_IN ||
+      status == AppointmentStatus.ACCEPTED ||
+      status == AppointmentStatus.CAREGIVER_NO_SHOW ||
+      status == AppointmentStatus.CLIENT_NO_SHOW;
   }
 
   createCalendarEventFromAppointment(appointment: BookAppointment, isEventDraggable: boolean) {
@@ -107,6 +109,19 @@ export class AppointmentService {
     title += " | Status: " + status;
     title += " | Caregiver: " + (caregiverName || 'Unknown Caregiver');
     title += " | Time: " + this.datePipe.transform(startDate, 'h:mm a') + " - " + this.datePipe.transform(endDate, 'h:mm a') || 'No Time';
+    let actions: CalendarEventAction[] = [];
+    if (this.isActionable(appointment.status) && isGreaterThan(addMinutes(startDate, 30), now())) {
+      // Allow Accept/Reject/Check-In/Check-Out/Delete actions only if appointment start time is in future or within last 30 minutes.
+      actions = this.calendarEventActions;
+      if ([AppointmentStatus.NEW, AppointmentStatus.SCHEDULED].includes(appointment.status)) {
+        actions = this.calendarEventActions.filter(action => action.id != 'CHECKIN' && action.id != 'CHECKOUT');
+      } else if (appointment.status == AppointmentStatus.CHECKED_IN) {
+        actions = this.calendarEventActions.filter(action => action.id != 'ACCEPT' && action.id != 'REJECT' && action.id != 'DELETE' && action.id != 'CHECKIN');
+      } else {
+        actions = this.calendarEventActions.filter(action => action.id != 'ACCEPT' && action.id != 'REJECT' && action.id != 'CHECKOUT');
+      }
+    }
+
     return {
       title: title,
       start: startDate,
@@ -117,7 +132,7 @@ export class AppointmentService {
         secondary: '#F47CB4',
         secondaryText: '#000000'
       } as EventColor,
-      actions: this.isActionable(appointment.status) ? this.calendarEventActions : [],
+      actions: actions,
       meta: {
         appointment,
         summaryInfo: {
@@ -356,7 +371,7 @@ export class AppointmentService {
         serviceAddressInfo
       } as AcceptOrRejectData
     }).afterClosed().subscribe((data: any) => {
-      if (data && !(typeof data == 'boolean') ) {
+      if (data && !(typeof data == 'boolean')) {
         firstValueFrom(this.httpClient.post<ApiResponse>(`/caregiver/book/appointment/accept-or-reject-appointment`, data))
           .then((response: ApiResponse) => {
             if (response.status) {
@@ -373,6 +388,33 @@ export class AppointmentService {
               );
             }
           });
+      }
+    });
+  }
+
+  async onCheckInOrCheckOut(calendarEvent: CalendarEvent, action: 'in' | 'out') {
+    const label = "Check-" + this.titleCasePipe.transform(action);
+     const { meta } = calendarEvent;
+    const { appointment, summaryInfo } = meta;
+    this.dialog.open(ConfirmDialogComponent, {
+      width: '500px',
+      height: '200px',
+      data: {
+        icon: action == "in" ? 'check_circle' : 'check_circle_outline',
+        title: (`${label} Confirmation`).toUpperCase(),
+        message: `Please confirm that you want to ${label} for this appointment.`,
+        showCancelButton: true,
+        showConfirmButton: true,
+        confirmButtonText: `Confirm ${label}`,
+        cancelButtonText: 'No, Cancel',
+      } as ConfirmDialogData
+    }).afterClosed().subscribe((confirmed: boolean) => {
+      if (confirmed) {
+        this.bookAppointmentService.checkInOrCheckOutHandler(
+          action,
+          appointment.id,
+          () => this.reloadComponent.reloadComponent(true)
+        );
       }
     });
   }

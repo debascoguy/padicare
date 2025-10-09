@@ -7,13 +7,17 @@ export class ReloadComponent {
   constructor(private router: Router, private activatedRoute: ActivatedRoute) {
   }
 
-  reloadComponent(self: boolean, urlToNavigateTo?: string) {
+  reload(self: boolean, urlToNavigateTo?: string) {
     const url = self ? this.router.url : urlToNavigateTo;
     this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
       this.router.navigate([`/${url}`]).then(() => {
         // console.log(`After navigation I am on:${this.router.url}`);
       });
     });
+  }
+
+  reloadComponent(self: boolean, urlToNavigateTo?: string) {
+    this.reload(self, urlToNavigateTo);
   }
 
   reloadPage() {

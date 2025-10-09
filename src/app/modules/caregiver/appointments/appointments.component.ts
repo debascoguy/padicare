@@ -9,11 +9,8 @@ import { ReplaceStringPipe } from '@app/core/pipes/replace.string.pipe';
 import { BookAppointment } from '@app/modules/client/appointments/appointment';
 import { CalendarEventAction, CalendarView } from 'angular-calendar';
 import { CalendarEvent } from 'calendar-utils';
-import { HttpClient } from '@angular/common/http';
-import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CredentialsService } from '@app/core/authentication/credentials.service';
-import { EnvironmentService } from '@app/core/services/environment.service';
 import { ReloadComponent } from '@app/core/services/reload-component';
 import { BookAppointmentService } from '@app/modules/client/book-appointment/book-appointment-service';
 import { ViewChangeInfo } from '@app/shared/calendar/view-change-info';
@@ -55,6 +52,7 @@ export class AppointmentsComponent {
 
   calendarEventActions: CalendarEventAction[] = [
     {
+      id: 'ACCEPT',
       label: '<i class="fa-solid fa-check-circle"></i>',
       a11yLabel: 'Accept',
       cssClass: 'btn btn-outline-success me-2',
@@ -63,11 +61,30 @@ export class AppointmentsComponent {
       },
     },
     {
+      id: 'REJECT',
       label: '<i class="fa-solid fa-ban"></i>',
       a11yLabel: 'Reject',
       cssClass: 'btn btn-outline-danger me-1',
       onClick: ({ event }: { event: CalendarEvent }): void => {
         this.onRejectAppointment(event);
+      },
+    },
+    {
+      id: 'CHECKIN',
+      label: '<i class="fa-solid fa-check-circle"></i>',
+      a11yLabel: 'Check-In',
+      cssClass: 'btn btn-outline-primary me-2',
+      onClick: ({ event }: { event: CalendarEvent }): void => {
+        this.onCheckinAppointment(event);
+      },
+    },
+    {
+      id: 'CHECKOUT',
+      label: '<i class="fa-solid fa-check-circle"></i>',
+      a11yLabel: 'Check-Out',
+      cssClass: 'btn btn-outline-primary me-1',
+      onClick: ({ event }: { event: CalendarEvent }): void => {
+        this.onCheckoutAppointment(event);
       },
     },
   ];
@@ -125,6 +142,14 @@ export class AppointmentsComponent {
 
   onRejectAppointment(calendarEvent: CalendarEvent) {
     this.appointmentService.onAcceptOrRejectAppointment(calendarEvent, AppointmentStatus.REJECTED);
+  }
+
+  onCheckinAppointment(calendarEvent: CalendarEvent) {
+    this.appointmentService.onCheckInOrCheckOut(calendarEvent, 'in');
+  }
+
+  onCheckoutAppointment(calendarEvent: CalendarEvent) {
+    this.appointmentService.onCheckInOrCheckOut(calendarEvent, 'out');
   }
 
 }

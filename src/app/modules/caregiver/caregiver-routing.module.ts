@@ -41,8 +41,26 @@ export const caregiverRoutes: Routes = [
     } as RouteData,
   },
   {
-    path: 'billing',
-    loadComponent: () => import('../client/billing/billing.component').then(c => c.BillingComponent),
+    path: 'check/:action/:appointmentId', // action = in | out
+    loadComponent: () => import('./checkin/checkin.component').then(c => c.CheckinComponent),
+    data: {
+      title: 'Caregiver | Dashboard',
+      breadcrumbs: [
+        {
+          text: 'Dashboard',
+          link: "/caregiver/dashboard"
+        },
+        {
+          text: 'Appointments',
+          active: true
+        }
+      ],
+      pageAuthorities: []
+    } as RouteData,
+  },
+  {
+    path: 'payout',
+    loadComponent: () => import('./payout/payout.component').then(c => c.PayoutComponent),
     data: {
       title: 'Caregiver | Dashboard',
       breadcrumbs: [
@@ -51,7 +69,7 @@ export const caregiverRoutes: Routes = [
           link: "/client/dashboard"
         },
         {
-          text: 'Billing',
+          text: 'Cash Out',
           active: true
         }
       ],

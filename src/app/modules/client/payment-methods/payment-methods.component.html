@@ -5,7 +5,7 @@
 
     <div class="d-grid gap-2">
       <button type="button" class="btn btn-success" matButton="filled" matFab (click)="savePaymentMethod()"
-        [disabled]="isProcessing">Add Payment Method</button>
+        [disabled]="isProcessing">Add {{ title }}</button>
       <button type="button" class="btn btn-secondary" matButton="filled" matFab
         (click)="cancelAddCard()">Cancel</button>
     </div>
@@ -16,16 +16,16 @@
 <div class="row">
   <div class="col-md-12 col-xs-12 mb-lg-0 mb-4">
 
-    <app-alerts *ngIf="showSuccess" [message]="'Payment method saved successfully!'" [type]="'SUCCESS'"></app-alerts>
+    <app-alerts *ngIf="showSuccess" [message]="title + ' saved successfully!'" [type]="'SUCCESS'"></app-alerts>
 
-    <app-alerts *ngIf="showError" [message]="'Failed to add/edit payment method. Please try again.'" [type]="'ERROR'"></app-alerts>
+    <app-alerts *ngIf="showError" [message]="'Failed to add/edit ' + title + '. Please try again.'" [type]="'ERROR'"></app-alerts>
 
     <div class="card mt-4">
 
       <div class="card-header pb-0 p-3">
         <div class="row">
           <div class="col-6 d-flex align-items-center">
-            <h6 class="mb-0">Payment Method</h6>
+            <h6 class="mb-0">{{ title }}</h6>
           </div>
           <div class="col-6 text-end">
             <a class="btn bg-gradient-dark mb-0" href="javascript:;" (click)="addCardToCustomer()">

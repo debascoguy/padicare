@@ -38,10 +38,16 @@
           <span class="nav-link-text ms-1">Appointments</span>
         </a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item" *ngIf="isClientSide">
         <a class="nav-link text-dark" [href]="'/' + userBaseRoute + '/billing'">
           <i class="material-symbols-rounded opacity-5">receipt_long</i>
           <span class="nav-link-text ms-1">Billing</span>
+        </a>
+      </li>
+      <li class="nav-item" *ngIf="isCaregiverSide">
+        <a class="nav-link text-dark" [href]="'/' + userBaseRoute + '/payout'">
+          <i class="material-symbols-rounded opacity-5">receipt_long</i>
+          <span class="nav-link-text ms-1">Payout</span>
         </a>
       </li>
       <!-- <li class="nav-item">

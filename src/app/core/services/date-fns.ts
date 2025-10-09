@@ -88,6 +88,18 @@ export function addHours(date: Date, hours: number): Date {
   return result;
 }
 
+export function addMinutes(date: Date, minutes: number): Date {
+  const result = new Date(date);
+  result.setMinutes(result.getMinutes() + minutes);
+  return result;
+}
+
+export function subMinutes(date: Date, minutes: number): Date {
+  const result = new Date(date);
+  result.setMinutes(result.getMinutes() - minutes);
+  return result;
+}
+
 export function subHours(date: Date, hours: number): Date {
   const result = new Date(date);
   result.setHours(result.getHours() - hours);
